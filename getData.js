@@ -1,11 +1,12 @@
+const argv = require('minimist')(process.argv.slice(2));
 const puppeteer = require('puppeteer');
-let winkel = 'https://www.biernet.nl/bier/aanbiedingen/bij/albert-heijn'
+let winkelUri = argv.u;
 
 
 let scrape = async () => {
     const browser = await puppeteer.launch({args: ['--no-sandbox']});
     const page = await browser.newPage();
-    await page.goto(winkel);
+    await page.goto(winkelUri);
     await page.waitFor(1000);
 
     const result = await page.evaluate(() => {
@@ -18,6 +19,7 @@ let scrape = async () => {
             let prijsNieuw = aanbieding.getElementsByClassName('prijs')[0].innerText;
             let hoeveelheid = aanbieding.querySelectorAll('.Blikjes, .Flessen, .Kratten')[0].innerText;
             let geldigheid = aanbieding.getElementsByClassName('nomargin')[0].innerText;
+            let store = argv.s;
 
             data.push({merk, prijsOud, prijsNieuw, hoeveelheid, geldigheid});
 
@@ -30,8 +32,8 @@ let scrape = async () => {
 
     browser.close();
     return result
-  };
+};
 
-  scrape().then((value) => {
-      console.log(value);
-  });
+scrape().then((value) => {
+    console.log(JSON.stringify(value));
+});
