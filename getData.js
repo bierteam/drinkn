@@ -15,7 +15,7 @@ let scrape = async () => {
         for (let aanbieding of aanbiedingen){
             let merk  = aanbieding.getElementsByClassName('merk')[0].innerText;
             let prijsOud = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[0];
-            let prijsNieuw = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[1];
+            let prijsNieuw = aanbieding.getElementsByClassName('prijs')[0].innerText;
             let hoeveelheid = aanbieding.querySelectorAll('.Blikjes, .Flessen, .Kratten')[0].innerText;
             let geldigheid = aanbieding.getElementsByClassName('nomargin')[0].innerText;
 
