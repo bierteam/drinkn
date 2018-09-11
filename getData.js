@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-let winkelUri = 'https://www.biernet.nl/bier/aanbiedingen/bij/albert-heijn';
+let winkelUri = 'https://www.biernet.nl/bier/aanbiedingen';
 
 
 let scrape = async () => {
@@ -13,13 +13,14 @@ let scrape = async () => {
         let aanbiedingen = document.getElementsByClassName('textaanbieding');
 
         for (let aanbieding of aanbiedingen){
+            let winkel = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title;
             let merk  = aanbieding.getElementsByClassName('merk')[0].innerText;
             let prijsOud = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[0];
             let prijsNieuw = aanbieding.getElementsByClassName('prijs')[0].innerText;
-            let hoeveelheid = aanbieding.querySelectorAll('.Blikjes, .Flessen, .Kratten')[0].innerText;
+            let hoeveelheid = aanbieding.querySelectorAll('.Blikjes, .Flessen, .Kratten, .Fusten')[0].innerText;
             let geldigheid = aanbieding.getElementsByClassName('nomargin')[0].innerText;
 
-            data.push({merk, prijsOud, prijsNieuw, hoeveelheid, geldigheid});
+            data.push({winkel, merk, prijsOud, prijsNieuw, hoeveelheid, geldigheid});
 
         }
         return {
