@@ -1,0 +1,23 @@
+{
+  "name": "Pils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NvdLaan/Pils.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NvdLaan/Pils/issues"
+  },
+  "homepage": "https://github.com/NvdLaan/Pils#readme",
+  "dependencies": {
+    "puppeteer": "^1.8.0"
+  }
+}
