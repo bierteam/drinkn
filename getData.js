@@ -40,5 +40,5 @@ let scrape = async () => {
 };
 
 scrape().then((value) => {
-  console.log(value);
+  console.log(JSON.stringify(value));
 });
