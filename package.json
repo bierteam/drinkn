@@ -4,7 +4,7 @@
   "description": "",
   "main": "getData.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -16,14 +16,12 @@
   "bugs": {
     "url": "https://github.com/NvdLaan/Pils/issues"
   },
-  "scripts": {
-    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls"
-  },
   "homepage": "https://github.com/NvdLaan/Pils/docs/README.md",
   "dependencies": {
     "puppeteer": "^1.8.0"
   },
   "devDependencies": {
-    "coveralls": "^3.0.2"
+    "coveralls": "^3.0.2",
+    "jest": "^23.6.0"
   }
 }
