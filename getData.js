@@ -12,7 +12,6 @@ let scrape = async () => {
     let aanbiedingen = document.getElementsByClassName('textaanbieding');
 
     for (let aanbieding of aanbiedingen){
-      console.log(aanbieding);
       let winkel = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title;
       let merk  = aanbieding.getElementsByClassName('merk')[0].innerText;
       let prijsOud = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[0];
