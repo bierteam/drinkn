@@ -12,8 +12,11 @@ let scrape = async () => {
     let aanbiedingen = document.getElementsByClassName('textaanbieding');
 
     for (let aanbieding of aanbiedingen){
-      let winkel = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title;
       let merk  = aanbieding.getElementsByClassName('merk')[0].innerText;
+      if (merk.includes('0.0')) {
+        continue; //I'ts not beer when there is no alcohol in it.
+      }
+      let winkel = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title;
       let prijsOud = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[0];
       let prijsNieuw = aanbieding.getElementsByClassName('prijs')[0].innerText;
       let hoeveelheid = aanbieding.querySelectorAll('.Blikjes, .Flessen, .Kratten, .Fusten')[0].innerText;
@@ -22,6 +25,7 @@ let scrape = async () => {
       if (aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn')) {
         uri = aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn').href;
       }
+
 
       if (uri) {
         data.push({winkel, merk, prijsOud, prijsNieuw, hoeveelheid, geldigheid, uri});
