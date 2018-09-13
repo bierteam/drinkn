@@ -16,8 +16,14 @@
   "bugs": {
     "url": "https://github.com/NvdLaan/Pils/issues"
   },
-  "homepage": "https://github.com/NvdLaan/Pils#readme",
+  "scripts": {
+    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls"
+  },
+  "homepage": "https://github.com/NvdLaan/Pils/docs/README.md",
   "dependencies": {
     "puppeteer": "^1.8.0"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.2"
   }
 }

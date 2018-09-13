@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/NvdLaan/Pils.svg?branch=master)](https://travis-ci.org/NvdLaan/Pils)
+[![Coverage Status](https://coveralls.io/repos/github/NvdLaan/Pils/badge.svg?branch=master)](https://coveralls.io/github/NvdLaan/Pils?branch=master)
 # Pils
 
 A simple crawler to get some usable data of [biernet.nl](https://biernet.nl/)
