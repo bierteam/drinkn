@@ -21,14 +21,14 @@ node
 – The [*Git* website](http://git-scm.com/)
 
 Choose one of the following options.
-- [Instructions for *Windows*](#file-windows-md)
-- [Instructions for *Mac*](#file-mac-md)
-- [Instructions for *Linux*](#file-linux-md)
+- [Instructions for *Windows*](#windows.md)
+- [Instructions for *Mac*](#mac.md)
+- [Instructions for *Linux*](#linux.md)
 
 ### Installing Node in 5 minutes: The Final Guide.
 
 ~~If you have a shitty internet, it may take a little longer.~~
-- [Install instructions](#file-node_instructions-md)
+- [Install instructions](#node.md)
 
 ## Installing
 
