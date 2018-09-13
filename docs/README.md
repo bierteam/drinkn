@@ -21,14 +21,14 @@ node
 – The [*Git* website](http://git-scm.com/)
 
 Choose one of the following options.
-- [Instructions for *Windows*](windows.md)
-- [Instructions for *Mac*](mac.md)
-- [Instructions for *Linux*](linux.md)
+- [Instructions for *Windows*](docs/windows.md)
+- [Instructions for *Mac*](docs/mac.md)
+- [Instructions for *Linux*](docs/linux.md)
 
 ### Installing Node in 5 minutes: The Final Guide.
 
 ~~If you have a shitty internet, it may take a little longer.~~
-- [Install instructions](node.md)
+- [Install instructions](docs/node.md)
 
 ## Installing
 
@@ -71,7 +71,7 @@ See also the list of [contributors](https://github.com/NvdLaan/Pils/contributors
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](docs/LICENSE.md) file for details
 
 ## Roadmap
 
