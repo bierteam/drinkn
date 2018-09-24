@@ -29,7 +29,7 @@ Choose one of the following options.
 
 ### Installing Node in 5 minutes: The Final Guide.
 
-~~If you have a shitty internet, it may take a little longer.~~
+~~If you have shitty internet, it may take a little longer.~~
 - [Install instructions](node.md)
 
 ## Installing

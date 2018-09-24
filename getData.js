@@ -14,7 +14,7 @@ let scrape = async () => {
     for (let aanbieding of aanbiedingen){
       let merk  = aanbieding.getElementsByClassName('merk')[0].innerText;
       if (merk.includes('0.0')) {
-        continue; //I'ts not beer when there is no alcohol in it.
+        continue; // it's not beer when there is no alcohol in it.
       }
       let winkel = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title;
       let prijsOud = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[0];
