@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
-let winkelUri = 'https://www.biernet.nl/bier/aanbiedingen';
+const winkelUri = 'https://www.biernet.nl/bier/aanbiedingen';
+const MongoClient = require('mongodb').MongoClient;
+const url = "ENTER DB CONNECTION STRING";
 
 let scrape = async () => {
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
@@ -14,7 +16,7 @@ let scrape = async () => {
     for (let aanbieding of aanbiedingen){
       let merk  = aanbieding.getElementsByClassName('merk')[0].innerText;
       if (merk.includes('0.0')) {
-        continue; // it's not beer when there is no alcohol in it.
+        continue; //I'ts not beer when there is no alcohol in it.
       }
       let winkel = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title;
       let prijsOud = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[0];
@@ -37,11 +39,27 @@ let scrape = async () => {
       data
     }
   });
-
+  console.log("Succesfully retrieved data");
   browser.close();
   return result
 };
 
+
 scrape().then((value) => {
-  console.log(JSON.stringify(value));
-});
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    let dbo = db.db("nino");
+    let myObject = value.data;
+    for (obj in myObject){
+      dbo.collection("Pils").insertOne(myObject[obj], function(err, res) {
+        if (err) throw err;
+        console.log("1 document inserted");
+        db.close();
+      }
+    );
+    }
+    db.close();
+    });
+  });
+
+  
