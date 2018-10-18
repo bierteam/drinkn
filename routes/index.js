@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 const MongoClient = require('mongodb').MongoClient;
 const config = require('./../config');
-const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
+const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}`;
 
 router.get('/', function (req, res) {
  user.findById(req.session.userId)
@@ -50,18 +50,18 @@ router.post('/aanbiedingen', function (req, res) {
   console.log(`The current user input is ${bierMerk}`);
   MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    let dbo = db.db("nino");
+    let dbo = db.db(config.db.name);
     dbo.collection("Pils").find({}).toArray(function(err, result) {
       if (err) throw err;
       let pilsData = result;
-      matchingPilsData = []; //array to store all results
+      matchingPilsData = []; // array to store all results
       for (let pils of pilsData){
-        let pilsMerk = String(pils.merk).toLowerCase(); //creates (lowercase) string of current pils merk
+        let pilsMerk = String(pils.merk).toLowerCase(); // creates (lowercase) string of current pils merk
         if (pilsMerk.includes(bierMerk)){ // compares user input bierMerk to scraped data pilsMerk
           matchingPilsData.push(pils); // adds current object to array if merk matches
         }
       }
-      res.render('aanbiedingen', {pilsDataResponse: matchingPilsData.sort()}); //renders data to ejs file
+      res.render('aanbiedingen', {pilsDataResponse: matchingPilsData.sort()}); // renders data to ejs file
       db.close();
     });
   });
