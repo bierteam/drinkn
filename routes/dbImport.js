@@ -1,11 +1,13 @@
 const puppeteer = require('puppeteer');
-const winkelUri = 'https://www.biernet.nl/bier/aanbiedingen';
 const MongoClient = require('mongodb').MongoClient;
+
+const config = require('./../config');
+const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
 
 let scrape = async () => {
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
   const page = await browser.newPage();
-  await page.goto(winkelUri);
+  await page.goto(config.scraper.uri);
   await page.waitFor(1000);
 
   const result = await page.evaluate(() => {
@@ -15,7 +17,7 @@ let scrape = async () => {
     for (let aanbieding of aanbiedingen){
       let merk  = aanbieding.getElementsByClassName('merk')[0].innerText;
       if (merk.includes('0.0')) {
-        continue; //I'ts not beer when there is no alcohol in it.
+        continue; // It's not beer when there is no alcohol in it.
       }
       let winkel = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title;
       let prijsOud = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split("\n")[0];
@@ -26,7 +28,6 @@ let scrape = async () => {
       if (aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn')) {
         uri = aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn').href;
       }
-
 
       if (uri) {
         data.push({winkel, merk, prijsOud, prijsNieuw, hoeveelheid, geldigheid, uri});
@@ -45,7 +46,7 @@ let scrape = async () => {
 
 
 scrape().then((value) => {
-  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+  MongoClient.connect(connectionString, { useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
     let dbo = db.db("nino");
     let myObject = value.data;

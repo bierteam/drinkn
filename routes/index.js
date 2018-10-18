@@ -8,8 +8,9 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 const MongoClient = require('mongodb').MongoClient;
+const config = require('./../config');
+const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
 
-// Home
 router.get('/', function (req, res) {
  user.findById(req.session.userId)
  .exec(function (error, user) {
@@ -47,7 +48,7 @@ router.post('/aanbiedingen', function (req, res) {
   let bierMerk = req.body.merk; //assigns user input to variable
   bierMerk = bierMerk.toLowerCase(); // to lower case for case insensitive comparison
   console.log(`The current user input is ${bierMerk}`);
-  MongoClient.connect(url,{ useNewUrlParser: true }, function(err, db) {
+  MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
     let dbo = db.db("nino");
     dbo.collection("Pils").find({}).toArray(function(err, result) {
