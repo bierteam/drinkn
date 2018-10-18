@@ -60,3 +60,17 @@ scrape().then((value) => {
     db.close();
     });
   });
+
+
+  // MongoClient.connect(url,{ useNewUrlParser: true }, function(err, db) {
+//   if (err) throw err;
+//   let dbo = db.db("nino");
+//   dbo.collection("Pils").find({}).toArray(function(err, result) {
+//     if (err) throw err;
+//     let pilsData = result;
+//     pilsData.forEach(function(doc) {
+//       dbo.collection("PilsArchive").insert(doc);
+//       dbo.collection("Pils").remove(doc);
+//   })
+//   db.close();
+//   })});
