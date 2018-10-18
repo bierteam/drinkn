@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer');
 const winkelUri = 'https://www.biernet.nl/bier/aanbiedingen';
 const MongoClient = require('mongodb').MongoClient;
-const url = "ENTER DB CONNECTION STRING";
 
 let scrape = async () => {
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
@@ -54,12 +53,9 @@ scrape().then((value) => {
       dbo.collection("Pils").insertOne(myObject[obj], function(err, res) {
         if (err) throw err;
         console.log("1 document inserted");
-        db.close();
       }
     );
     }
     db.close();
     });
   });
-
-  

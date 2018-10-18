@@ -2,25 +2,44 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express()
 const router = express.Router();
-
-
+const user = require('../models/user');
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 const MongoClient = require('mongodb').MongoClient;
-const url = "ENTER DB CONNECTION STRING";
-
 
 // Home
 router.get('/', function (req, res) {
-  res.render('home');
-})
+ user.findById(req.session.userId)
+ .exec(function (error, user) {
+   if (error) {
+     console.log(error);
+   } else {
+     if (user === null) {
+      res.redirect('/login');
+     } else {
+      res.render('home');
+     }
+   }
+ });
+});
 
 
 // /Aanbiedingen
 router.get('/aanbiedingen', function (req, res) {
-  res.render('aanbiedingen', {pilsDataResponse: 0});
+  user.findById(req.session.userId)
+  .exec(function (error, user) {
+    if (error) {
+      console.log(error);
+    } else {
+      if (user === null) {
+       res.redirect('/login');
+      } else {
+        return res.render('aanbiedingen', {pilsDataResponse: 0});
+      }
+    }
+  });
 })
 
 
@@ -46,6 +65,63 @@ router.post('/aanbiedingen', function (req, res) {
     });
   });
 });
+
+
+//Create account
+router.get('/register', function (req, res) {
+  user.findById(req.session.userId)
+  .exec(function (error, user) {
+    if (error) {
+      console.log(error);
+    } else {
+      if (user === null) {
+       res.redirect('/login');
+      } else {
+        return res.render('register');
+      }
+    }
+  })
+});
+
+router.post('/register', function (req, res) {
+  if (req.body.username && req.body.password) {
+    var userData = {
+      username: req.body.username,
+      password: req.body.password
+    }
+    user.create(userData, function (err, user) {
+      if (err) {
+        console.log(err);
+      } else {
+        req.session.userId = user._id;
+        return res.redirect('/');
+      }
+    });
+  }
+})
+
+//Login
+router.get('/login', function (req, res) {
+  res.render('Login');
+})
+
+router.post('/login', function (req, res) {
+  if (req.body.username && req.body.password) {
+    user.authenticate(req.body.username, req.body.password, function (error, user) {
+      if (error || !user) {
+        res.send("Incorrect username or password");
+      } else {
+        console.log(2);
+        req.session.userId = user._id;
+        return res.redirect('/');
+      }
+    });
+  } else {
+    console.log("Missing fields");
+  }
+})
+
+
 
 
 module.exports = router;
