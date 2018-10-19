@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 const MongoClient = require('mongodb').MongoClient;
 const config = require('./../config');
-const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}`;
+const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
 
 router.get('/', function (req, res) {
  user.findById(req.session.userId)

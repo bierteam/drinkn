@@ -4,7 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const session = require('express-session');
 const config = require('./config');
-const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}`;
+const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));

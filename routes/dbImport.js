@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const MongoClient = require('mongodb').MongoClient;
 
 const config = require('./../config');
-const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}`;
+const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
 
 let scrape = async () => {
   console.log("Launching browser");
@@ -61,15 +61,15 @@ scrape().then((value) => {
   });
 
 
-  // MongoClient.connect(url,{ useNewUrlParser: true }, function(err, db) {
-//   if (err) throw err;
-//   let dbo = db.db(config.db.name);
-//   dbo.collection("Pils").find({}).toArray(function(err, result) {
-//     if (err) throw err;
-//     let pilsData = result;
-//     pilsData.forEach(function(doc) {
-//       dbo.collection("PilsArchive").insert(doc);
-//       dbo.collection("Pils").remove(doc);
-//   })
-//   db.close();
-//   })});
+  // MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, db) {
+  // if (err) throw err;
+  // let dbo = db.db(config.db.name);
+  // dbo.collection("Pils").find({}).toArray(function(err, result) {
+  //   if (err) throw err;
+  //   let pilsData = result;
+  //   pilsData.forEach(function(doc) {
+  //     dbo.collection("PilsArchive").insert(doc);
+  //     dbo.collection("Pils").remove(doc);
+  // })
+  // db.close();
+  // })});
