@@ -55,7 +55,9 @@ html,
 .ghost-input:hover {
     background: #fff;
 }
- .ghost-button-aanbiedingenform {
+ .ghost-button-homeform {
+     float: left; 
+     margin-right: 20px; 
      background-color: transparent;
      border:2px solid #a9a3a3;
      width: 125px;
@@ -68,7 +70,7 @@ html,
      -o-transition: all 0.1s ease-in-out;
      transition: all 0.1s ease-in-out;
 }
- .ghost-button-aanbiedingenform:hover {
+ .ghost-button-homeform:hover {
      border:2px solid #515151;
      /*background-color: transparent;8/
 }
