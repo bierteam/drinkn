@@ -9,9 +9,8 @@
   <body>
     <div class="container">
       <fieldset>
-        <form action="/" method="post" onsubmit="submitBtn.disabled = true">
-          <input name="merk" type="text" class="ghost-input" placeholder="Enter een merk" minlength="3" required>
-          <input type="submit" class="ghost-button" value="Aanbiedingen" name = "submitBtn">
+        <form action="/import" method="post" onsubmit="submitBtn.disabled = true">
+          <input type="submit" class="ghost-button" value="Run import" name = "submitBtn">
         </form>
       </fieldset>
     </div>

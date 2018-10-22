@@ -46,19 +46,20 @@ let scrape = async () => {
 };
 
 
-scrape().then((value) => {
-  MongoClient.connect(connectionString, { useNewUrlParser: true }, function(err, db) {
-    if (err) throw err;
-    let dbo = db.db(config.db.name);
-    let myObject = value.data;
-    dbo.collection("Pils").insertMany(myObject, function(err, res) {
+const dbImport = () => { 
+  scrape().then((value) => {
+    MongoClient.connect(connectionString, { useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
-      console.log( `${myObject.length} document(s) inserted in ${config.db.host}:${config.db.name}/Pils`);
-    });
-
-    db.close();
-    });
-  });
+      config.db.lastimport.value = new Date();
+      let dbo = db.db(config.db.name);
+      let myObject = value.data;
+      dbo.collection("Pils").insertMany(myObject, function(err, res) {
+        if (err) throw err;
+        console.log( `${myObject.length} document(s) inserted in ${config.db.host}:${config.db.name}/Pils`);
+      });
+      db.close();
+      });
+    })};
 
 
   // MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, db) {
@@ -73,3 +74,4 @@ scrape().then((value) => {
   // })
   // db.close();
   // })});
+  module.exports = dbImport;

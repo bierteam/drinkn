@@ -3,6 +3,10 @@ const bodyParser = require('body-parser');
 const app = express()
 const router = express.Router();
 const user = require('../models/user');
+const dbImport = require('./dbImport');
+let currentDate = new Date();
+
+
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -10,6 +14,7 @@ app.set('view engine', 'ejs')
 const MongoClient = require('mongodb').MongoClient;
 const config = require('./../config');
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
+
 
 router.get('/', function (req, res) {
  user.findById(req.session.userId)
@@ -25,6 +30,21 @@ router.get('/', function (req, res) {
    }
  });
 });
+
+router.post('/', function (req, res) {
+  user.findById(req.session.userId)
+  .exec(function (error, currentUser) {
+    if (error) {
+      console.log(error);
+    } else {
+      if (currentUser === null) {
+       res.redirect('/login');
+      } else {
+       res.render('home');
+      }
+    }
+  });
+ });
 
 
 // /Aanbiedingen
@@ -113,6 +133,7 @@ router.post('/register', function (req, res) {
             if (err) {
               console.log(err);
             } else {
+              console.log(`User account ${userData.username} has been created`)
               return res.redirect('/');
             }
           });
@@ -134,6 +155,7 @@ router.post('/login', function (req, res) {
       if (error || !user) {
         res.send("Incorrect username or password");
       } else {
+        console.log(`User ${req.body.username} has logged in.`)
         req.session.userId = user._id;
         return res.redirect('/');
       }
@@ -143,7 +165,36 @@ router.post('/login', function (req, res) {
   }
 })
 
+router.get('/import', function (req, res) {
+  user.findById(req.session.userId)
+  .exec(function (error, currentUser) {
+    if (error) {
+      console.log(error);
+    } else {
+      if (currentUser === null) {
+       res.redirect('/login');
+      } else {
+       res.render('import');
+      }
+    }
+  });
+ });
 
+ router.post('/import', function (req, res) {
+  user.findById(req.session.userId)
+  .exec(function (error, currentUser) {
+    if (error) {
+      console.log(error);
+    } else {
+      if (currentUser === null) {
+       res.redirect('/login');
+      } else {
+        dbImport();
+        res.redirect('/');
+      }
+    }
+  });
+ });
 
 
 module.exports = router;
