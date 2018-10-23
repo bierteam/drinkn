@@ -4,7 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 const config = require('./../config');
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
 
-let scrape = async () => {
+const scrape = async () => {
   console.log("Launching browser");
   const browser = await puppeteer.launch({args: ['--no-sandbox']});
   const page = await browser.newPage();
@@ -45,6 +45,27 @@ let scrape = async () => {
   return result
 };
 
+const moveData = () => {
+  MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
+    if (err) throw err;
+    let dbo = client.db(config.db.name);
+
+    dbo.collection("Pils").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      dbo.collection("PilsArchive").insertMany(result, function(err, res) { 
+        if (err) throw err;
+        console.log( `${result.length} document(s) inserted in ${config.db.host}:${config.db.name}/PilsArchive`);
+      });
+
+      dbo.collection('Pils').deleteMany({},function(err, result) { //removes all old documents
+        if (err) throw err;            
+    });
+
+    client.close();
+    });
+  });
+}; 
+
 
 const dbImport = () => { 
   scrape().then((value) => {
@@ -52,6 +73,9 @@ const dbImport = () => {
       if (err) throw err;
       let dbo = client.db(config.db.name);
       let myObject = value.data;
+
+      //moveData();
+
       dbo.collection("Pils").insertMany(myObject, function(err, res) {
         if (err) throw err;
         console.log( `${myObject.length} document(s) inserted in ${config.db.host}:${config.db.name}/Pils`);
@@ -63,30 +87,39 @@ const dbImport = () => {
 
 
 //move to archive    
-  // MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
-  // if (err) throw err;
-  // let dbo = client.db(config.db.name);
-  // dbo.collection("Pils").find({}).toArray(function(err, result) {
-  //   if (err) throw err;
-  //   dbo.collection("PilsArchive").insertMany(result, function(err, res) {
-  //             if (err) throw err;
-  //             console.log( `${result.length} document(s) inserted in ${config.db.host}:${config.db.name}/PilsArchive`);
-  //           });
-  // client.close();
-  // })});
+// const moveData = () => {
+//   MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
+//     if (err) throw err;
+//     let dbo = client.db(config.db.name);
+
+//     dbo.collection("Pils").find({}).toArray(function(err, result) {
+//       if (err) throw err;
+//       dbo.collection("PilsArchive").insertMany(result, function(err, res) { 
+//         if (err) throw err;
+//         console.log( `${result.length} document(s) inserted in ${config.db.host}:${config.db.name}/PilsArchive`);
+//       });
+
+//       dbo.collection('Pils').deleteMany({},function(err, result) { //removes all old documents
+//         if (err) throw err;            
+//     });
+
+//     client.close();
+//     });
+//   });
+// };  
 
 
 //empty collection
-MongoClient.connect(connectionString,{ useNewUrlParser: true }, function (err, client) {
-  if (err) throw err;
-  const db = client.db(config.db.name);
-  db.collection('PilsArchive').deleteMany({},function(err, result) {
-    if (err) throw err;
-  });
-  client.close();
-}); 
+// MongoClient.connect(connectionString,{ useNewUrlParser: true }, function (err, client) {
+//   if (err) throw err;
+//   const db = client.db(config.db.name);
+//   db.collection('PilsArchive').deleteMany({},function(err, result) {
+//     if (err) throw err;
+//   });
+//   client.close();
+// }); 
 
 
 
 //dbImport();  
-// module.exports = dbImport;
+module.exports = dbImport;

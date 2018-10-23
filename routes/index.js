@@ -76,9 +76,9 @@ router.post('/aanbiedingen', function (req, res) {
         let bierMerk = req.body.merk; //assigns user input to variable
         bierMerk = bierMerk.toLowerCase(); // to lower case for case insensitive comparison
         console.log(`The current user input is ${bierMerk}`);
-        MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, db) {
+        MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
           if (err) throw err;
-          let dbo = db.db(config.db.name);
+          let dbo = client.db(config.db.name);
           dbo.collection("Pils").find({}).toArray(function(err, result) {
             if (err) throw err;
             let pilsData = result;
@@ -90,7 +90,7 @@ router.post('/aanbiedingen', function (req, res) {
               }
             }
             res.render('aanbiedingen', {pilsDataResponse: matchingPilsData.sort()}); // renders data to ejs file
-            db.close();
+            client.close();
           });
         });
       }
