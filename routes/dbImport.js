@@ -48,30 +48,45 @@ let scrape = async () => {
 
 const dbImport = () => { 
   scrape().then((value) => {
-    MongoClient.connect(connectionString, { useNewUrlParser: true }, function(err, db) {
+    MongoClient.connect(connectionString, { useNewUrlParser: true }, function(err, client) {
       if (err) throw err;
-      config.db.lastimport.value = new Date();
-      let dbo = db.db(config.db.name);
+      let dbo = client.db(config.db.name);
       let myObject = value.data;
       dbo.collection("Pils").insertMany(myObject, function(err, res) {
         if (err) throw err;
         console.log( `${myObject.length} document(s) inserted in ${config.db.host}:${config.db.name}/Pils`);
       });
-      db.close();
+      client.close();
       });
     })};
 
 
-  // MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, db) {
+
+//move to archive    
+  // MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
   // if (err) throw err;
-  // let dbo = db.db(config.db.name);
+  // let dbo = client.db(config.db.name);
   // dbo.collection("Pils").find({}).toArray(function(err, result) {
   //   if (err) throw err;
-  //   let pilsData = result;
-  //   pilsData.forEach(function(doc) {
-  //     dbo.collection("PilsArchive").insert(doc);
-  //     dbo.collection("Pils").remove(doc);
-  // })
-  // db.close();
+  //   dbo.collection("PilsArchive").insertMany(result, function(err, res) {
+  //             if (err) throw err;
+  //             console.log( `${result.length} document(s) inserted in ${config.db.host}:${config.db.name}/PilsArchive`);
+  //           });
+  // client.close();
   // })});
-  module.exports = dbImport;
+
+
+//empty collection
+MongoClient.connect(connectionString,{ useNewUrlParser: true }, function (err, client) {
+  if (err) throw err;
+  const db = client.db(config.db.name);
+  db.collection('PilsArchive').deleteMany({},function(err, result) {
+    if (err) throw err;
+  });
+  client.close();
+}); 
+
+
+
+//dbImport();  
+// module.exports = dbImport;
