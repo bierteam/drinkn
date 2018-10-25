@@ -3,10 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>Bier aanbiedingen</title>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css">
   </head>
-  <body background="/images/pils.png">
     <div class="container">
       <fieldset>
         <form action="/aanbiedingen" method="post" onsubmit="submitBtn.disabled = true">
@@ -17,7 +16,7 @@
           <tr>
             <th>Merk</th><th>Winkel</th><th>prijsOud</th><th>prijsNieuw</th><th>hoeveelheid</th>
           </tr>
-        
+
           <% for (var i = 0; i < pilsDataResponse.length; i++) { %>
             <tr>
               <td><%= pilsDataResponse[i].merk %></td>
@@ -25,9 +24,9 @@
               <td><%= pilsDataResponse[i].prijsOud %></td>
               <td><%= pilsDataResponse[i].prijsNieuw %></td>
               <td><%= pilsDataResponse[i].hoeveelheid %></td>
-            </tr>    
+            </tr>
           <% } %>
-        </table>        
+        </table>
       </fieldset>
     </div>
   </body>
