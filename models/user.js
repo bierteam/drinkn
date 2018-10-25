@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 let UserSchema = new mongoose.Schema({
   username: {
@@ -20,7 +20,7 @@ UserSchema.statics.authenticate = function (username, password, callback) {
       if (err) {
         return callback(err)
       } else if (!user) {
-        var err = new Error('User not found.');
+        var err = new Error("User not found.");
         err.status = 401;
         return callback(err);
       }
@@ -34,7 +34,7 @@ UserSchema.statics.authenticate = function (username, password, callback) {
     });
 }
 
-UserSchema.pre('save', function (next) {
+UserSchema.pre("save", function (next) {
   let user = this;
   bcrypt.hash(user.password, 10, function (err, hash){
     if (err) {
@@ -46,5 +46,5 @@ UserSchema.pre('save', function (next) {
 });
 
 
-let User = mongoose.model('User', UserSchema);
+let User = mongoose.model("User", UserSchema);
 module.exports = User;
