@@ -1,6 +1,5 @@
 const puppeteer = require("puppeteer");
 const MongoClient = require("mongodb").MongoClient;
-
 const config = require("./../config");
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`;
 
@@ -10,31 +9,38 @@ const scrape = async () => {
   const page = await browser.newPage();
   console.log("Loading page");
   await page.goto(config.scraper.uri);
+  await page.screenshot({path: 'screenshot.png'}); // test
 
   const result = await page.evaluate(() => {
     let data = [];
     let aanbiedingen = document.getElementsByClassName("textaanbieding");
+    let importDate = Date.now();
+    // let importSerial = getSerial()
 
     for (let aanbieding of aanbiedingen){
-      let merk  = aanbieding.getElementsByClassName("merk")[0].innerText;
-      if (merk.includes("0.0")) {
-        continue; // It's not beer when there is no alcohol in it.
+      let brand  = aanbieding.getElementsByClassName("merk")[0].innerText;
+      if (brand.includes("0.0")) {
+        continue; // It's not beer when there is no alcohol in it
       }
-      let winkel = aanbieding.querySelector("div.textaanbieding > div.fotowinkel > a > img").title;
-      let prijsOud = aanbieding.getElementsByClassName("prijsboven")[0].innerText.split("\n")[0];
-      let prijsNieuw = aanbieding.getElementsByClassName("prijs")[0].innerText;
-      let hoeveelheid = aanbieding.querySelectorAll(".Blikjes, .Flessen, .Kratten, .Fusten")[0].innerText;
-      let geldigheid = aanbieding.getElementsByClassName("nomargin")[0].innerText;
+      let store = aanbieding.querySelector("div.textaanbieding > div.fotowinkel > a > img").title;
+      let oldPrice = aanbieding.getElementsByClassName("prijsboven")[0].innerText.split("\n")[0];
+      let newPrice = aanbieding.getElementsByClassName("prijs")[0].innerText;
+      let volume = aanbieding.querySelectorAll(".Blikjes, .Flessen, .Kratten, .Fusten")[0].innerText;
+      let rawValidity = aanbieding.getElementsByClassName("nomargin")[0].innerText;
+      let rawUri;
       let uri;
 
-      if (aanbieding.querySelector("div.textaanbieding > a.button.yellow.aanbtn")) {
-        uri = aanbieding.querySelector("div.textaanbieding > a.button.yellow.aanbtn").href;
-      }
+      // if (aanbieding.querySelector("div.textaanbieding > a.button.yellow.aanbtn")) {
+      //   rawUri = aanbieding.querySelector("div.textaanbieding > a.button.yellow.aanbtn").href;
+      //   uri = rawUri.split(/ion\:(.*)/g);
+      //   uri = uri[1];
+      //   uri = uri.replace("%2F", "/");
+      // }
 
       if (uri) {
-        data.push({winkel, merk, prijsOud, prijsNieuw, hoeveelheid, geldigheid, uri});
+        data.push({brand, store, oldPrice, newPrice, volume, rawValidity, importDate, rawUri, uri});
       } else {
-        data.push({winkel, merk, prijsOud, prijsNieuw, hoeveelheid, geldigheid});
+        data.push({brand, store, oldPrice, newPrice, volume, rawValidity, importDate});
       }
     }
     return {
@@ -42,31 +48,23 @@ const scrape = async () => {
     }
   });
   console.log("Succesfully processed data");
-  browser.close();
+  await browser.close();
+  console.log(result); // debugging
   return result
 };
 
-const moveData = () => {
-  MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
+const getSerial = () => {
+  MongoClient.connect(connectionString, { useNewUrlParser: true }, function(err, client) {
     if (err) throw err;
     let dbo = client.db(config.db.name);
-
-    dbo.collection("Pils").find({}).toArray(function(err, result) {
+    dbo.collection(config.db.sCollection).findOne({}, function(err, res) {
       if (err) throw err;
-      dbo.collection("PilsArchive").insertMany(result, function(err, res) {
-        if (err) throw err;
-        console.log( `${result.length} document(s) inserted in ${config.db.host}:${config.db.name}/PilsArchive`);
-      });
-
-      dbo.collection("Pils").deleteMany({},function(err, result) { //removes all old documents
-        if (err) throw err;
     });
-
     client.close();
+    let serial = null; // debugging
+    return serial;
     });
-  });
-};
-
+}
 
 const dbImport = () => {
   scrape().then((array) => {
@@ -82,40 +80,20 @@ const dbImport = () => {
       });
     })};
 
+const updateCounter = () => {
+  MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
+    if (err) throw err;
+    let dbo = client.db(config.db.name);
 
+    dbo.collection("updated").findOne({}).toArray(function(err, result) {
+      if (err) throw err;
+      dbo.collection("updated").update(result, function(err, res) {
+        if (err) throw err;
+      });
+    });
+    client.close();
+  });
+};
 
-//move to archive
-// const moveData = () => {
-//   MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {
-//     if (err) throw err;
-//     let dbo = client.db(config.db.name);
-
-//     dbo.collection("Pils").find({}).toArray(function(err, result) {
-//       if (err) throw err;
-//       dbo.collection("PilsArchive").insertMany(result, function(err, res) {
-//         if (err) throw err;
-//         console.log( `${result.length} document(s) inserted in ${config.db.host}:${config.db.name}/PilsArchive`);
-//       });
-
-//       dbo.collection("Pils").deleteMany({},function(err, result) { //removes all old documents
-//         if (err) throw err;
-//     });
-
-//     client.close();
-//     });
-//   });
-// };
-
-
-//empty collection
-// MongoClient.connect(connectionString,{ useNewUrlParser: true }, function (err, client) {
-//   if (err) throw err;
-//   const db = client.db(config.db.name);
-//   db.collection("PilsArchive").deleteMany({},function(err, result) {
-//     if (err) throw err;
-//   });
-//   client.close();
-// });
-
-// dbImport()
+dbImport()
 module.exports = dbImport;
