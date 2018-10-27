@@ -69,7 +69,7 @@ router.post("/aanbiedingen", function (req, res) {
       if (currentUser === null) {
        res.redirect("/login");
       } else {
-        let bierMerk = req.body.merk; //assigns user input to variable
+        let bierMerk = req.body.merk; // assigns user input to variable
         bierMerk = bierMerk.toLowerCase(); // to lower case for case insensitive comparison
         console.log(`The current user input is ${bierMerk}`);
         MongoClient.connect(connectionString,{ useNewUrlParser: true }, function(err, client) {

@@ -26,6 +26,7 @@ const scrape = async () => {
       let hoeveelheid = aanbieding.querySelectorAll(".Blikjes, .Flessen, .Kratten, .Fusten")[0].innerText;
       let geldigheid = aanbieding.getElementsByClassName("nomargin")[0].innerText;
       let uri;
+
       if (aanbieding.querySelector("div.textaanbieding > a.button.yellow.aanbtn")) {
         uri = aanbieding.querySelector("div.textaanbieding > a.button.yellow.aanbtn").href;
       }
@@ -68,17 +69,14 @@ const moveData = () => {
 
 
 const dbImport = () => {
-  scrape().then((value) => {
+  scrape().then((array) => {
     MongoClient.connect(connectionString, { useNewUrlParser: true }, function(err, client) {
       if (err) throw err;
       let dbo = client.db(config.db.name);
-      let myObject = value.data;
 
-      //moveData();
-
-      dbo.collection("Pils").insertMany(myObject, function(err, res) {
+      dbo.collection(config.db.collection).insertMany(array.data, function(err, res) {
         if (err) throw err;
-        console.log( `${myObject.length} document(s) inserted in ${config.db.host}:${config.db.name}/Pils`);
+        console.log( `${array.data.length} document(s) inserted in ${config.db.host}:${config.db.name}/${config.db.collection}`);
       });
       client.close();
       });
@@ -119,7 +117,5 @@ const dbImport = () => {
 //   client.close();
 // });
 
-
-
-//dbImport();
+// dbImport()
 module.exports = dbImport;
