@@ -189,5 +189,79 @@ router.get("/import", function (req, res) {
   });
  });
 
+ router.get("/button", function (req, res) {
+   user.findById(req.session.userId)
+   .exec(function (error, currentUser) {
+     if (error) {
+       console.log(error);
+     } else {
+       if (currentUser === null) {
+        res.redirect("/login");
+       } else {
+        res.render("button");
+       }
+     }
+   });
+  });
+
+ router.get("/button2", function (req, res) {
+   user.findById(req.session.userId)
+   .exec(function (error, currentUser) {
+     if (error) {
+       console.log(error);
+     } else {
+       if (currentUser === null) {
+        res.redirect("/login");
+       } else {
+        res.render("button2");
+       }
+     }
+   });
+  });
+
+  router.get("/button3", function (req, res) {
+    user.findById(req.session.userId)
+    .exec(function (error, currentUser) {
+      if (error) {
+        console.log(error);
+      } else {
+        if (currentUser === null) {
+         res.redirect("/login");
+        } else {
+         res.render("button3");
+        }
+      }
+    });
+   });
+
+   router.get("/button4", function (req, res) {
+     user.findById(req.session.userId)
+     .exec(function (error, currentUser) {
+       if (error) {
+         console.log(error);
+       } else {
+         if (currentUser === null) {
+          res.redirect("/login");
+         } else {
+          res.render("button4");
+         }
+       }
+     });
+    });
+
+    router.get("/button5", function (req, res) {
+      user.findById(req.session.userId)
+      .exec(function (error, currentUser) {
+        if (error) {
+          console.log(error);
+        } else {
+          if (currentUser === null) {
+           res.redirect("/login");
+          } else {
+           res.render("button5");
+          }
+        }
+      });
+     });
 
 module.exports = router;
