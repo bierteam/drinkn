@@ -8,7 +8,8 @@ const config = {
    username: "",
    password: "",
    name: "",
-   collection: ""
+   collection: "",
+   sCollection: ""
  },
  scraper: {
    uri: ""
