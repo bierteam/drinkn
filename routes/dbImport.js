@@ -1,6 +1,7 @@
 const MongoClient = require('mongodb').MongoClient
 const config = require('./../config')
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
+const scrape = require('./scrape')
 
 const dbImport = () => {
   scrape().then((array) => {

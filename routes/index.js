@@ -78,7 +78,7 @@ router.post('/aanbiedingen', function (req, res) {
               let pilsData = result
               matchingPilsData = [] // array to store all results
               for (let pils of pilsData) {
-                let pilsMerk = String(pils.merk).toLowerCase() // creates (lowercase) string of current pils merk
+                let pilsMerk = String(pils.brand).toLowerCase() // creates (lowercase) string of current pils merk
                 if (pilsMerk.includes(bierMerk)) { // compares user input bierMerk to scraped data pilsMerk
                   matchingPilsData.push(pils) // adds current object to array if merk matches
                 }
