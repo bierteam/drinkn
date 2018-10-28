@@ -4,7 +4,6 @@ const app = express()
 const router = express.Router()
 const user = require('../models/user')
 const dbImport = require('./dbImport')
-let currentDate = new Date()
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -76,7 +75,7 @@ router.post('/aanbiedingen', function (req, res) {
             dbo.collection('Pils').find({}).toArray(function (err, result) {
               if (err) throw err
               let pilsData = result
-              matchingPilsData = [] // array to store all results
+              let matchingPilsData = [] // array to store all results
               for (let pils of pilsData) {
                 let pilsMerk = String(pils.brand).toLowerCase() // creates (lowercase) string of current pils merk
                 if (pilsMerk.includes(bierMerk)) { // compares user input bierMerk to scraped data pilsMerk
@@ -182,81 +181,6 @@ router.post('/import', function (req, res) {
         } else {
           dbImport()
           res.redirect('/')
-        }
-      }
-    })
-})
-
-router.get('/button', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('button')
-        }
-      }
-    })
-})
-
-router.get('/button2', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('button2')
-        }
-      }
-    })
-})
-
-router.get('/button3', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('button3')
-        }
-      }
-    })
-})
-
-router.get('/button4', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('button4')
-        }
-      }
-    })
-})
-
-router.get('/button5', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('button5')
         }
       }
     })
