@@ -1,6 +1,5 @@
 const processData = (data) => {
-
   return data
 }
 
-module.exports = processData;
+module.exports = processData

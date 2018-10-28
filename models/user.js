@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 let UserSchema = new mongoose.Schema({
   username: {
@@ -10,9 +10,9 @@ let UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: true
   }
-});
+})
 
 UserSchema.statics.authenticate = function (username, password, callback) {
   User.findOne({ username: username })
@@ -20,31 +20,30 @@ UserSchema.statics.authenticate = function (username, password, callback) {
       if (err) {
         return callback(err)
       } else if (!user) {
-        var err = new Error("User not found.");
-        err.status = 401;
-        return callback(err);
+        var err = new Error('User not found.')
+        err.status = 401
+        return callback(err)
       }
       bcrypt.compare(password, user.password, function (err, result) {
         if (result === true) {
-          return callback(null, user);
+          return callback(null, user)
         } else {
-          return callback();
+          return callback()
         }
       })
-    });
+    })
 }
 
-UserSchema.pre("save", function (next) {
-  let user = this;
-  bcrypt.hash(user.password, 10, function (err, hash){
+UserSchema.pre('save', function (next) {
+  let user = this
+  bcrypt.hash(user.password, 10, function (err, hash) {
     if (err) {
-      return next(err);
+      return next(err)
     }
-    user.password = hash;
-    next();
+    user.password = hash
+    next()
   })
-});
+})
 
-
-let User = mongoose.model("User", UserSchema);
-module.exports = User;
+let User = mongoose.model('User', UserSchema)
+module.exports = User
