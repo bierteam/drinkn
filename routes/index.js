@@ -90,34 +90,12 @@ router.post('/login', function (req, res) {
 })
 
 router.get('/import', requiresLogin, function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('import')
-        }
-      }
-    })
+  res.render('import')
 })
 
 router.post('/import', requiresLogin, function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          dbImport()
-          res.redirect('/')
-        }
-      }
-    })
+  dbImport()
+  res.redirect('/')
 })
 
 router.get('/logout', requiresLogin, function (req, res, next) {
