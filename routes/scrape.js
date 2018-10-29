@@ -45,7 +45,6 @@ const scrape = async () => {
   })
   console.log('Succesfully processed data')
   await browser.close()
-  console.log(result) // debugging
   return result
 }
 

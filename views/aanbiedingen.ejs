@@ -6,13 +6,27 @@
     <link rel="stylesheet" href="/css/style.css" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css">
   </head>
+  <div id="glass">
+      <div id="beer"></div>
+    </div>
+    <div id="poignet"></div>
+    <div id="mousse_1"></div>
+    <div id="mousse_2"></div>
+    <div id="mousse_3"></div>
+    <div id="mousse_4"></div>
+    <div id="mousse_5"></div>
+    <div id="mousse_volante"></div>
+    <div id="mousse_interieur"></div>
+    <div id="mousse_interieur_2"></div>
+    <div id="mousse_interieur_3"></div>
+    <div id="mousse_interieur_4"></div>
+    <div id="text">
     <div class="container">
-      <fieldset>
         <form action="/aanbiedingen" method="post" onsubmit="submitBtn.disabled = true">
           <input name="merk" type="text" class="ghost-input" placeholder="Enter een merk" minlength="3" required>
-          <input type="submit" class="ghost-button-aanbiedingen" value="Aanbiedingen" name = "submitBtn">
+          <input type="submit" class="ghost-button" value="Aanbiedingen" name = "submitBtn">
         </form>
-        <table>
+        <!-- <table>
           <tr>
             <th>Merk</th><th>Winkel</th><th>prijsOud</th><th>prijsNieuw</th><th>hoeveelheid</th>
           </tr>
@@ -26,34 +40,25 @@
               <td><%= pilsDataResponse[i].volume %></td>
             </tr>
           <% } %>
-        </table>
-
-       <!--  TO DO       
+        </table> -->
         <div class="Aanbiedingen"> 
           <ul style="list-style-type:none">
+            <% for (var i = 0; i < pilsDataResponse.length; i++) { %>
             <li class="Aanbieding">
-
-              <div class="Icon">
-                <img src = "/images/test.png" alt = "biertest">
-                <img>
-              </div>
-
-              <div class = "Merk">
-                Heineken
+                <div class="Icon">
+                  <img src = "/images/test.png" alt = "biertest">
+                  <img>
+                </div>
+              <div class = "data">
+                <%= pilsDataResponse[i].volume %>
+                <%= pilsDataResponse[i].brand %>
+                <%= pilsDataResponse[i].newPrice %>
+                <%= pilsDataResponse[i].store %>
               </div>
             </li>
-            <li class="Aanbieding">
-              <div class="Icon">
-                <img src = "/images/test.png" alt = "biertest">
-                <img>
-              </div>
-              <div class = "Merk">
-                Heineken
-              </div>
-            </li>
+            <% } %>
           </ul>
-        </div> --> 
-      </fieldset>
+        </div>
     </div>
   </body>
 </html>
