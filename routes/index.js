@@ -26,8 +26,8 @@ router.get('/aanbiedingen', requiresLogin, function (req, res) {
 })
 
 router.post('/aanbiedingen', requiresLogin, function (req, res) {
-  let bierMerk = req.body.merk // assigns user input to variable
-  bierMerk = bierMerk.toLowerCase() // to lower case for case insensitive comparison
+  let bierMerk = req.body.merk
+  bierMerk = bierMerk.toLowerCase()
   console.log(`The current user input is ${bierMerk}`)
   MongoClient.connect(connectionString, { useNewUrlParser: true }, function (err, client) {
     if (err) throw err
@@ -35,14 +35,14 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
     dbo.collection('Pils').find({}).toArray(function (err, result) {
       if (err) throw err
       let pilsData = result
-      let matchingPilsData = [] // array to store all results
+      let matchingPilsData = []
       for (let pils of pilsData) {
-        let pilsMerk = String(pils.brand).toLowerCase() // creates (lowercase) string of current pils merk
-        if (pilsMerk.includes(bierMerk)) { // compares user input bierMerk to scraped data pilsMerk
-          matchingPilsData.push(pils) // adds current object to array if merk matches
+        let pilsMerk = String(pils.brand).toLowerCase()
+        if (pilsMerk.includes(bierMerk)) {
+          matchingPilsData.push(pils)
         }
       }
-      res.render('aanbiedingen', { pilsDataResponse: matchingPilsData.sort() }) // renders data to ejs file
+      res.render('aanbiedingen', { pilsDataResponse: matchingPilsData.sort() })
       client.close()
     })
   })
