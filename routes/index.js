@@ -32,7 +32,8 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
   MongoClient.connect(connectionString, { useNewUrlParser: true }, function (err, client) {
     if (err) throw err
     let dbo = client.db(config.db.name)
-    dbo.collection('Pils').find({}).toArray(function (err, result) {
+    let query = { 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } }
+    dbo.collection('Pils').find(query).toArray(function (err, result) {
       if (err) throw err
       let pilsData = result
       let matchingPilsData = []
