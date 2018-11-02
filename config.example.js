@@ -1,7 +1,8 @@
 const config = {
   app: {
     port: 3000,
-    secret: ''
+    secret: '',
+    devmode: false
   },
   db: {
     host: '',

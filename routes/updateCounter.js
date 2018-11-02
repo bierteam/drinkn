@@ -1,7 +1,8 @@
+const MongoClient = require('mongodb').MongoClient
 const config = require('./../config')
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
 
-const updateCounter = () => {
+const updateCounterOld = () => {
   MongoClient.connect(connectionString, { useNewUrlParser: true }, function (err, client) {
     if (err) throw err
     let dbo = client.db(config.db.name)
@@ -17,4 +18,13 @@ const updateCounter = () => {
   })
 }
 
+const updateCounter = () => {
+  db.collection(config.db.sCollection).updateOne(
+    { item: 'paper' },
+    {
+      $set: { 'size.uom': 'cm', status: 'P' },
+      $currentDate: { lastModified: true }
+    }
+  )
+}
 module.exports = updateCounter

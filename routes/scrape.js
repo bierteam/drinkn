@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer')
-const config = require('./../config');
+const config = require('./../config')
 
 const scrape = async () => {
   console.log('Launching browser')
@@ -45,7 +45,6 @@ const scrape = async () => {
   })
   console.log('Succesfully processed data')
   await browser.close()
-  console.log(result) // debugging
   return result
 }
 

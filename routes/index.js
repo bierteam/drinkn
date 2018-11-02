@@ -4,6 +4,7 @@ const app = express()
 const router = express.Router()
 const user = require('../models/user')
 const dbImport = require('./dbImport')
+const requiresLogin = require('./requiresLogin')
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -12,127 +13,61 @@ const MongoClient = require('mongodb').MongoClient
 const config = require('./../config')
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
 
-router.get('/', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('home')
-        }
-      }
-    })
+router.get('/', requiresLogin, function (req, res) {
+  res.render('home')
 })
 
-router.post('/', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('home')
-        }
-      }
-    })
+router.post('/', requiresLogin, function (req, res) {
+  res.render('home')
 })
 
-router.get('/aanbiedingen', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          return res.render('aanbiedingen', { pilsDataResponse: 0 })
-        }
-      }
-    })
+router.get('/aanbiedingen', requiresLogin, function (req, res) {
+  res.render('aanbiedingen', { pilsDataResponse: 0 })
 })
 
-router.post('/aanbiedingen', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          let bierMerk = req.body.merk // assigns user input to variable
-          bierMerk = bierMerk.toLowerCase() // to lower case for case insensitive comparison
-          console.log(`The current user input is ${bierMerk}`)
-          MongoClient.connect(connectionString, { useNewUrlParser: true }, function (err, client) {
-            if (err) throw err
-            let dbo = client.db(config.db.name)
-            dbo.collection('Pils').find({}).toArray(function (err, result) {
-              if (err) throw err
-              let pilsData = result
-              let matchingPilsData = [] // array to store all results
-              for (let pils of pilsData) {
-                let pilsMerk = String(pils.brand).toLowerCase() // creates (lowercase) string of current pils merk
-                if (pilsMerk.includes(bierMerk)) { // compares user input bierMerk to scraped data pilsMerk
-                  matchingPilsData.push(pils) // adds current object to array if merk matches
-                }
-              }
-              res.render('aanbiedingen', { pilsDataResponse: matchingPilsData.sort() }) // renders data to ejs file
-              client.close()
-            })
-          })
+router.post('/aanbiedingen', requiresLogin, function (req, res) {
+  let bierMerk = req.body.merk
+  bierMerk = bierMerk.toLowerCase()
+  console.log(`The current user input is ${bierMerk}`)
+  MongoClient.connect(connectionString, { useNewUrlParser: true }, function (err, client) {
+    if (err) throw err
+    let dbo = client.db(config.db.name)
+    let query = { 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } }
+    dbo.collection(config.db.collection).find(query).toArray(function (err, result) {
+      if (err) throw err
+      let pilsData = result
+      let matchingPilsData = []
+      for (let pils of pilsData) {
+        let pilsMerk = String(pils.brand).toLowerCase()
+        if (pilsMerk.includes(bierMerk)) {
+          matchingPilsData.push(pils)
         }
       }
+      res.render('aanbiedingen', { pilsDataResponse: matchingPilsData.sort() })
+      client.close()
     })
+  })
 })
 
-router.get('/register', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          return res.render('register')
-        }
-      }
-    })
+router.get('/register', requiresLogin, function (req, res) {
+  res.render('register')
 })
 
-router.post('/register', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          if (req.body.username && req.body.password) {
-            let userData = {
-              username: req.body.username,
-              password: req.body.password
-            }
-            user.create(userData, function (err, user) {
-              if (err) {
-                console.log(err)
-              } else {
-                console.log(`User account ${userData.username} has been created`)
-                return res.redirect('/')
-              }
-            })
-          }
-        }
-      }
+router.post('/register', requiresLogin, function (req, res) {
+  if (req.body.username && req.body.password) {
+    let userData = {
+      username: req.body.username,
+      password: req.body.password
     }
-    )
+    user.create(userData, function (err, user) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(`User account ${userData.username} has been created`)
+        return res.redirect('/')
+      }
+    })
+  }
 })
 
 router.get('/login', function (req, res) {
@@ -155,35 +90,25 @@ router.post('/login', function (req, res) {
   }
 })
 
-router.get('/import', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
-      } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          res.render('import')
-        }
-      }
-    })
+router.get('/import', requiresLogin, function (req, res) {
+  res.render('import')
 })
 
-router.post('/import', function (req, res) {
-  user.findById(req.session.userId)
-    .exec(function (error, currentUser) {
-      if (error) {
-        console.log(error)
+router.post('/import', requiresLogin, function (req, res) {
+  dbImport()
+  res.redirect('/')
+})
+
+router.get('/logout', requiresLogin, function (req, res, next) {
+  if (req.session) {
+    req.session.destroy(function (err) {
+      if (err) {
+        console.log(err)
       } else {
-        if (currentUser === null) {
-          res.redirect('/login')
-        } else {
-          dbImport()
-          res.redirect('/')
-        }
+        return res.redirect('/login')
       }
     })
+  }
 })
 
 module.exports = router

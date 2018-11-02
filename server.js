@@ -21,7 +21,8 @@ app.use(session({
   resave: true,
   saveUninitialized: false,
   cookie: {
-    httpOnly: true
+    httpOnly: true,
+    maxAge: 6000
   }
 }))
 
@@ -37,5 +38,5 @@ const routes = require('./routes/index')
 app.use('/', routes)
 
 app.listen(config.app.port, function () {
-  console.log(`Example app listening on port ${config.app.port}!`)
+  console.log(`Beer app running on port ${config.app.port}!`)
 })
