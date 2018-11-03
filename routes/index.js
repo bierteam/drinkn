@@ -36,14 +36,7 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
     dbo.collection(config.db.collection).find(query).toArray(function (err, result) {
       if (err) throw err
       let pilsData = result
-      let matchingPilsData = []
-      for (let pils of pilsData) {
-        let pilsMerk = String(pils.brand).toLowerCase()
-        if (pilsMerk.includes(bierMerk)) {
-          matchingPilsData.push(pils)
-        }
-      }
-      res.render('aanbiedingen', { pilsDataResponse: matchingPilsData.sort() })
+      res.render('aanbiedingen', { pilsDataResponse: pilsData })
       client.close()
     })
   })
