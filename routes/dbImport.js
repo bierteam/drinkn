@@ -11,8 +11,9 @@ const dbImport = () => {
       }
     })
     console.log(`${processedData.length} document(s) inserted`)
-  }
-  )
+  }).catch(function (error) {
+    console.error(error)
+  })
 }
 
 module.exports = dbImport

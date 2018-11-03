@@ -8,7 +8,6 @@ const updateCounter = () => {
     console.log('een ' + obj.counter)
     return obj.counter
   })
-  return updateCounter
 }
 
 module.exports = updateCounter
