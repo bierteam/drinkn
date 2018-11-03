@@ -23,9 +23,9 @@ let beerSchema = new mongoose.Schema({
   },
   rawUri: {
     type: String,
-    required: true
+    required: false
   }
 })
 
-let beer = mongoose.model('User', beerSchema)
+let beer = mongoose.model('beer', beerSchema)
 module.exports = beer

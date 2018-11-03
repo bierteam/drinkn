@@ -5,13 +5,11 @@ const router = express.Router()
 const user = require('../models/user')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
+const beer = require('../models/beer')
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
-const MongoClient = require('mongodb').MongoClient
-const config = require('./../config')
-const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
 
 router.get('/', requiresLogin, function (req, res) {
   res.render('home')
@@ -29,16 +27,11 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
   let bierMerk = req.body.merk
   bierMerk = bierMerk.toLowerCase()
   console.log(`The current user input is ${bierMerk}`)
-  MongoClient.connect(connectionString, { useNewUrlParser: true }, function (err, client) {
+  let query = beer.find({ 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } })
+  query.exec(function (err, result) {
     if (err) throw err
-    let dbo = client.db(config.db.name)
-    let query = { 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } }
-    dbo.collection(config.db.collection).find(query).toArray(function (err, result) {
-      if (err) throw err
-      let pilsData = result
-      res.render('aanbiedingen', { pilsDataResponse: pilsData })
-      client.close()
-    })
+    let pilsData = result
+    res.render('aanbiedingen', { pilsDataResponse: pilsData })
   })
 })
 
