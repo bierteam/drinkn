@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
-let UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: true,
@@ -25,7 +25,7 @@ UserSchema.statics.authenticate = function (username, password, callback) {
         return callback(err)
       }
       bcrypt.compare(password, user.password, function (err, result) {
-        if (err) console.log(err)
+        if (err) console.error(err)
         if (result === true) {
           return callback(null, user)
         } else {

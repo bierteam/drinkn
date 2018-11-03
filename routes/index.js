@@ -27,11 +27,11 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
   let bierMerk = req.body.merk
   bierMerk = bierMerk.toLowerCase()
   console.log(`The current user input is ${bierMerk}`)
-  const query = beer.find({ 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } })
-  query.exec(function (err, result) {
-    if (err) throw err
-    res.render('aanbiedingen', { pilsDataResponse: result })
-  })
+  beer.find({ 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } })
+    .exec(function (err, result) {
+      if (err) throw err
+      res.render('aanbiedingen', { pilsDataResponse: result })
+    })
 })
 
 router.get('/register', requiresLogin, function (req, res) {
@@ -46,7 +46,7 @@ router.post('/register', requiresLogin, function (req, res) {
     }
     user.create(userData, function (err, user) {
       if (err) {
-        console.log(err)
+        console.error(err)
       } else {
         console.log(`User account ${userData.username} has been created`)
         return res.redirect('/')
@@ -88,7 +88,7 @@ router.get('/logout', requiresLogin, function (req, res, next) {
   if (req.session) {
     req.session.destroy(function (err) {
       if (err) {
-        console.log(err)
+        console.error(err)
       } else {
         return res.redirect('/login')
       }

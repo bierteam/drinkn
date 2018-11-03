@@ -7,7 +7,7 @@ const dbImport = () => {
     let processedData = processData(array.data)
     beer.create(processedData, function (err, beer) {
       if (err) {
-        console.log(err)
+        console.error(err)
       }
     })
     console.log(`${processedData.length} document(s) inserted`)
