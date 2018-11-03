@@ -5,7 +5,6 @@ const processData = (data) => {
     data[obj].store = storeMapping(data[obj].store)
 
     if (data[obj].rawUri) {
-      console.log(uriPrettifier(data[obj].rawUri))
       data[obj].rawUri = uriPrettifier(data[obj].rawUri)
     }
   }

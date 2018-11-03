@@ -12,7 +12,7 @@ const dbImport = () => {
         oldPrice: cleanedData[obj].oldPrice,
         newPrice: cleanedData[obj].newPrice,
         volume: cleanedData[obj].volume,
-        rawUri: cleanedData[obj].rawURi
+        rawUri: cleanedData[obj].rawUri
       }
       beer.create(beerData, function (err, beer) {
         if (err) {

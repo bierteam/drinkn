@@ -23,13 +23,9 @@ const scrape = async () => {
       let volume = aanbieding.querySelectorAll('.Blikjes, .Flessen, .Kratten, .Fusten')[0].innerText
       let rawValidity = aanbieding.getElementsByClassName('nomargin')[0].innerText
       let rawUri
-      let uri
 
       if (aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn')) {
         rawUri = aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn').href
-        // uri = rawUri.split(/ion\:(.*)/g);
-        // uri = uri[1];
-        // uri = uri.replace("%2F", "/");
       }
 
       if (rawUri) {
