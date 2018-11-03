@@ -24,6 +24,14 @@ let beerSchema = new mongoose.Schema({
   rawUri: {
     type: String,
     required: false
+  },
+  uri: {
+    type: String,
+    required: false
+  },
+  rawValidity: {
+    type: String,
+    required: true
   }
 })
 

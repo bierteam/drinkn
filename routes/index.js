@@ -27,11 +27,10 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
   let bierMerk = req.body.merk
   bierMerk = bierMerk.toLowerCase()
   console.log(`The current user input is ${bierMerk}`)
-  let query = beer.find({ 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } })
+  const query = beer.find({ 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } })
   query.exec(function (err, result) {
     if (err) throw err
-    let pilsData = result
-    res.render('aanbiedingen', { pilsDataResponse: pilsData })
+    res.render('aanbiedingen', { pilsDataResponse: result })
   })
 })
 
