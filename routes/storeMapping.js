@@ -65,7 +65,7 @@ const storeMapping = (store) => {
   } else if (store.includes('sub')) {
     return ('The SUB')
   } else {
-    return (`Store not found for ${store}, using input...`)
+    console.log(`Store not found for ${store}, using rawdata...`)
   }
 }
 
