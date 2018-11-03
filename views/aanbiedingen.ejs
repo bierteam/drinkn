@@ -9,6 +9,12 @@
     <div class="container">
         <form action="/aanbiedingen" method="post" onsubmit="submitBtn.disabled = true">
           <input name="merk" type="text" class="ghost-input" placeholder="Enter een merk" minlength="3" required>
+          <select>
+              <option value= "test"></option>
+            <% for ( var i = 0; i < storeDataResponse.length; i++ ) { %>
+              <option value= "test"> <%= storeDataResponse[i] %> </option>
+            <% } %>
+            </select>
           <input type="submit" class="ghost-button" value="Aanbiedingen" name = "submitBtn">
         </form>
         <section>
