@@ -7,7 +7,6 @@ const scrape = async () => {
   const page = await browser.newPage()
   console.log('Loading page')
   await page.goto(config.scraper.uri)
-
   const result = await page.evaluate(() => {
     let data = []
     let aanbiedingen = document.getElementsByClassName('textaanbieding')
