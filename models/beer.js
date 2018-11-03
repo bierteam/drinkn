@@ -32,6 +32,10 @@ const beerSchema = new mongoose.Schema({
   rawValidity: {
     type: String,
     required: true
+  },
+  counter: {
+    type: Number,
+    required: false
   }
 })
 
