@@ -5,13 +5,11 @@ const beer = require('../models/beer')
 const dbImport = () => {
   scrape().then((array) => {
     let processedData = processData(array.data)
-    for (let obj in processedData) {
-      beer.create(processedData[obj], function (err, beer) {
-        if (err) {
-          console.log(err)
-        }
-      })
-    }
+    beer.create(processedData, function (err, beer) {
+      if (err) {
+        console.log(err)
+      }
+    })
     console.log(`${processedData.length} document(s) inserted`)
   }
   )

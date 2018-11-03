@@ -20,7 +20,11 @@ router.post('/', requiresLogin, function (req, res) {
 })
 
 router.get('/aanbiedingen', requiresLogin, function (req, res) {
-  res.render('aanbiedingen', { pilsDataResponse: 0 })
+  const storeQuery = beer.find({}).distinct('store')
+  storeQuery.exec(function (err, result) {
+    if (err) throw err
+    res.render('aanbiedingen', { storeDataResponse: result, pilsDataResponse: '' })
+  })
 })
 
 router.post('/aanbiedingen', requiresLogin, function (req, res) {
@@ -30,7 +34,7 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
   const query = beer.find({ 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } })
   query.exec(function (err, result) {
     if (err) throw err
-    res.render('aanbiedingen', { pilsDataResponse: result })
+    res.render('aanbiedingen', { storeDataResponse: '', pilsDataResponse: result })
   })
 })
 
