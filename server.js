@@ -3,10 +3,14 @@ const bodyParser = require('body-parser')
 const app = express()
 const mongoose = require('mongoose')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
 const config = require('./config')
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
 const helmet = require('helmet')
 const user = require('./models/user')
+
+mongoose.connect(connectionString, { useNewUrlParser: true })
+const db = mongoose.connection
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -21,14 +25,12 @@ app.use(session({
   secret: config.app.secret,
   resave: true,
   saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: db }),
   cookie: {
     httpOnly: true,
-    maxAge: 6000
+    maxAge: 30 * 24 * 60 * 60 * 1000 // store 30 days
   }
 }))
-
-mongoose.connect(connectionString, { useNewUrlParser: true })
-const db = mongoose.connection
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
