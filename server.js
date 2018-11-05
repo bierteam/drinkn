@@ -37,25 +37,22 @@ db.once('open', function () {
 
 // check for (and create) default account if enabled
 if (config.app.defaultAccount.autoCreate) {
+  const defaultAccount = config.app.defaultAccount
+  const username = defaultAccount.username
   const createDefault = () => {
-    user.findOne({ username: config.app.defaultAccount.username },
-      function (err, user) {
-        if (err) {
-          console.error(err)
-        } else if (!user) {
-          const credentials = {
-            username: config.app.defaultAccount.username,
-            password: config.app.defaultAccount.password
+    user.findOne({ username }, function (err, result) {
+      if (err) {
+        console.error(err)
+      } else if (!result) {
+        user.create(defaultAccount, function (err, result) {
+          if (err) {
+            console.error(err)
+          } else {
+            console.log('Default user account has been created')
           }
-          user.create(credentials, function (err, user) {
-            if (err) {
-              console.error(err)
-            } else {
-              console.log('Default user account has been created')
-            }
-          })
-        }
-      })
+        })
+      }
+    })
   }
   createDefault()
 }
