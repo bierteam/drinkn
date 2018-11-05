@@ -10,7 +10,6 @@ const scrape = async () => {
   const result = await page.evaluate(() => {
     let data = []
     let aanbiedingen = document.getElementsByClassName('textaanbieding')
-    let importDate = Date.now()
 
     for (let aanbieding of aanbiedingen) {
       let brand = aanbieding.getElementsByClassName('merk')[0].innerText
@@ -29,9 +28,9 @@ const scrape = async () => {
       }
 
       if (rawUri) {
-        data.push({ brand, store, oldPrice, newPrice, volume, rawValidity, importDate, rawUri })
+        data.push({ brand, store, oldPrice, newPrice, volume, rawUri, rawValidity })
       } else {
-        data.push({ brand, store, oldPrice, newPrice, volume, rawValidity, importDate })
+        data.push({ brand, store, oldPrice, newPrice, volume, rawValidity })
       }
     }
     return { data }

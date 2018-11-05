@@ -1,6 +1,5 @@
 const uriPrettifier = (rawUri) => {
-  let uri
-  uri = rawUri
+  let uri = rawUri
     .replace(/(.*)tion:/g, '')
     .replace(/%2F/g, '/')
     .replace(/%3A/g, ':')
