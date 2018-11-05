@@ -6,6 +6,7 @@ const session = require('express-session')
 const config = require('./config')
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
 const helmet = require('helmet')
+const user = require('./models/user')
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -33,6 +34,31 @@ db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
   console.log('Succesfully connected to database')
 })
+
+// check for (and create) default account if enabled
+if (config.app.defaultAccount.autoCreate) {
+  const createDefault = () => {
+    user.findOne({ username: config.app.defaultAccount.username },
+      function (err, user) {
+        if (err) {
+          console.error(err)
+        } else if (!user) {
+          const credentials = {
+            username: config.app.defaultAccount.username,
+            password: config.app.defaultAccount.password
+          }
+          user.create(credentials, function (err, user) {
+            if (err) {
+              console.error(err)
+            } else {
+              console.log('Default user account has been created')
+            }
+          })
+        }
+      })
+  }
+  createDefault()
+}
 
 const routes = require('./routes/index')
 app.use('/', routes)
