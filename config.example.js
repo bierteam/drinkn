@@ -8,9 +8,7 @@ const config = {
     host: '',
     username: '',
     password: '',
-    name: '',
-    collection: '',
-    sCollection: ''
+    name: ''
   },
   scraper: {
     uri: ''

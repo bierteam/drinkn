@@ -33,7 +33,11 @@ const beerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  counter: {
+  importDate: {
+    type: String,
+    required: true
+  },
+  batch: {
     type: Number,
     required: false
   }
