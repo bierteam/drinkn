@@ -34,13 +34,11 @@ const scrape = async () => {
         data.push({ brand, store, oldPrice, newPrice, volume, rawValidity, importDate })
       }
     }
-    return {
-      data
-    }
+    return { data }
   })
   console.log('Succesfully processed data')
   await browser.close()
-  return result
+  return result.data
 }
 
 module.exports = scrape
