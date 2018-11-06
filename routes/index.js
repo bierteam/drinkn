@@ -19,12 +19,13 @@ router.get('/', requiresLogin, function (req, res) {
 router.post('/', requiresLogin, function (req, res) {
   res.render('home')
 })
-
+let stores
 router.get('/aanbiedingen', requiresLogin, function (req, res) {
   const storeQuery = beer.find({}).distinct('store')
   storeQuery.exec(function (err, result) {
+    stores = result
     if (err) throw err
-    res.render('aanbiedingen', { storeDataResponse: result, pilsDataResponse: '' })
+    res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: '' })
   })
 })
 
@@ -45,7 +46,7 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
   }
   query.exec(function (err, results) {
     if (err) throw err
-    res.render('aanbiedingen', { storeDataResponse: '', pilsDataResponse: results })
+    res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: results })
   })
 })
 
