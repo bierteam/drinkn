@@ -6,7 +6,6 @@ const user = require('../models/user')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
 const beer = require('../models/beer')
-// const getStores = require('./stores')
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -30,20 +29,23 @@ router.get('/aanbiedingen', requiresLogin, function (req, res) {
 })
 
 router.post('/aanbiedingen', requiresLogin, function (req, res) {
-  let bierMerk = req.body.merk
+  let beerBrand = req.body.merk
   let beerStore = req.body.store
-  bierMerk = bierMerk.toLowerCase()
   console.log(beerStore)
   let query
-  console.log(`The current user input is ${bierMerk}`)
-  console.log(`The current store ${beerStore}`)
-  if (bierMerk && beerStore) {
-    query = beer.find({ 'brand': { $regex: `.*hei.*`, '$options': 'i' }, 'store': `${beerStore}` })
-  } else if (req.body.merk) {
-    query = beer.find({ 'brand': { $regex: `.*${bierMerk}.*`, '$options': 'i' } })
-  } else if (req.body.store) {
-    query = beer.find({ 'store': `${beerStore}` })
+  let parameters
+  console.log(`User input is: ${beerBrand || 'empty'}`)
+  console.log(`Selected store: ${beerStore || 'empty'}`)
+  if (beerBrand && beerStore) {
+    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'store': `${beerStore}` }
+  } else if (beerBrand) {
+    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' } }
+  } else if (beerStore) {
+    parameters = { 'store': `${beerStore}` }
+  } else {
+    parameters = {}
   }
+  query = beer.find(parameters).limit(100)
   query.exec(function (err, results) {
     if (err) throw err
     res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: results })
