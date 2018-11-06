@@ -6,6 +6,7 @@ const user = require('../models/user')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
 const beer = require('../models/beer')
+let stores
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -18,7 +19,7 @@ router.get('/', requiresLogin, function (req, res) {
 router.post('/', requiresLogin, function (req, res) {
   res.render('home')
 })
-let stores
+
 router.get('/aanbiedingen', requiresLogin, function (req, res) {
   const storeQuery = beer.find({}).distinct('store')
   storeQuery.exec(function (err, result) {
@@ -31,17 +32,26 @@ router.get('/aanbiedingen', requiresLogin, function (req, res) {
 router.post('/aanbiedingen', requiresLogin, function (req, res) {
   let beerBrand = req.body.merk
   let beerStore = req.body.store
-  console.log(beerStore)
+  let beerVolume = req.body.volume
   let query
   let parameters
   console.log(`User input is: ${beerBrand || 'empty'}`)
   console.log(`Selected store: ${beerStore || 'empty'}`)
-  if (beerBrand && beerStore) {
+  console.log(`Selected volume: ${beerVolume || 'empty'}`)
+  if (beerBrand && beerStore && beerVolume) {
+    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'store': `${beerStore}`, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
+  } else if (beerBrand && beerStore) {
     parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'store': `${beerStore}` }
+  } else if (beerBrand && beerVolume) {
+    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
+  } else if (beerStore && beerVolume) {
+    parameters = { 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' }, 'store': `${beerStore}` }
   } else if (beerBrand) {
     parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' } }
   } else if (beerStore) {
     parameters = { 'store': `${beerStore}` }
+  } else if (beerVolume) {
+    parameters = { 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
   } else {
     parameters = {}
   }

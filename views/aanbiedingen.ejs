@@ -11,9 +11,20 @@
           <input name="merk" type="text" class="ghost-input" placeholder="Enter een merk">
           <select class="ghost-dropdown" name = "store">
               <option></option>
-            <% for ( var i = 0; i < (storeDataResponse && storeDataResponse.length); i++ ) { %>
+            <% for ( let i = 0; i < (storeDataResponse && storeDataResponse.length); i++ ) { %>
               <option value = '<%= storeDataResponse[i] %>' > <%= storeDataResponse[i] %> </option>
             <% } %>
+            </select>
+            <select class="ghost-dropdown" name = "volume">
+              <option></option>
+              <option>Krat</option>
+              <option>Sixpack</option>
+              <option>Tray</option>
+              <option>Blik</option>
+              <option>Fles</option>
+              <option>Vat</option>
+              <option>Doos</option>
+              <option>Set</option>
             </select>
           <input type="submit" class="ghost-button" value="Aanbiedingen" name = "submitBtn">
         </form>
@@ -36,7 +47,7 @@
             <table cellpadding="0" cellspacing="0">
               <tbody>
                 <tr>
-                  <% for (var i = 0; i < (pilsDataResponse && pilsDataResponse.length); i++) { %>
+                  <% for (let i = 0; i < (pilsDataResponse && pilsDataResponse.length); i++) { %>
                   <td><%= pilsDataResponse[i].brand %></td>
                   <td><%= pilsDataResponse[i].store %> </td>
                   <td><%= pilsDataResponse[i].oldPrice %></td>
