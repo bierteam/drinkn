@@ -1,5 +1,5 @@
 const config = require('./../config')
-const storeMapping = require('./storeMapping')
+// const storeMapping = require('./storeMapping')
 const uriPrettifier = require('./uriPrettifier')
 const moment = require('moment')
 moment.locale('nl')
