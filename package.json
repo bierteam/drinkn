@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test": "standard && jest --coverage"
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "test": "standard && jest"
   },
   "repository": {
     "type": "git",
