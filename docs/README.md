@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/NvdLaan/Pils.svg?branch=master)](https://travis-ci.org/NvdLaan/Pils)
-[![Coverage Status](https://coveralls.io/repos/github/NvdLaan/Pils/badge.svg?branch=master)](https://coveralls.io/github/NvdLaan/Pils?branch=master)
+[![Build Status](https://travis-ci.org/bierteam/Pils.svg?branch=master)](https://travis-ci.org/bierteam/Pils)
+[![Coverage Status](https://coveralls.io/repos/github/bierteam/Pils/badge.svg?branch=master)](https://coveralls.io/github/bierteam/Pils?branch=master)
 # Pils
 
 A simple crawler to get some usable data of [biernet.nl](https://biernet.nl/)
@@ -39,7 +39,7 @@ A step by step series of examples that tell you how to get a copy running.
 Clone the repo
 
 ```
-git clone https://github.com/NvdLaan/Pils.git
+git clone https://github.com/bierteam/Pils.git
 ```
 
 
