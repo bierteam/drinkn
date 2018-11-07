@@ -3,10 +3,11 @@ const bodyParser = require('body-parser')
 const app = express()
 const router = express.Router()
 const user = require('../models/user')
+const beer = require('../models/beer')
+const counter = require('../models/counter')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
-const beer = require('../models/beer')
-let stores
+let stores, batch
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -21,6 +22,10 @@ router.post('/', requiresLogin, function (req, res) {
 })
 
 router.get('/aanbiedingen', requiresLogin, function (req, res) {
+  counter.findOne({}).exec(function (err, result) {
+    batch = result.counter
+    if (err) throw err
+  })
   const storeQuery = beer.find({}).distinct('store')
   storeQuery.exec(function (err, result) {
     stores = result
@@ -35,25 +40,26 @@ router.post('/aanbiedingen', requiresLogin, function (req, res) {
   let beerVolume = req.body.volume
   let query
   let parameters
+  console.log(batch && batch.counter)
   console.log(`User input is: ${beerBrand || 'empty'}`)
   console.log(`Selected store: ${beerStore || 'empty'}`)
   console.log(`Selected volume: ${beerVolume || 'empty'}`)
   if (beerBrand && beerStore && beerVolume) {
-    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'store': `${beerStore}`, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
+    parameters = { 'batch': batch, 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'store': `${beerStore}`, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
   } else if (beerBrand && beerStore) {
-    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'store': `${beerStore}` }
+    parameters = { 'batch': batch, 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'store': `${beerStore}` }
   } else if (beerBrand && beerVolume) {
-    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
+    parameters = { 'batch': batch, 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' }, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
   } else if (beerStore && beerVolume) {
-    parameters = { 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' }, 'store': `${beerStore}` }
+    parameters = { 'batch': batch, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' }, 'store': `${beerStore}` }
   } else if (beerBrand) {
-    parameters = { 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' } }
+    parameters = { 'batch': batch, 'brand': { $regex: `.*${beerBrand}.*`, '$options': 'i' } }
   } else if (beerStore) {
-    parameters = { 'store': `${beerStore}` }
+    parameters = { 'batch': batch, 'store': `${beerStore}` }
   } else if (beerVolume) {
-    parameters = { 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
+    parameters = { 'batch': batch, 'volume': { $regex: `.*${beerVolume}.*`, '$options': 'i' } }
   } else {
-    parameters = {}
+    parameters = { 'batch': batch }
   }
   query = beer.find(parameters).limit(100)
   query.exec(function (err, results) {
