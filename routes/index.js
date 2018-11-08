@@ -89,7 +89,7 @@ router.post('/register', requiresLogin, function (req, res) {
 })
 
 router.get('/login', function (req, res) {
-  res.render('Login')
+  res.render('login')
 })
 
 router.post('/login', function (req, res) {
