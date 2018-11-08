@@ -5,8 +5,8 @@ node_js:
 branches:
   only:
   - master
+  - dev
   - nino
-  - oscar
 cache:
   directories:
   - node_modules
