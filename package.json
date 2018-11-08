@@ -28,7 +28,8 @@
     "helmet": "^3.14.0",
     "moment": "^2.22.2",
     "mongoose": "^5.3.9",
-    "puppeteer": "^1.10.0"
+    "puppeteer": "^1.10.0",
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "coveralls": "^3.0.2",
