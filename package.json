@@ -4,20 +4,20 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "test": "standard && jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bierteam/Pils.git"
+    "url": "git+https://github.com/NvdLaan/Pils.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NvdLaan/bierteam/issues"
+    "url": "https://github.com/NvdLaan/Pils/issues"
   },
-  "homepage": "https://github.com/bierteam/Pils/docs/README.md",
+  "homepage": "https://github.com/NvdLaan/Pils/docs/README.md",
   "dependencies": {
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
@@ -28,7 +28,8 @@
     "helmet": "^3.14.0",
     "moment": "^2.22.2",
     "mongoose": "^5.3.9",
-    "puppeteer": "^1.10.0"
+    "puppeteer": "^1.10.0",
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "coveralls": "^3.0.2",
