@@ -1,12 +1,15 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const app = express()
-const mongoose = require('mongoose')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
 const config = require('./config')
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
+
+const express = require('express')
+const bodyParser = require('body-parser')
+const session = require('express-session')
 const helmet = require('helmet')
+const favicon = require('serve-favicon')
+const app = express()
+
+const mongoose = require('mongoose')
+const MongoStore = require('connect-mongo')(session)
 const user = require('./models/user')
 
 mongoose.connect(connectionString, { useNewUrlParser: true })
@@ -15,7 +18,7 @@ const db = mongoose.connection
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
-
+app.use(favicon('./public/images/favicon.ico'))
 // security settings
 app.disable('x-powered-by')
 app.use(helmet.frameguard())
