@@ -3,7 +3,6 @@ const cheerio = require('cheerio')
 const config = require('./../config')
 
 const scrape = () => {
-  console.time('test')
   console.log('Requesting data...')
   const request = rp(config.scraper.uri)
     .then(function (html) {
