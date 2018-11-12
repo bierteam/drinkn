@@ -3,11 +3,15 @@ const cheerio = require('cheerio')
 const config = require('./../config')
 
 const scrape = () => {
-  rp(config.scraper.uri)
+  console.time('test')
+  console.log('Requesting data...')
+  const request = rp(config.scraper.uri)
     .then(function (html) {
+      console.log('Succesfully requested data')
       const $ = cheerio.load(html)
       let aanbiedingen = $('div.textaanbieding')
       let data = []
+      console.log('Storing objects in array...')
       aanbiedingen.each(function () {
         let brand = $(this).find('span.merk').text()
         if (brand.includes('0.0')) {
@@ -30,8 +34,10 @@ const scrape = () => {
           data.push({ brand, store, oldPrice, newPrice, volume, rawValidity })
         }
       })
+      console.log('Succesfully stored objects in array')
       return data
     })
+  return request
 }
 
 module.exports = scrape

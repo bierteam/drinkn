@@ -1,6 +1,7 @@
 const counter = require('../models/counter')
 
 function updateCounter () {
+  console.log('Attempting to update counter...')
   return new Promise((resolve, reject) => {
     counter.findOneAndUpdate(
       {},
@@ -12,6 +13,7 @@ function updateCounter () {
         if (err) {
           reject(err)
         } else {
+          console.log('Succesfully updated counter')
           resolve(doc)
         }
       })
