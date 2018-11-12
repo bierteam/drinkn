@@ -5,7 +5,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const helmet = require('helmet')
-const favicon = require('serve-favicon')
 const app = express()
 
 const mongoose = require('mongoose')
@@ -18,7 +17,6 @@ const db = mongoose.connection
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
-app.use(favicon('./public/images/favicon.ico'))
 // security settings
 app.disable('x-powered-by')
 app.use(helmet.frameguard())
@@ -30,7 +28,7 @@ app.use(session({
   saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: db }),
   cookie: {
-    httpOnly: false,
+    httpOnly: true,
     maxAge: 30 * 24 * 60 * 60 * 1000 // store 30 days
   }
 }))
