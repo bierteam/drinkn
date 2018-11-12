@@ -13,7 +13,7 @@ const scrape = () => {
       console.log('Storing objects in array...')
       aanbiedingen.each(function () {
         let brand = $(this).find('span.merk').text()
-        if (brand.includes('0.0')) {
+        if (/0.0|0,0|0%/.test(brand)) {
           return true // It's not beer when there is no alcohol in it
         }
         let store = $(this).find('img')[0].attribs.title
