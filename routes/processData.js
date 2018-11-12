@@ -12,7 +12,10 @@ const processData = (data, counter) => {
     data[obj].store = storeArray.get(currentStore)[0][1]
 
     let validity = data[obj].rawValidity.replace(/(.*)t\/m /g, '')
-    data[obj].validity = moment(validity, 'dddd DD MMMM').toDate()
+
+    if (moment(validity, 'dddd DD MMMM').isValid()) {
+      data[obj].validity = moment(validity, 'dddd DD MMMM').toDate()
+    }
 
     data[obj].importDate = moment().toDate()
 
