@@ -35,7 +35,7 @@ const beerSchema = new mongoose.Schema({
   },
   validity: {
     type: Date,
-    required: true
+    required: false
   },
   importDate: {
     type: Date,
