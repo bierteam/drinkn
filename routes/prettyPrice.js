@@ -1,6 +1,5 @@
 const prettyPrice = (price) => {
-  price = parseInt(price.replace(/,/, '.').replace(/€/, ''))
-
+  price = parseFloat(price.replace(/,/, '.').replace(/€/, ''))
   return price
 }
 
