@@ -612,6 +612,8 @@
     font-size: 25px;
     color: #818181;
     display: block;
+    margin-left: 15px;
+
 }
 
 .sidenav a:hover {
@@ -619,7 +621,15 @@
 }
 
 .main {
-    margin-left: 160px; /* Same as the width of the sidenav */
-    font-size: 28px; /* Increased text to enable scrolling */
+    margin-left: 160px; 
+    font-size: 28px; 
     padding: 0px 10px;
+}
+.fa-beer:before {
+    content: "\f0fc";
+    color: #e8b504;
+    position: relative;
+    font-size: 20px;
+    top: 36px;
+    margin-left: 5px;
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <meta charset="utf-8">
     <title>Register</title>
     <link rel="stylesheet" href="/css/style.css" type="text/css">
@@ -8,14 +9,20 @@
   <body>
     <div class="container">
       <fieldset>
-        <div class="sidenav">
-            <a href="/">Home</a>
-            <a href="/aanbiedingen">Aanbiedingen</a>
-            <a href="/register">Register</a>
-            <a href="/import">Import</a>
-            <a href="/notifications">Notifications</a>
-            <a href="/logout">Logout</a>
-          </div>
+          <div class="sidenav">
+              <i class="fas fa-beer"></i>
+              <a href="/">Home</a>
+              <i class="fas fa-beer"></i>
+              <a href="/aanbiedingen">Aanbiedingen</a>
+              <i class="fas fa-beer"></i>
+              <a href="/register">Register</a>
+              <i class="fas fa-beer"></i>
+              <a href="/import">Import</a>
+              <i class="fas fa-beer"></i>
+              <a href="/notifications">Notifications</a>
+              <i class="fas fa-beer"></i>
+              <a href="/logout">Logout</a>
+            </div>
         <form action="/register" method="post" onsubmit="submitBtn.disabled = true">
           <input name="username" type="text" class="ghost-input" placeholder="Username" minlength="3" required>
           <input name="password" type="text" class="ghost-input" placeholder="Password" minlength="3" required>
