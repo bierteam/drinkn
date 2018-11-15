@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="/css/beer-button.css">
   </head>
     <div class="container">
+      <div class="sidenav">
+        <a href="/">Home</a>
+        <a href="/aanbiedingen">Aanbiedingen</a>
+        <a href="/register">Register</a>
+        <a href="/import">Import</a>
+        <a href="/notifications">Notifications</a>
+        <a href="/logout">Logout</a>
+      </div>
       <ul>
         <form action="/aanbiedingen" >
           <input type="submit" class="ghost-button-homeform" value="Aanbiedingen" id=AanbiedingenForm>
@@ -16,6 +24,9 @@
         </form>
         <form action="/import" >
           <input type="submit" class="ghost-button-homeform" value="Import" id=ImportForm>
+        </form>
+        <form action="/notifications" >
+          <input type="submit" class="ghost-button-homeform" value="Notifications" id=Notifications>
         </form>
         <form action="/logout" >
           <input type="submit" class="ghost-button-homeform" value="Log out" id=ImportForm>
