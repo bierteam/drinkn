@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/bierteam/Pils.svg?branch=master)](https://travis-ci.org/bierteam/Pils)
 [![Coverage Status](https://coveralls.io/repos/github/bierteam/Pils/badge.svg?branch=master)](https://coveralls.io/github/bierteam/Pils?branch=master)
+[![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-dev)
 # Pils
 
 A simple crawler to get some usable data of [biernet.nl](https://biernet.nl/)
@@ -42,7 +43,6 @@ Clone the repo
 git clone https://github.com/bierteam/Pils.git
 ```
 
-
 Go to the directory
 
 ```
@@ -55,14 +55,14 @@ Install project
 npm install
 ```
 
-Execute the script
+Copy and fill config file
 
 ```
-node getData.js
+cp config.example.js config.js
 ```
-result:
+Run server
 ```
-{"data":[{"winkel":"Agrimarkt","merk":"Brand","prijsOud":"€16,29","prijsNieuw":"€9,99","hoeveelheid":"Krat 24x0,30","geldigheid":"Geldig t/m dinsdag 18 september"},.....
+node server.js
 ```
 ## Authors
 
@@ -75,15 +75,8 @@ See also the list of [contributors](https://github.com/NvdLaan/Pils/contributors
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Roadmap
-
-*
-*
-*
-
 ## Acknowledgments
 
 * [Git guide](https://gist.github.com/derhuerst/1b15ff4652a867391f03)
 * [Node guide](https://gist.github.com/kazzkiq/fe702215173e795d49d0c1ffbea363b5)
-* [Puppeteer](https://github.com/GoogleChrome/puppeteer)
 * [README Template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
