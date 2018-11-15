@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const app = express()
 const router = express.Router()
 const user = require('../models/user')
+const userCreate = require('./userCreate')
 const beer = require('../models/beer')
 const counter = require('../models/counter')
 const dbImport = require('./dbImport')
@@ -72,20 +73,7 @@ router.get('/register', requiresLogin, function (req, res) {
 })
 
 router.post('/register', requiresLogin, function (req, res) {
-  if (req.body.username && req.body.password) {
-    let userData = {
-      username: req.body.username,
-      password: req.body.password
-    }
-    user.create(userData, function (err, user) {
-      if (err) {
-        console.error(err)
-      } else {
-        console.log(`User account ${userData.username} has been created`)
-        return res.redirect('/')
-      }
-    })
-  }
+  userCreate(req, res)
 })
 
 router.get('/login', function (req, res) {
