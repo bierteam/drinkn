@@ -9,25 +9,31 @@ const beerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  rawOldPrice: {
-    type: String,
-    required: true
-  },
-  rawNewPrice: {
-    type: String,
-    required: true
-  },
-  oldPrice: {
-    type: Number,
-    required: true,
-    get: getPrice,
-    set: setPrice
-  },
-  newPrice: {
-    type: Number,
-    required: true,
-    get: getPrice,
-    set: setPrice
+  pricing: {
+    rawOldPrice: {
+      type: String,
+      required: true
+    },
+    rawNewPrice: {
+      type: String,
+      required: true
+    },
+    oldPrice: {
+      type: Number,
+      required: true,
+      get: getPrice,
+      set: setPrice
+    },
+    newPrice: {
+      type: Number,
+      required: true,
+      get: getPrice,
+      set: setPrice
+    },
+    discountAmount: {
+      type: Number,
+      required: true
+    }
   },
   volume: {
     type: String,
@@ -54,10 +60,6 @@ const beerSchema = new mongoose.Schema({
     required: true
   },
   batch: {
-    type: Number,
-    required: true
-  },
-  discountAmount: {
     type: Number,
     required: true
   }

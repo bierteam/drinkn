@@ -20,9 +20,9 @@ const processData = (data, counter) => {
 
     data[obj].importDate = moment().toDate()
 
-    data[obj].oldPrice = prettyPrice(data[obj].rawOldPrice)
-    data[obj].newPrice = prettyPrice(data[obj].rawNewPrice)
-    data[obj].discountAmount = data[obj].oldPrice - data[obj].newPrice
+    data[obj].pricing.oldPrice = prettyPrice(data[obj].pricing.rawOldPrice)
+    data[obj].pricing.newPrice = prettyPrice(data[obj].pricing.rawNewPrice)
+    data[obj].pricing.discountAmount = data[obj].pricing.oldPrice - data[obj].pricing.newPrice
 
     if (data[obj].rawUri) {
       data[obj].uri = uriPrettifier(data[obj].rawUri)
