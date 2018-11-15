@@ -1,5 +1,5 @@
 const prettyPrice = (price) => {
-  price = parseFloat(price.replace(/,/, '.').replace(/€/, ''))
+  price = parseFloat(price.replace(/,/, '.').replace(/€/, '')).toFixed(2)
   return price
 }
 

@@ -32,7 +32,9 @@ const beerSchema = new mongoose.Schema({
     },
     discountAmount: {
       type: Number,
-      required: true
+      required: true,
+      get: getPrice,
+      set: formatPrice
     }
   },
   volume: {
@@ -70,6 +72,11 @@ function getPrice (num) {
 }
 
 function setPrice (num) {
+  return num * 100
+}
+
+function formatPrice (num) {
+  num.toPrecision(2)
   return num * 100
 }
 
