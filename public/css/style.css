@@ -161,9 +161,7 @@
  body{
      background: linear-gradient(to right, #25c481, #25b7c4);
 }
- section{
-     margin: 50px;
-}
+
 .sidenav {
     height: 100%;
     position: fixed;
@@ -172,7 +170,6 @@
     left: 0;
     background-color: #111;
     overflow-x: hidden;
-    padding-top: 20px;
 }
 
 .sidenav a {
@@ -205,8 +202,10 @@
 
 
 /* Mobile */
-@media screen and (max-width: 600px) {
-    body {
-        display: none;
+
+@media screen and (max-width: 480px) {
+    .sidenav a {
+        /*font-size: 40px;*/
     }
+
 }
