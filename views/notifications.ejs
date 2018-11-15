@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bier aanbiedingen</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+  </head>
+    <div class="container">
+        <form action="/notifications" method="post" onsubmit="submitBtn.disabled = true">
+          <input name="merk" type="text" class="ghost-input" placeholder="Enter een merk">
+          <select class="ghost-dropdown" name = "store">
+              <option></option>
+            </select>
+            <select class="ghost-dropdown" name = "volume">
+              <option></option>
+            </select>
+          <input type="submit" class="ghost-button" value="Submit" name = "submitBtn">
+        </form>
+    </div>
+  </body>
+</html>

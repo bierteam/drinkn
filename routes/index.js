@@ -105,6 +105,14 @@ router.post('/import', requiresLogin, function (req, res) {
   res.redirect('/')
 })
 
+router.get('/notifications', requiresLogin, function (req, res) {
+  res.render('notifications')
+})
+
+router.post('/notifications', requiresLogin, function (req, res) {
+  res.render('notifications')
+})
+
 router.get('/logout', requiresLogin, function (req, res, next) {
   if (req.session) {
     req.session.destroy(function (err) {
