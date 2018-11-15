@@ -9,13 +9,25 @@ const beerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  oldPrice: {
+  rawOldPrice: {
     type: String,
     required: true
   },
-  newPrice: {
+  rawNewPrice: {
     type: String,
     required: true
+  },
+  oldPrice: {
+    type: Number,
+    required: true,
+    get: getPrice,
+    set: setPrice
+  },
+  newPrice: {
+    type: Number,
+    required: true,
+    get: getPrice,
+    set: setPrice
   },
   volume: {
     type: String,
@@ -44,8 +56,20 @@ const beerSchema = new mongoose.Schema({
   batch: {
     type: Number,
     required: true
+  },
+  discountAmount: {
+    type: Number,
+    required: true
   }
 })
+
+function getPrice (num) {
+  return (num / 100).toFixed(2)
+}
+
+function setPrice (num) {
+  return num * 100
+}
 
 const beer = mongoose.model('beer', beerSchema)
 module.exports = beer

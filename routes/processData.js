@@ -1,5 +1,6 @@
 const config = require('./../config')
 const uriPrettifier = require('./uriPrettifier')
+const prettyPrice = require('./prettyPrice')
 const moment = require('moment')
 moment.locale('nl')
 
@@ -18,6 +19,10 @@ const processData = (data, counter) => {
     }
 
     data[obj].importDate = moment().toDate()
+
+    data[obj].oldPrice = prettyPrice(data[obj].rawOldPrice)
+    data[obj].newPrice = prettyPrice(data[obj].rawNewPrice)
+    data[obj].discountAmount = data[obj].oldPrice - data[obj].newPrice
 
     if (data[obj].rawUri) {
       data[obj].uri = uriPrettifier(data[obj].rawUri)

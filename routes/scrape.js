@@ -17,8 +17,8 @@ const scrape = () => {
           return true // It's not beer when there is no alcohol in it
         }
         let store = $(this).find('img')[0].attribs.title
-        let oldPrice = $(this).find('del').text()
-        let newPrice = $(this).find('span.prijs').text()
+        let rawOldPrice = $(this).find('del').text()
+        let rawNewPrice = $(this).find('span.prijs').text()
         let volume = $(this).find('.Blikjes, .Flessen, .Kratten, .Fusten').text()
         let rawValidity = $(this).find('p:nth-child(1)').text().trim()
         let rawUri
@@ -28,9 +28,9 @@ const scrape = () => {
         }
 
         if (rawUri) {
-          data.push({ brand, store, oldPrice, newPrice, volume, rawUri, rawValidity })
+          data.push({ brand, store, rawOldPrice, rawNewPrice, volume, rawUri, rawValidity })
         } else {
-          data.push({ brand, store, oldPrice, newPrice, volume, rawValidity })
+          data.push({ brand, store, rawOldPrice, rawNewPrice, volume, rawValidity })
         }
       })
       console.log('Succesfully stored objects in array')
