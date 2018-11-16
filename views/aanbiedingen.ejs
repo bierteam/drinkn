@@ -38,6 +38,7 @@
                   <th>Old price</th>
                   <th>New price</th>
                   <th>Discount</th>
+                  <th>Discount %</th>
                   <th>Volume</th>
                 </tr>
               </thead>
@@ -53,6 +54,7 @@
                   <td>€<%= pilsDataResponse[i].pricing.oldPrice %></td>
                   <td>€<%= pilsDataResponse[i].pricing.newPrice %></td>
                   <td>€<%= pilsDataResponse[i].pricing.discountAmount %></td>
+                  <td><%= pilsDataResponse[i].pricing.discountPercentage %>%</td>
                   <td><%= pilsDataResponse[i].volume %></td>
                 </tr>
                 <% } %>

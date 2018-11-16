@@ -35,6 +35,11 @@ const beerSchema = new mongoose.Schema({
       required: true,
       get: getPrice,
       set: formatPrice
+    },
+    discountPercentage: {
+      type: Number,
+      required: true,
+      set: setPercentage
     }
   },
   volume: {
@@ -78,6 +83,10 @@ function setPrice (num) {
 function formatPrice (num) {
   num.toPrecision(2)
   return num * 100
+}
+
+function setPercentage (num) {
+  return num.toPrecision(2)
 }
 
 const beer = mongoose.model('beer', beerSchema)
