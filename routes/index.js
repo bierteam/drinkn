@@ -21,19 +21,6 @@ router.post('/', requiresLogin, function (req, res) {
   res.render('home')
 })
 
-// router.get('/aanbiedingen', requiresLogin, function (req, res) {
-//   counter.findOne({}).exec(function (err, result) {
-//     batch = result.counter
-//     if (err) throw err
-//   })
-//   const storeQuery = beer.find({}).distinct('store')
-//   storeQuery.exec(function (err, result) {
-//     stores = result
-//     if (err) throw err
-//     res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: '' })
-//   })
-// })
-
 router.get('/aanbiedingen', requiresLogin, function (req, res) {
   const brand = req.query.brand
   const store = req.query.store
