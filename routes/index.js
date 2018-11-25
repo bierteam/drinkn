@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cron = require('node-cron')
 const app = express()
 const router = express.Router()
 const user = require('../models/user')
@@ -8,6 +9,11 @@ const counter = require('../models/counter')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
 let stores, batch
+
+cron.schedule('7 * * * *', () => {
+  console.log('Cron running: import()')
+  dbImport()
+})
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
