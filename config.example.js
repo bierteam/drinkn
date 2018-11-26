@@ -25,9 +25,10 @@ const config = {
   stores: [
     'Agrimarkt',
     'Albert Heijn',
+    'Aldi',
     'Attent',
     'Boni',
-    `Boon's markt`,
+    "Boon's markt",
     'Coop',
     'Coop compact',
     'Deen',
@@ -37,9 +38,11 @@ const config = {
     'DrankDozijn',
     'EkoPlaza',
     'Emté',
-    'Gall&Gall',
+    'Gall & Gall',
     'Hoogvliet',
     'Jan Linders',
+    'Jumbo',
+    'Lidl',
     'Makro',
     'MCD',
     'Mitra',
@@ -49,7 +52,9 @@ const config = {
     'Sligro',
     'Spar',
     'Troefmarkt',
-    'Vomar'
+    'Vomar',
+    'Hanos',
+    'The SUB'
   ]
 }
 
