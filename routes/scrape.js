@@ -1,43 +1,44 @@
-const puppeteer = require('puppeteer')
+const rp = require('request-promise')
+const cheerio = require('cheerio')
 const config = require('./../config')
 
-const scrape = async () => {
-  console.log('Launching browser')
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
-  const page = await browser.newPage()
-  console.log('Loading page')
-  await page.goto(config.scraper.uri)
-  const result = await page.evaluate(() => {
-    let data = []
-    let aanbiedingen = document.getElementsByClassName('textaanbieding')
+const scrape = () => {
+  console.log('Requesting data...')
+  const request = rp(config.scraper.uri)
+    .then(function (html) {
+      console.log('Succesfully requested data')
+      const $ = cheerio.load(html)
+      let aanbiedingen = $('div.textaanbieding')
+      let data = []
+      console.log('Storing objects in array...')
+      aanbiedingen.each(function () {
+        let brand = $(this).find('span.merk').text()
+        if (/0.0|0,0|0%/.test(brand)) {
+          return true // It's not beer when there is no alcohol in it
+        }
+        let store = $(this).find('img')[0].attribs.title
+        let rawOldPrice = $(this).find('del').text()
+        let rawNewPrice = $(this).find('span.prijs').text()
+        let volume = $(this).find('.Blikjes, .Flessen, .Kratten, .Fusten').text()
+        let rawValidity = $(this).find('p:nth-child(1)').text().trim()
+        let rawUri, pricing
 
-    for (let aanbieding of aanbiedingen) {
-      let brand = aanbieding.getElementsByClassName('merk')[0].innerText
-      if (brand.includes('0.0')) {
-        continue // It's not beer when there is no alcohol in it
-      }
-      let store = aanbieding.querySelector('div.textaanbieding > div.fotowinkel > a > img').title
-      let oldPrice = aanbieding.getElementsByClassName('prijsboven')[0].innerText.split('\n')[0]
-      let newPrice = aanbieding.getElementsByClassName('prijs')[0].innerText
-      let volume = aanbieding.querySelectorAll('.Blikjes, .Flessen, .Kratten, .Fusten')[0].innerText
-      let rawValidity = aanbieding.getElementsByClassName('nomargin')[0].innerText
-      let rawUri
+        pricing = { rawOldPrice, rawNewPrice }
 
-      if (aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn')) {
-        rawUri = aanbieding.querySelector('div.textaanbieding > a.button.yellow.aanbtn').href
-      }
+        if ($(this).find('a.button.yellow.aanbtn').length > 0) {
+          rawUri = $(this).find('a.button.yellow.aanbtn')[0].attribs.href
+        }
 
-      if (rawUri) {
-        data.push({ brand, store, oldPrice, newPrice, volume, rawUri, rawValidity })
-      } else {
-        data.push({ brand, store, oldPrice, newPrice, volume, rawValidity })
-      }
-    }
-    return { data }
-  })
-  console.log('Succesfully scraped data')
-  await browser.close()
-  return result.data
+        if (rawUri) {
+          data.push({ brand, store, pricing, volume, rawUri, rawValidity })
+        } else {
+          data.push({ brand, store, pricing, rawNewPrice, volume, rawValidity })
+        }
+      })
+      console.log('Succesfully stored objects in array')
+      return data
+    })
+  return request
 }
 
 module.exports = scrape

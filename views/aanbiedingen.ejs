@@ -4,11 +4,10 @@
     <meta charset="utf-8">
     <title>Bier aanbiedingen</title>
     <link rel="stylesheet" href="/css/style.css" type="text/css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css">
   </head>
     <div class="container">
-        <form action="/aanbiedingen" method="post" onsubmit="submitBtn.disabled = true">
-          <input name="merk" type="text" class="ghost-input" placeholder="Enter een merk">
+        <form action="/aanbiedingen" method="GET" onsubmit="submitBtn.disabled = true">
+          <input name="brand" type="text" class="ghost-input" placeholder="Enter a brand">
           <select class="ghost-dropdown" name = "store">
               <option></option>
             <% for ( let i = 0; i < (storeDataResponse && storeDataResponse.length); i++ ) { %>
@@ -36,8 +35,10 @@
                 <tr>
                   <th>Brand</th>
                   <th>Store</th>
-                  <th>oldPrice</th>
-                  <th>newPrice</th>
+                  <th>Old price</th>
+                  <th>New price</th>
+                  <th>Discount</th>
+                  <th>Discount %</th>
                   <th>Volume</th>
                 </tr>
               </thead>
@@ -50,8 +51,10 @@
                   <% for (let i = 0; i < (pilsDataResponse && pilsDataResponse.length); i++) { %>
                   <td><%= pilsDataResponse[i].brand %></td>
                   <td><%= pilsDataResponse[i].store %> </td>
-                  <td><%= pilsDataResponse[i].oldPrice %></td>
-                  <td><%= pilsDataResponse[i].newPrice %></td>
+                  <td>€<%= pilsDataResponse[i].pricing.oldPrice %></td>
+                  <td>€<%= pilsDataResponse[i].pricing.newPrice %></td>
+                  <td>€<%= pilsDataResponse[i].pricing.discountAmount %></td>
+                  <td><%= pilsDataResponse[i].pricing.discountPercentage %>%</td>
                   <td><%= pilsDataResponse[i].volume %></td>
                 </tr>
                 <% } %>

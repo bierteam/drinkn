@@ -12,7 +12,10 @@ const dbImport = () => {
     })
     .then(result => {
       const counter = result.counter
+      console.log('Attemping to process data...')
       let processedData = processData(data, counter)
+      console.log('Succesfully processed data')
+      console.log('Attemping to import data in database...')
       beer.create(processedData, function (err, beer) {
         if (err) {
           console.error(err)

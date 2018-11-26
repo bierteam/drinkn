@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cron = require('node-cron')
 const app = express()
 const router = express.Router()
 const user = require('../models/user')
@@ -8,6 +9,11 @@ const counter = require('../models/counter')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
 let stores, batch
+
+cron.schedule('7 * * * *', () => {
+  console.log('Cron running: import()')
+  dbImport()
+})
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -22,6 +28,9 @@ router.post('/', requiresLogin, function (req, res) {
 })
 
 router.get('/aanbiedingen', requiresLogin, function (req, res) {
+  const brand = req.query.brand
+  const store = req.query.store
+  const volume = req.query.volume
   counter.findOne({}).exec(function (err, result) {
     batch = result.counter
     if (err) throw err
@@ -30,14 +39,7 @@ router.get('/aanbiedingen', requiresLogin, function (req, res) {
   storeQuery.exec(function (err, result) {
     stores = result
     if (err) throw err
-    res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: '' })
   })
-})
-
-router.post('/aanbiedingen', requiresLogin, function (req, res) {
-  let brand = req.body.merk
-  let store = req.body.store
-  let volume = req.body.volume
   let query
   let parameters
   console.log(`User input is: ${brand || 'empty'}`)

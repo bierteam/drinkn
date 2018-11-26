@@ -21,7 +21,36 @@ const config = {
   },
   scraper: {
     uri: ''
-  }
+  },
+  stores: [
+    'Agrimarkt',
+    'Albert Heijn',
+    'Attent',
+    'Boni',
+    `Boon's markt`,
+    'Coop',
+    'Coop compact',
+    'Deen',
+    'DekaMarkt',
+    'DirckIII',
+    'Dirk',
+    'DrankDozijn',
+    'EkoPlaza',
+    'Emté',
+    'Gall&Gall',
+    'Hoogvliet',
+    'Jan Linders',
+    'Makro',
+    'MCD',
+    'Mitra',
+    'Nettorama ',
+    'Plus',
+    'Poiesz',
+    'Sligro',
+    'Spar',
+    'Troefmarkt',
+    'Vomar'
+  ]
 }
 
 module.exports = config
