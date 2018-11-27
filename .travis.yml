@@ -6,14 +6,8 @@ branches:
   only:
   - master
   - dev
-  - nino
-cache:
-  directories:
-  - node_modules
+cache: npm
 before_install:
 - npm update
 install:
-- npm install
-script:
-- npm test
-- npm run coveralls
+- npm ci
