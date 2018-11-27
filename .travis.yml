@@ -2,12 +2,12 @@ sudo: false
 language: node_js
 node_js:
 - '11'
+git:
+  depth: false
 branches:
   only:
   - master
   - dev
 cache: npm
-before_install:
-- npm update
 install:
 - npm ci
