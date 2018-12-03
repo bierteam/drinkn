@@ -4,6 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "start": "pm2 start server.js",
+    "restart": "pm2 restart all",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test": "standard && jest --coverage"
   },

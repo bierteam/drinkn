@@ -17,3 +17,12 @@ before_deploy:
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_key
 - ssh-add /tmp/deploy_key
+deploy:
+  - provider: script
+    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm i -g pm2; npm restart;'
+    on:
+      branch: dev
+  - provider: script
+    script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; npm restart;'
+    on:
+      branch: master
