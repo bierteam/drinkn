@@ -138,7 +138,6 @@
      background-color: rgba(255,255,255,0.3);
 }
  .tbl-content{
-     height: 230px;
      overflow-x:auto;
      margin-top: 0px;
      border: 1px solid rgba(255,255,255,0.3);
@@ -189,8 +188,8 @@
 }
 
 .main {
-    margin-left: 160px; 
-    font-size: 28px; 
+    margin-left: 160px;
+    font-size: 28px;
     padding: 0px 10px;
 }
 .fa-beer:before {

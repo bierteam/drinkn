@@ -28,7 +28,7 @@ const config = {
     'Aldi',
     'Attent',
     'Boni',
-    'Boon's markt',
+    "Boon's markt",
     'Coop',
     'Coop compact',
     'Deen',
@@ -55,7 +55,7 @@ const config = {
     'Vomar',
     'Hanos',
     'The SUB'
-   ]
+  ]
 }
 
 module.exports = config

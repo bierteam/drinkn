@@ -2,18 +2,27 @@ sudo: false
 language: node_js
 node_js:
 - '11'
+git:
+  depth: false
 branches:
   only:
   - master
   - dev
-  - nino
-cache:
-  directories:
-  - node_modules
-before_install:
-- npm update
+cache: npm
 install:
-- npm install
-script:
-- npm test
-- npm run coveralls
+- npm ci
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_0394b0a27270_key -iv $encrypted_0394b0a27270_iv
+  -in deploy_key.enc -out /tmp/deploy_key -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_key
+- ssh-add /tmp/deploy_key
+deploy:
+  - provider: script
+    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm i -g pm2; npm restart;'
+    on:
+      branch: dev
+  - provider: script
+    script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; npm restart;'
+    on:
+      branch: master

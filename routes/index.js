@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cron = require('node-cron')
 const app = express()
 const router = express.Router()
 const user = require('../models/user')
@@ -8,6 +9,11 @@ const counter = require('../models/counter')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
 let stores, batch
+
+cron.schedule('7 * * * *', () => {
+  console.log('Cron running: import()')
+  dbImport()
+})
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -44,40 +50,6 @@ router.get('/aanbiedingen', function (req, res) {
     if (err) throw err
     res.json(results)
   })
-})
-
-router.post('/aanbiedingen', requiresLogin, function (req, res) {
-  let brand = req.body.merk
-  let store = req.body.store
-  let volume = req.body.volume
-  let query
-  let parameters
-  console.log(`User input is: ${brand || 'empty'}`)
-  console.log(`Selected store: ${store || 'empty'}`)
-  console.log(`Selected volume: ${volume || 'empty'}`)
-  if (brand && store && volume) {
-    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' }, store, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' } }
-  } else if (brand && store) {
-    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' }, store }
-  } else if (brand && volume) {
-    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' }, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' } }
-  } else if (store && volume) {
-    parameters = { batch, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' }, store }
-  } else if (brand) {
-    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' } }
-  } else if (store) {
-    parameters = { batch, store }
-  } else if (volume) {
-    parameters = { batch, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' } }
-  } else {
-    parameters = { batch }
-  }
-  query = beer.find(parameters).limit(100)
-  query.exec(function (err, results) {
-    if (err) throw err
-    res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: results })
-  })
-})
 
 router.get('/register', requiresLogin, function (req, res) {
   res.render('register')
