@@ -21,16 +21,28 @@ router.post('/', requiresLogin, function (req, res) {
   res.render('home')
 })
 
-router.get('/aanbiedingen', requiresLogin, function (req, res) {
+// router.get('/aanbiedingen', requiresLogin, function (req, res) {
+//   counter.findOne({}).exec(function (err, result) {
+//     batch = result.counter
+//     if (err) throw err
+//   })
+//   const storeQuery = beer.find({}).distinct('store')
+//   storeQuery.exec(function (err, result) {
+//     stores = result
+//     if (err) throw err
+//     res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: '' })
+//   })
+// })
+
+router.get('/aanbiedingen', function (req, res) {
   counter.findOne({}).exec(function (err, result) {
     batch = result.counter
     if (err) throw err
   })
-  const storeQuery = beer.find({}).distinct('store')
-  storeQuery.exec(function (err, result) {
-    stores = result
+  let query = beer.find({ batch }).limit(5) // limit on 5 for testing purposes
+  query.exec(function (err, results) {
     if (err) throw err
-    res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: '' })
+    res.json(results)
   })
 })
 
