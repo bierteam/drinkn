@@ -8,7 +8,7 @@ const beer = require('../models/beer')
 const counter = require('../models/counter')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
-let stores, batch
+let batch
 
 cron.schedule('7 * * * *', () => {
   console.log('Cron running: import()')
@@ -50,6 +50,7 @@ router.get('/aanbiedingen', function (req, res) {
     if (err) throw err
     res.json(results)
   })
+})
 
 router.get('/register', requiresLogin, function (req, res) {
   res.render('register')
