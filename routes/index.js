@@ -8,7 +8,7 @@ const beer = require('../models/beer')
 const counter = require('../models/counter')
 const dbImport = require('./dbImport')
 const requiresLogin = require('./requiresLogin')
-let batch
+let batch, stores
 
 cron.schedule('7 * * * *', () => {
   console.log('Cron running: import()')
@@ -27,29 +27,45 @@ router.post('/', requiresLogin, function (req, res) {
   res.render('home')
 })
 
-router.get('/aanbiedingen', function (req, res) {
+router.get('/aanbiedingen', requiresLogin, function (req, res) {
+  const brand = req.query.brand
+  const store = req.query.store
+  const volume = req.query.volume
   counter.findOne({}).exec(function (err, result) {
     batch = result.counter
     if (err) throw err
   })
-  let query = beer.find({ batch })
-  query.exec(function (err, results) {
-    if (err) throw err
-    res.json(results)
-  })
-})
-
-// Example on how to get data for specific store
-router.get('/aanbiedingen/:store', function (req, res) {
-  let store = req.params.store
-  counter.findOne({}).exec(function (err, result) {
-    batch = result.counter
+  const storeQuery = beer.find({}).distinct('store')
+  storeQuery.exec(function (err, result) {
+    stores = result
     if (err) throw err
   })
-  let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
+  let query
+  let parameters
+  console.log(`User input is: ${brand || 'empty'}`)
+  console.log(`Selected store: ${store || 'empty'}`)
+  console.log(`Selected volume: ${volume || 'empty'}`)
+  if (brand && store && volume) {
+    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' }, store, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' } }
+  } else if (brand && store) {
+    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' }, store }
+  } else if (brand && volume) {
+    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' }, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' } }
+  } else if (store && volume) {
+    parameters = { batch, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' }, store }
+  } else if (brand) {
+    parameters = { batch, 'brand': { $regex: `.*${brand}.*`, '$options': 'i' } }
+  } else if (store) {
+    parameters = { batch, store }
+  } else if (volume) {
+    parameters = { batch, 'volume': { $regex: `.*${volume}.*`, '$options': 'i' } }
+  } else {
+    parameters = { batch }
+  }
+  query = beer.find(parameters).limit(100)
   query.exec(function (err, results) {
     if (err) throw err
-    res.json(results)
+    res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: results })
   })
 })
 
@@ -113,6 +129,32 @@ router.get('/logout', requiresLogin, function (req, res, next) {
       }
     })
   }
+})
+
+router.get('/api/v1/aanbiedingen', function (req, res) {
+  counter.findOne({}).exec(function (err, result) {
+    batch = result.counter
+    if (err) throw err
+  })
+  let query = beer.find({ batch })
+  query.exec(function (err, results) {
+    if (err) throw err
+    res.json(results)
+  })
+})
+
+// Example on how to get data for specific store
+router.get('/api/v1/aanbiedingen:store', function (req, res) {
+  let store = req.params.store
+  counter.findOne({}).exec(function (err, result) {
+    batch = result.counter
+    if (err) throw err
+  })
+  let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
+  query.exec(function (err, results) {
+    if (err) throw err
+    res.json(results)
+  })
 })
 
 module.exports = router

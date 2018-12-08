@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/bierteam/Pils/docs/README.md",
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "cheerio": "^1.0.0-rc.2",
@@ -35,7 +36,9 @@
     "node-cron": "^2.0.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "coveralls": "3.0.2",
