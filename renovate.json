@@ -4,5 +4,6 @@
   ],
   "npm": {
     "enabled": true
-  }
+  },
+  "updateNotScheduled": true
 }
