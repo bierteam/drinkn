@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/HelloWorld'
-import Aanbiedingen from '@/components/Aanbiedingen'
+import aanbiedingen from '@/components/aanbiedingen'
 
 Vue.use(Router)
 
@@ -14,8 +14,8 @@ export default new Router({
     },
     {
       path: '/aanbiedingen',
-      name: 'Aanbiedingen',
-      component: Aanbiedingen
+      name: 'aanbiedingen',
+      component: aanbiedingen
     }
   ]
 })

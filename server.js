@@ -7,6 +7,7 @@ const session = require('express-session')
 const helmet = require('helmet')
 const favicon = require('serve-favicon')
 const app = express()
+const cors = require('cors')
 
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
@@ -15,6 +16,7 @@ const user = require('./models/user')
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
 
+app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')

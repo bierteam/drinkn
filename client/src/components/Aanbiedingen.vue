@@ -1,33 +1,32 @@
 <template>
-  <div class="posts">
-    <h1>Posts</h1>
-    This file will list all the posts.
+  <div class="aanbiedingen">
+    <h1>Aanbiedingen</h1>
+    Aanbiedingen
 
     <div v-for="aanbieding in aanbiedingen">
       <p>
-        <span><b>{{ aanbieding }}</b></span><br />
-        <span>{{ aanbieding }}</span>
+        <span><b>{{ aanbieding.brand }}</b></span><br />
       </p>
     </div>
   </div>
 </template>
 
 <script>
-import Aanbiedingen from '@/services/Aanbiedingen'
+import aanbiedingen from '@/services/aanbiedingen'
 export default {
   name: 'aanbiedingen',
   data () {
     return {
-      posts: []
+      aanbiedingen: []
     }
   },
   mounted () {
-    this.getPosts()
+    this.getPils()
   },
   methods: {
-    async getPosts () {
-      const response = await PostsService.fetchPosts()
-      this.posts = response.data
+    async getPils () {
+      const response = await aanbiedingen.fetchPils()
+      this.aanbiedingen = response.data
     }
   }
 }
