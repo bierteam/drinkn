@@ -1,6 +1,10 @@
-.DS_STORE
-node_modules
-npm-debug.log
-config.js
+.DS_Store
+node_modules/
+/dist/
+npm-debug.log*
+/test/unit/coverage/
+/test/e2e/reports/
+selenium-debug.log
+config/backend.js
 coverage
 deploy_key

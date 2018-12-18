@@ -1,9 +1,7 @@
 <template>
   <div class="aanbiedingen">
     <h1>Aanbiedingen</h1>
-    Aanbiedingen
-
-    <div v-for="aanbieding in aanbiedingen">
+    <div v-for="aanbieding in aanbiedingen" :key="aanbieding.id">
       <p>
         <span><b>{{ aanbieding.brand }}</b></span><br />
       </p>

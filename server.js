@@ -5,7 +5,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const helmet = require('helmet')
-const favicon = require('serve-favicon')
 const app = express()
 const cors = require('cors')
 
@@ -13,14 +12,15 @@ const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const user = require('./models/user')
 
+// Use native ES6 Promises since mongoose's are deprecated.
+mongoose.Promise = global.Promise
+
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
 
 app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
-app.set('view engine', 'ejs')
-app.use(favicon('./public/images/favicon.ico'))
 // security settings
 app.disable('x-powered-by')
 app.use(helmet.frameguard())
@@ -51,7 +51,7 @@ if (config.app.defaultAccount.autoCreate) {
       if (err) {
         console.error(err)
       } else if (!result) {
-        user.create(defaultAccount, function (err, result) {
+        user.create(defaultAccount, function (err) {
           if (err) {
             console.error(err)
           } else {
@@ -68,5 +68,5 @@ const routes = require('./routes/index')
 app.use('/', routes)
 
 app.listen(config.app.port, function () {
-  console.log(`Beer app running on port ${config.app.port}!`)
+  console.log(`Beer backend running on port ${config.app.port}!`)
 })

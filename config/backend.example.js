@@ -2,7 +2,7 @@
 Make a copy of this file and name it config.js
 Fill in the details and have fun!
 */
-const config = {
+const backend = {
   app: {
     port: 3000,
     secret: '',
@@ -28,7 +28,7 @@ const config = {
     'Aldi',
     'Attent',
     'Boni',
-    "Boon's markt",
+    `Boon's markt`,
     'Coop',
     'Coop compact',
     'Deen',
@@ -46,7 +46,7 @@ const config = {
     'Makro',
     'MCD',
     'Mitra',
-    'Nettorama ',
+    'Nettorama',
     'Plus',
     'Poiesz',
     'Sligro',
@@ -58,4 +58,4 @@ const config = {
   ]
 }
 
-module.exports = config
+module.exports = backend
