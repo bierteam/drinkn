@@ -8,3 +8,4 @@ selenium-debug.log
 config/backend.js
 coverage
 deploy_key
+config.js
