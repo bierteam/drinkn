@@ -2,7 +2,7 @@
 Make a copy of this file and name it config.js
 Fill in the details and have fun!
 */
-const config = {
+const backend = {
   app: {
     port: 3000,
     secret: '',
@@ -58,4 +58,4 @@ const config = {
   ]
 }
 
-module.exports = config
+module.exports = backend
