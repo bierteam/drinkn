@@ -1,6 +1,14 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <h2>Pils</h2>
+    <li>
+      <a
+        href="#/aanbiedingen"
+      >
+        Aanbiedingen
+      </a>
+    </li>
     <h2>Essential Links</h2>
     <ul>
       <li>
