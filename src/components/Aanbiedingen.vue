@@ -26,14 +26,43 @@
         </div>
       </div>
     </nav>
-    <div class="aanbiedingen">
-      <h1 class="title">Aanbiedingen</h1>
-      <div v-for="aanbieding in aanbiedingen" :key="aanbieding.id">
-        <p>
-          <span><b>{{ aanbieding.brand }}</b></span><br />
-        </p>
-      </div>
-    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Brand</th>
+          <th>Store</th>
+          <th>Old price</th>
+          <th>New price</th>
+          <th>Discount</th>
+          <th>Discount %</th>
+          <th>Volume</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th>Brand</th>
+          <th>Store</th>
+          <th>Old price</th>
+          <th>New price</th>
+          <th>Discount</th>
+          <th>Discount %</th>
+          <th>Volume</th>
+        </tr>
+      </tfoot>
+      <tbody>
+        <tr v-for="aanbieding in aanbiedingen" :key="aanbieding.id">
+          <a v-if="aanbieding.uri" :href="aanbieding.uri" class="button is-success">Buy!</a>
+          <a v-else></a>
+          <td>{{ aanbieding.brand }}</td>
+          <td>{{ aanbieding.store }} </td>
+          <td>€{{ aanbieding.pricing.oldPrice }}</td>
+          <td>€{{ aanbieding.pricing.newPrice }}</td>
+          <td>€{{ aanbieding.pricing.discountAmount }}</td>
+          <td>{{ aanbieding.pricing.discountPercentage }}%</td>
+          <td>{{ aanbieding.volume }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
