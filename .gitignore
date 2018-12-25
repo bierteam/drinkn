@@ -2,5 +2,6 @@
 node_modules
 npm-debug.log
 config.js
+config/backend.js
 coverage
 deploy_key
