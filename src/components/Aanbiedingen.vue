@@ -29,6 +29,7 @@
     <table class="table">
       <thead>
         <tr>
+          <th>Link</th>
           <th>Brand</th>
           <th>Store</th>
           <th>Old price</th>
@@ -40,6 +41,7 @@
       </thead>
       <tfoot>
         <tr>
+          <th>Link</th>
           <th>Brand</th>
           <th>Store</th>
           <th>Old price</th>
