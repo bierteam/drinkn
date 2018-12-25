@@ -7,6 +7,7 @@
         <span><b>{{ aanbieding.brand }}</b></span><br />
       </p>
     </div> -->
+
   <div id="table">
       <b-input-group class="mt-3 mb-3" size="sm">
           <b-form-input v-model="keyword" placeholder="Search" type="text"></b-form-input>
