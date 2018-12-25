@@ -12,7 +12,7 @@ const scrape = () => {
       let data = []
       console.log('Storing objects in array...')
       aanbiedingen.each(function () {
-        let brand = $(this).find('span.merk').text()
+        let brand = $(this).find('span.m').text()
         if (/0.0|0,0|0%/.test(brand)) {
           return true // It's not beer when there is no alcohol in it
         }
