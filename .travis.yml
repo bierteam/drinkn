@@ -23,16 +23,16 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;'
+    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rvz --delete -e "ssh -p $DEV_PORT" public/ root@$DEV_SERVER:~/Pils/public
     on:
       branch: dev
   - provider: script
     skip_cleanup: true
-    script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;'
+    script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rvz --delete -e "ssh -p $PRODUCTION_PORT" public/ root@$PRODUCTION_SERVER:~/Pils/public
     on:
       branch: master
   - provider: script
     skip_cleanup: true
-    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils-test/; git stash; git checkout vue; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rv -e "ssh -p $DEV_PORT" public/ root@$DEV_SERVER:~/Pils-test/public
+    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils-test/; git stash; git checkout vue; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rvz --delete -e "ssh -p $DEV_PORT" public/ root@$DEV_SERVER:~/Pils-test/public
     on:
       branch: vue
