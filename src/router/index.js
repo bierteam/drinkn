@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/HelloWorld'
-import Aanbiedingen from '@/components/aanbiedingen'
-import Login from '@/components/login'
+import Aanbiedingen from '@/components/Aanbiedingen'
+import Login from '@/components/Login'
 
 Vue.use(Router)
 

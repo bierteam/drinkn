@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import aanbiedingen from '@/services/aanbiedingen'
+import aanbiedingen from '@/services/Aanbiedingen'
 export default {
   name: 'aanbiedingen',
   data () {
