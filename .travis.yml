@@ -18,6 +18,7 @@ before_deploy:
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_key
 - ssh-add /tmp/deploy_key
+- mv config/backend.example.js config/backend.js
 - npm run build
 deploy:
   - provider: script
