@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import aanbiedingen from '@/components/aanbiedingen'
+import Hello from '@/components/HelloWorld'
+import Aanbiedingen from '@/components/Aanbiedingen'
+import Login from '@/components/Login'
 
 Vue.use(Router)
 
@@ -9,7 +11,12 @@ export default new Router({
     {
       path: '/',
       name: 'aanbiedingen',
-      component: aanbiedingen
+      component: Aanbiedingen
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     }
   ]
 })

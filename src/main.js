@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import aanbiedingen from './components/aanbiedingen'
+import './../node_modules/bulma/css/bulma.css'
 
 Vue.config.productionTip = false
 

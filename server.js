@@ -18,10 +18,10 @@ mongoose.Promise = global.Promise
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
 
-app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 // security settings
+app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
 app.disable('x-powered-by')
 app.use(helmet.frameguard())
 app.use(helmet.noCache())
@@ -64,8 +64,8 @@ if (config.app.defaultAccount.autoCreate) {
   createDefault()
 }
 
-const routes = require('./routes/index')
-app.use('/', routes)
+const api = require('./api/index')
+app.use('/', api)
 
 app.listen(config.app.port, function () {
   console.log(`Beer backend running on port ${config.app.port}!`)
