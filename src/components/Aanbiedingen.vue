@@ -57,10 +57,10 @@
           <a v-else></a>
           <td>{{ aanbieding.brand }}</td>
           <td>{{ aanbieding.store }} </td>
-          <td>€{{ aanbieding.pricing.oldPrice }}</td>
-          <td>€{{ aanbieding.pricing.newPrice }}</td>
-          <td>€{{ aanbieding.pricing.discountAmount }}</td>
-          <td>{{ aanbieding.pricing.discountPercentage }}%</td>
+          <td>€{{ (aanbieding.pricing.oldPrice / 100).toFixed(2) }}</td>
+          <td>€{{ (aanbieding.pricing.newPrice / 100).toFixed(2) }}</td>
+          <td>€{{ ((aanbieding.pricing.oldPrice - aanbieding.pricing.newPrice) / 100).toFixed(2) }}</td>
+          <td>{{ (100 - (aanbieding.pricing.newPrice * 100 / aanbieding.pricing.oldPrice)).toPrecision(2) }}%</td>
           <td>{{ aanbieding.volume }}</td>
         </tr>
       </tbody>
