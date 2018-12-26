@@ -8,7 +8,6 @@ branches:
   only:
   - master
   - dev
-  - vue
 cache: npm
 install:
 - npm ci
@@ -18,7 +17,7 @@ before_deploy:
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_key
 - ssh-add /tmp/deploy_key
-- mv config/backend.example.js config/backend.js
+- cp config/backend.example.js config/backend.js
 - npm run build
 deploy:
   - provider: script
@@ -31,8 +30,3 @@ deploy:
     script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rvz --delete -e "ssh -p $PRODUCTION_PORT" public/ root@$PRODUCTION_SERVER:~/Pils/public
     on:
       branch: master
-  - provider: script
-    skip_cleanup: true
-    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils-test/; git stash; git checkout vue; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rvz --delete -e "ssh -p $DEV_PORT" public/ root@$DEV_SERVER:~/Pils-test/public
-    on:
-      branch: vue
