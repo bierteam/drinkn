@@ -21,16 +21,18 @@ before_deploy:
 - mv config/backend.example.js config/backend.js
 - npm run build
 deploy:
-  skip_cleanup: true
   - provider: script
+    skip_cleanup: true
     script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;'
     on:
       branch: dev
   - provider: script
+    skip_cleanup: true
     script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;'
     on:
       branch: master
   - provider: script
+    skip_cleanup: true
     script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils-test/; git stash; git checkout vue; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rv -e "ssh -p $DEV_PORT" public/ root@$DEV_SERVER:~/Pils-test/public
     on:
       branch: vue
