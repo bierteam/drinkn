@@ -8,6 +8,7 @@ branches:
   only:
   - master
   - dev
+  - vue
 cache: npm
 install:
 - npm ci
@@ -17,12 +18,17 @@ before_deploy:
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_key
 - ssh-add /tmp/deploy_key
+- npm run build
 deploy:
   - provider: script
-    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm run build; npm i -g pm2; pm2 update; npm restart;'
+    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;'
     on:
       branch: dev
   - provider: script
-    script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm run build; npm i -g pm2; pm2 update; npm restart;'
+    script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;'
     on:
       branch: master
+  - provider: script
+    script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils-test/; git stash; git checkout vue; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rv -e "ssh -p $DEV_PORT" public/ root@$DEV_SERVER:~/Pils-test/public
+    on:
+      branch: vue
