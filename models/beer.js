@@ -20,13 +20,11 @@ const beerSchema = new mongoose.Schema({
     },
     oldPrice: {
       type: Number,
-      required: true,
-      set: setPrice
+      required: true
     },
     newPrice: {
       type: Number,
-      required: true,
-      set: setPrice
+      required: true
     }
   },
   volume: {
@@ -58,10 +56,6 @@ const beerSchema = new mongoose.Schema({
     required: true
   }
 })
-
-function setPrice (num) {
-  return (num * 100).toPrecision(2)
-}
 
 const beer = mongoose.model('beer', beerSchema)
 module.exports = beer
