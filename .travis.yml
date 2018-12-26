@@ -21,6 +21,7 @@ before_deploy:
 - mv config/backend.example.js config/backend.js
 - npm run build
 deploy:
+  - skip_cleanup: true
   - provider: script
     script: ssh -o StrictHostKeyChecking=no -p$DEV_PORT root@$DEV_SERVER 'cd Pils/; git stash; git checkout dev; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;'
     on:
