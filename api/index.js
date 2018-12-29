@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cron = require('node-cron')
-const app = express()
 const router = express.Router()
 // const user = require('../models/user')
 const beer = require('../models/beer')
@@ -15,9 +14,6 @@ cron.schedule('7 * * * *', () => {
   console.log('Cron running: import()')
   dbImport()
 })
-
-app.use(express.static('public'))
-app.use(bodyParser.urlencoded({ extended: true }))
 
 // router.get('/', requiresLogin, function (req, res) {
 //   res.render('home')
@@ -131,38 +127,44 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //   }
 // })
 
-router.get('/api/v1/aanbiedingen', function (req, res) {
-  counter.findOne({}).exec(function (err, result) {
+let counterQuery = counter.findOne({})
+let counterExec = counterQuery.exec()
+
+router.get('/v1/aanbiedingen', function (req, res) {
+  counterExec.then(function (result) {
     batch = result.counter
-    if (err) throw err
-  })
-  let query = beer.find({ batch })
-  query.exec(function (err, results) {
-    if (err) throw err
-    res.json(results)
+    let query = beer.find({ batch }) // .limit(5) // limit on 5 for testing purposes
+    query.exec(function (err, results) {
+      if (err) throw err
+      res.json(results)
+    })
   })
 })
 
 // Example on how to get data for specific store
-router.get('/api/v1/aanbiedingen:store', function (req, res) {
-  let store = req.params.store
-  counter.findOne({}).exec(function (err, result) {
+router.get('/v1/aanbiedingen:store', function (req, res) {
+  counterExec.then(function (result) {
+    let store = req.params.store
     batch = result.counter
-    if (err) throw err
-  })
-  let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
-  query.exec(function (err, results) {
-    if (err) throw err
-    res.json(results)
+    let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
+    query.exec(function (err, results) {
+      if (err) throw err
+      res.json(results)
+    })
   })
 })
 
-router.get('/api/v1/stores', function (req, res) {
+router.get('/v1/stores', function (req, res) {
   store.findOne({}).exec(function (err, result) {
     batch = result.counter
     if (err) throw err
     res.json(result)
   })
+})
+
+router.post('/v1/import', function (req, res) {
+  dbImport()
+  res.json('received')
 })
 
 module.exports = router
