@@ -5,6 +5,7 @@ const app = express()
 const router = express.Router()
 // const user = require('../models/user')
 const beer = require('../models/beer')
+const store = require('../models/store')
 const counter = require('../models/counter')
 const dbImport = require('../methods/dbImport')
 // const requiresLogin = require('./requiresLogin')
@@ -153,6 +154,14 @@ router.get('/api/v1/aanbiedingen:store', function (req, res) {
   query.exec(function (err, results) {
     if (err) throw err
     res.json(results)
+  })
+})
+
+router.get('/api/v1/stores', function (req, res) {
+  store.findOne({}).exec(function (err, result) {
+    batch = result.counter
+    if (err) throw err
+    res.json(result)
   })
 })
 
