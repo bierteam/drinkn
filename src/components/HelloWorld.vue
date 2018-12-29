@@ -9,6 +9,11 @@
         Aanbiedingen
       </a>
     </li>
+    <ul>
+      <li>
+        <a href="#/import">Import</a>
+      </li>
+    </ul>
     <h2>Essential Links</h2>
     <ul>
       <li>

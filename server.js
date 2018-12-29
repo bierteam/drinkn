@@ -64,8 +64,8 @@ if (config.app.defaultAccount.autoCreate) {
   createDefault()
 }
 
-const api = require('./api/index')
-app.use('/', api)
+const api = require('./api')
+app.use('/api', api)
 
 app.listen(config.app.port, function () {
   console.log(`Beer backend running on port ${config.app.port}!`)
