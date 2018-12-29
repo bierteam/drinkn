@@ -15,6 +15,9 @@ cron.schedule('7 * * * *', () => {
   dbImport()
 })
 
+const v1 = require('./v1')
+router.use('/v1', v1)
+
 // router.get('/', requiresLogin, function (req, res) {
 //   res.render('home')
 // })
@@ -127,44 +130,5 @@ cron.schedule('7 * * * *', () => {
 //   }
 // })
 
-let counterQuery = counter.findOne({})
-let counterExec = counterQuery.exec()
-
-router.get('/v1/aanbiedingen', function (req, res) {
-  counterExec.then(function (result) {
-    batch = result.counter
-    let query = beer.find({ batch }) // .limit(5) // limit on 5 for testing purposes
-    query.exec(function (err, results) {
-      if (err) throw err
-      res.json(results)
-    })
-  })
-})
-
-// Example on how to get data for specific store
-router.get('/v1/aanbiedingen:store', function (req, res) {
-  counterExec.then(function (result) {
-    let store = req.params.store
-    batch = result.counter
-    let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
-    query.exec(function (err, results) {
-      if (err) throw err
-      res.json(results)
-    })
-  })
-})
-
-router.get('/v1/stores', function (req, res) {
-  store.findOne({}).exec(function (err, result) {
-    batch = result.counter
-    if (err) throw err
-    res.json(result)
-  })
-})
-
-router.post('/v1/import', function (req, res) {
-  dbImport()
-  res.json('received')
-})
 
 module.exports = router
