@@ -42,28 +42,43 @@
         </tr>
       </thead> -->
       <thead>
+        <!-- first row -->
         <tr>
           <th><input class='input' v-model='search' type='text' placeholder='Search'></th>
           <th>
-            <select class='select' v-model="store">
-              <option disabled value="">Select a store</option>
-              <option v-for="option in stores">
-                {{ option }}
-              </option>
-            </select>
+            <div class="select">
+              <select v-model="store">
+                <option disabled value="">Select a store</option>
+                <option v-for="option in stores">
+                  {{ option }}
+                </option>
+              </select>
+            </div>
           </th>
           <th></th>
           <th></th>
           <th></th>
           <th></th>
-          <th></th>
+          <th>
+            <div class="select">
+              <select class='select' v-model="volume">
+                <option disabled value="">Select a volume</option>
+                <option v-for="option in volumes">
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+          </th>
           <th></th>
         </tr>
+        <!-- second row -->
         <tr>
           <th v-for='(key, value) in headers' @click='sort(value)'>{{ key }}</th>
+          <th v-model="checked" @click='check("checked")'>Link</th>
         </tr>
       </thead>
       <tbody>
+        <!-- table -->
         <tr v-for='aanbieding in filteredAanbiedingen' :key='aanbieding.id'>
           <td>{{ aanbieding.brand }}</td>
           <td>{{ aanbieding.store }} </td>
@@ -90,10 +105,13 @@ export default {
       discountArray: [],
       onlineAanbiedingen: 0,
       search: '',
+      checked: false,
       store: '',
       stores: [],
+      volume: '',
+      volumes: [],
       currentSort:'',
-      currentSortDir:'asc',
+      currentSortDir:'desc',
       headers: {
         brand: 'Brand',
         store: 'Store',
@@ -101,8 +119,7 @@ export default {
         sortOldPrice: 'Old',
         sortDiscount: 'Discount',
         sortDiscountP: '%',
-        volume: 'Volume',
-        uri: 'Link'
+        volume: 'Volume'
       }
     }
   },
@@ -129,6 +146,9 @@ export default {
         if(this.stores.indexOf(response.data[i].store) === -1) {
           this.stores.push(response.data[i].store);
         }
+        if(this.volumes.indexOf(response.data[i].volume) === -1) {
+          this.volumes.push(response.data[i].volume);
+        }
       }
       this.aanbiedingen = response.data
     },
@@ -140,6 +160,7 @@ export default {
       this.currentSort = s
     },
     average:function(inputArray){
+      // calculate avarage of received array
       let result = 0
       let i
       for (i = 0; i < inputArray.length; i++) {
@@ -147,6 +168,10 @@ export default {
       }
       return result / i
     },
+    check:function(box){
+      // toggle supplied variable
+      this[box] = !this[box];
+    }
   },
   computed:{
     sortedAanbiedingen:function() {
@@ -159,13 +184,13 @@ export default {
       })
     },
     filteredAanbiedingen:function() {
-      // let filteredDataByfilters = []
+      let filteredDataByfilters = []
       let filteredDataBySearch = []
-      // first check if filters where selected
-      // if (this.selectedFilters.length > 0) {
-      //   filteredDataByfilters= this.filteredData.filter(obj => this.selectedFilters.every(val => obj.stack.indexOf(val) >= 0))
-      //   this.filteredData = filteredDataByfilters
-      // }
+      if (this.checked) {
+        // TODO this is not yet functional; wizard required
+        filteredDataByfilters = this.sortedAanbiedingen.filter(obj => obj.uri >= 0)
+        return this.filteredAanbiedingen = filteredDataByfilters
+      }
       // then filter according to keyword, for now this only affects the name attribute of each data
       if (this.search !== '') {
         filteredDataBySearch = this.sortedAanbiedingen.filter(obj => obj.brand.toLowerCase().indexOf(this.search.toLowerCase()) >= 0)
