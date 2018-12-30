@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a class="button is-warning" @click="Import()">Import</a>
+    <a class="button is-warning" @click.once="Import()">Import</a>
     <ul v-if="status">
       {{status.data}}
     </ul>
