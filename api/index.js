@@ -1,22 +1,22 @@
 const express = require('express')
-const bodyParser = require('body-parser')
+// const bodyParser = require('body-parser')
 const cron = require('node-cron')
-const app = express()
 const router = express.Router()
 // const user = require('../models/user')
-const beer = require('../models/beer')
-const counter = require('../models/counter')
+// const beer = require('../models/beer')
+// const store = require('../models/store')
+// const counter = require('../models/counter')
 const dbImport = require('../methods/dbImport')
 // const requiresLogin = require('./requiresLogin')
-let batch //, stores
+// let batch, stores
 
 cron.schedule('7 * * * *', () => {
   console.log('Cron running: import()')
   dbImport()
 })
 
-app.use(express.static('public'))
-app.use(bodyParser.urlencoded({ extended: true }))
+const v1 = require('./v1')
+router.use('/v1', v1)
 
 // router.get('/', requiresLogin, function (req, res) {
 //   res.render('home')
@@ -129,31 +129,5 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //     })
 //   }
 // })
-
-router.get('/api/v1/aanbiedingen', function (req, res) {
-  counter.findOne({}).exec(function (err, result) {
-    batch = result.counter
-    if (err) throw err
-  })
-  let query = beer.find({ batch })
-  query.exec(function (err, results) {
-    if (err) throw err
-    res.json(results)
-  })
-})
-
-// Example on how to get data for specific store
-router.get('/api/v1/aanbiedingen:store', function (req, res) {
-  let store = req.params.store
-  counter.findOne({}).exec(function (err, result) {
-    batch = result.counter
-    if (err) throw err
-  })
-  let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
-  query.exec(function (err, results) {
-    if (err) throw err
-    res.json(results)
-  })
-})
 
 module.exports = router

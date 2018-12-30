@@ -14,17 +14,17 @@
         <div class="column">
           <p>
             <a href="https://bulma.io">
-              <img src="./assets/made-with-bulma.png" alt="Made with Bulma" width="128" height="24">
+              <img src="./assets/made-with-bulma.png" alt="Made with Bulma" width="128" height="24"></img>
             </a>
           </p>
           <p>
             <a href="http://www.w3.org/html/logo/">
-              <img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png" width="83" height="32" alt="HTML5 Powered with CSS3 / Styling, and Semantics" title="HTML5 Powered with CSS3 / Styling, and Semantics">
+              <img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png" width="83" height="32" alt="HTML5 Powered with CSS3 / Styling, and Semantics" title="HTML5 Powered with CSS3 / Styling, and Semantics"></img>
             </a>
           </p>
           <p>
             <a href="https://github.com/standard/standard">
-              <img src="https://cdn.rawgit.com/standard/standard/master/badge.svg" alt="Made with standard" width="70" height="13">
+              <img src="https://cdn.rawgit.com/standard/standard/master/badge.svg" alt="Made with standard" width="70" height="13"></img>
             </a>
           </p>
         </div>
