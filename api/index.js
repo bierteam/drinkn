@@ -32,12 +32,12 @@ router.use('/v1', v1)
 //   const volume = req.query.volume
 //   counter.findOne({}).exec(function (err, result) {
 //     batch = result.counter
-//     if (err) throw err
+//     if (err) console.error(err)
 //   })
 //   const storeQuery = beer.find({}).distinct('store')
 //   storeQuery.exec(function (err, result) {
 //     stores = result
-//     if (err) throw err
+//     if (err) console.error(err)
 //   })
 //   let query
 //   let parameters
@@ -63,7 +63,7 @@ router.use('/v1', v1)
 //   }
 //   query = beer.find(parameters).limit(100)
 //   query.exec(function (err, results) {
-//     if (err) throw err
+//     if (err) console.error(err)
 //     res.render('aanbiedingen', { storeDataResponse: stores, pilsDataResponse: results })
 //   })
 // })

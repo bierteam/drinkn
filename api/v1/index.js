@@ -14,7 +14,7 @@ router.get('/aanbiedingen', function (req, res) {
     batch = result.counter
     let query = beer.find({ batch }) // .limit(5) // limit on 5 for testing purposes
     query.exec(function (err, results) {
-      if (err) throw err
+      if (err) console.error(err)
       res.json(results)
     })
   })
@@ -27,7 +27,7 @@ router.get('/aanbiedingen:store', function (req, res) {
     batch = result.counter
     let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
     query.exec(function (err, results) {
-      if (err) throw err
+      if (err) console.error(err)
       res.json(results)
     })
   })
@@ -36,9 +36,23 @@ router.get('/aanbiedingen:store', function (req, res) {
 router.get('/stores', function (req, res) {
   store.findOne({}).exec(function (err, result) {
     batch = result.counter
-    if (err) throw err
+    if (err) console.error(err)
     res.json(result)
   })
+})
+
+router.post('/stores', function (req, res) {
+  store.findOneAndUpdate({}, { $set: req.body.newStores }, { strict: false, returnNewDocument: true }, function(err, result) {
+    if (err) console.error(err)
+    res.json(result)
+  });
+})
+
+router.delete('/stores', function (req, res) {
+  store.updateOne({}, { $unset: req.body.remove }, { strict: false }, function(err, result) {
+    if (err) console.error(err)
+    res.json(result.ok)
+  });
 })
 
 router.post('/import', function (req, res) {

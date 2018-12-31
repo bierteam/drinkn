@@ -20,6 +20,7 @@ const db = mongoose.connection
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 // security settings
 app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
 app.disable('x-powered-by')

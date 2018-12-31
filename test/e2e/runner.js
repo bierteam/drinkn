@@ -43,6 +43,6 @@ devConfigPromise.then(devConfig => {
 
     runner.on('error', function (err) {
       server.close()
-      throw err
+      console.error(err)
     })
   })

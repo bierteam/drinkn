@@ -168,9 +168,9 @@ export default {
       }
       return result / i
     },
-    check:function(box){
+    check:function(obj){
       // toggle supplied variable
-      this[box] = !this[box];
+      this[obj] = !this[obj];
     }
   },
   computed:{

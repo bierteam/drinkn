@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/HelloWorld'
+import Home from '@/components/Home'
 import Aanbiedingen from '@/components/Aanbiedingen'
 import Login from '@/components/Login'
 import Import from '@/components/Import'
+import Storemapping from '@/components/Storemapping'
+
 
 Vue.use(Router)
 
@@ -11,23 +13,28 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello
+      name: 'Home',
+      component: Home
     },
     {
       path: '/aanbiedingen',
-      name: 'aanbiedingen',
+      name: 'Aanbiedingen',
       component: Aanbiedingen
     },
     {
       path: '/login',
-      name: 'login',
+      name: 'Login',
       component: Login
     },
     {
       path: '/import',
-      name: 'import',
+      name: 'Import',
       component: Import
+    },
+    {
+      path: '/storemapping',
+      name: 'Storemapping',
+      component: Storemapping
     }
   ]
 })
