@@ -56,6 +56,7 @@ export default {
       .then(response => {
         this.stores = response.data
         delete this.stores._id
+        delete this.stores.__v
       })
       .catch(e => {
         console.error(e)
@@ -74,6 +75,7 @@ export default {
       .then(response => {
         this.stores = response.data
         delete this.stores._id
+        delete this.stores.__v
         this.newStores = {}
         this.isSaved = true
         this.isSaving = false

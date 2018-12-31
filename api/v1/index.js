@@ -35,7 +35,6 @@ router.get('/aanbiedingen:store', function (req, res) {
 
 router.get('/stores', function (req, res) {
   store.findOne({}).exec(function (err, result) {
-    batch = result.counter
     if (err) console.error(err)
     res.json(result)
   })
