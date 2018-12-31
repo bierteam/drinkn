@@ -10,7 +10,9 @@ counter.findOne().exec(function (err, result) {
   if (err) console.error(err)
   batch = result.counter
 })
-counter.watch().on('change', data => batch = data.updateDescription.updatedFields.counter)
+counter.watch().on('change', function (data) {
+  batch = data.updateDescription.updatedFields.counter
+})
 
 router.get('/aanbiedingen', function (req, res) {
   let query = beer.find({ batch }) // .limit(5) // limit on 5 for testing purposes
