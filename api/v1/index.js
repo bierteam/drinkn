@@ -5,30 +5,28 @@ const store = require('../../models/store')
 const counter = require('../../models/counter')
 const dbImport = require('../../methods/dbImport')
 
-let counterQuery = counter.findOne({})
-let counterExec = counterQuery.exec()
+let batch
+counter.findOne().exec(function (err, result) {
+  if (err) console.error(err)
+  batch = result.counter
+})
+counter.watch().on('change', data => batch = data.updateDescription.updatedFields.counter)
 
 router.get('/aanbiedingen', function (req, res) {
-  counterExec.then(function (result) {
-    let batch = result.counter
-    let query = beer.find({ batch }) // .limit(5) // limit on 5 for testing purposes
-    query.exec(function (err, results) {
-      if (err) throw err
-      res.json(results)
-    })
+  let query = beer.find({ batch }) // .limit(5) // limit on 5 for testing purposes
+  query.exec(function (err, results) {
+    if (err) throw err
+    res.json(results)
   })
 })
 
 // Example on how to get data for specific store
 router.get('/aanbiedingen:store', function (req, res) {
-  counterExec.then(function (result) {
-    let store = req.params.store
-    let batch = result.counter
-    let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
-    query.exec(function (err, results) {
-      if (err) throw err
-      res.json(results)
-    })
+  let store = req.params.store
+  let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
+  query.exec(function (err, results) {
+    if (err) throw err
+    res.json(results)
   })
 })
 
