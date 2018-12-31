@@ -41,14 +41,17 @@ router.get('/stores', function (req, res) {
   })
 })
 
+// DEBUG { $set: req.body.newStores }
+// DEBUG { $set: {"test" : "test"} }
 router.post('/stores', function (req, res) {
-  store.findOneAndUpdate({}, { $set: req.body.newStores }, { strict: false, returnNewDocument: true }, function(err, result) {
+  store.findOneAndUpdate({}, { $set: req.body.newStores }, { strict: false, new: true }, function(err, result) {
     if (err) console.error(err)
     res.json(result)
   });
 })
 
 router.delete('/stores', function (req, res) {
+  console.log(req.body)
   store.updateOne({}, { $unset: req.body.remove }, { strict: false }, function(err, result) {
     if (err) console.error(err)
     res.json(result.ok)

@@ -17,7 +17,7 @@
         <tr v-for='(newName, oldName) in stores'>
           <th><input class="input" type="text" v-model="oldName" disabled></th>
           <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]"></th>
-          <span class="delete"></span>
+          <!-- <span class="delete" @click='Delete(oldName)'></span> -->
         </tr>
         <tr>
           <th></th>
@@ -86,7 +86,9 @@ export default {
     },
     Delete(remove) {
       Api().delete(`api/v1/stores`, {
-        remove
+        data: {
+          remove
+        }
       })
       .then(response => {
       })
