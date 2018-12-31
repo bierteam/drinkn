@@ -4,14 +4,13 @@ const beer = require('../../models/beer')
 const store = require('../../models/store')
 const counter = require('../../models/counter')
 const dbImport = require('../../methods/dbImport')
-let batch
 
 let counterQuery = counter.findOne({})
 let counterExec = counterQuery.exec()
 
 router.get('/aanbiedingen', function (req, res) {
   counterExec.then(function (result) {
-    batch = result.counter
+    let batch = result.counter
     let query = beer.find({ batch }) // .limit(5) // limit on 5 for testing purposes
     query.exec(function (err, results) {
       if (err) throw err
@@ -24,7 +23,7 @@ router.get('/aanbiedingen', function (req, res) {
 router.get('/aanbiedingen:store', function (req, res) {
   counterExec.then(function (result) {
     let store = req.params.store
-    batch = result.counter
+    let batch = result.counter
     let query = beer.find({ batch, store }) // .limit(5) // limit on 5 for testing purposes
     query.exec(function (err, results) {
       if (err) throw err
