@@ -13,6 +13,7 @@ counter.findOne().exec(function (err, result) {
 })
 counter.watch().on('change', function (data) {
   batch = data.updateDescription.updatedFields.counter
+  aanbiedingen = []
 })
 
 // load and maintain beer discounts in memory
@@ -30,7 +31,7 @@ function waitForBatch () {
 waitForBatch()
 
 beer.watch().on('change', function (data) {
-  aanbiedingen = data.updateDescription.updatedFields.counter
+  aanbiedingen.push(data.fullDocument)
 })
 
 router.get('/aanbiedingen', function (req, res) {
