@@ -36,9 +36,11 @@ const processData = (data, counter, stores) => {
     let tmp = {}
     tmp.oldPrice = prettyPrice(data[obj].pricing.rawOldPrice)
     tmp.newPrice = prettyPrice(data[obj].pricing.rawNewPrice)
+    tmp.literPrice = prettyPrice(data[obj].pricing.rawLiterPrice)
 
     data[obj].pricing.oldPrice = tmp.oldPrice * 100
     data[obj].pricing.newPrice = tmp.newPrice * 100
+    data[obj].pricing.literPrice = tmp.literPrice * 100
 
     if (data[obj].rawUri) {
       data[obj].uri = uriPrettifier(data[obj].rawUri)

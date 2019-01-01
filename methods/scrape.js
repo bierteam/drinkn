@@ -19,11 +19,12 @@ const scrape = () => {
         let store = $(this).find('img')[0].attribs.title
         let rawOldPrice = $(this).find('del').text()
         let rawNewPrice = $(this).find('span.prijs').text()
+        let rawLiterPrice = $(this).find('span.ltrprijs').text()
         let volume = $(this).find('.Blikjes, .Flessen, .Kratten, .Fusten').text()
         let rawValidity = $(this).find('p:nth-child(1)').text().trim()
         let rawUri, pricing
 
-        pricing = { rawOldPrice, rawNewPrice }
+        pricing = { rawOldPrice, rawNewPrice, rawLiterPrice }
 
         if ($(this).find('a.button.yellow.aanbtn').length > 0) {
           rawUri = $(this).find('a.button.yellow.aanbtn')[0].attribs.href

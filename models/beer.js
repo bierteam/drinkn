@@ -18,11 +18,19 @@ const beerSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    rawLiterPrice: {
+      type: String,
+      required: true
+    },
     oldPrice: {
       type: Number,
       required: true
     },
     newPrice: {
+      type: Number,
+      required: true
+    },
+    literPrice: {
       type: Number,
       required: true
     }

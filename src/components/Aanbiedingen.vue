@@ -9,20 +9,20 @@
       </div>
       <div class='level-item has-text-centered'>
         <div>
-          <p class='heading'>Gemmiddelde korting</p>
+          <p class='heading'>Gemiddelde korting</p>
           <p class='title'>€{{ (average(discountArray) / 100).toFixed(2) }}</p>
+        </div>
+      </div>
+      <div class='level-item has-text-centered'>
+        <div>
+          <p class='heading'>Gemiddelde literprijs</p>
+          <p class='title'>€{{ (average(literArray) / 100).toFixed(2) }}</p>
         </div>
       </div>
       <div class='level-item has-text-centered'>
         <div>
           <p class='heading'>Online aanbiedingen</p>
           <p class='title'>{{ onlineAanbiedingen }}</p>
-        </div>
-      </div>
-      <div class='level-item has-text-centered'>
-        <div>
-          <p class='heading'>Nog een vakje</p>
-          <p class='title'>0</p>
         </div>
       </div>
     </nav>
@@ -59,6 +59,7 @@
           <th></th>
           <th></th>
           <th></th>
+          <th></th>
           <th>
             <div class="select">
               <select class='select' v-model="volume">
@@ -77,6 +78,12 @@
           <th v-model="checked" @click='check("checked")'>Link</th>
         </tr>
       </thead>
+      <tfoot>
+        <tr>
+          <th v-for='(key, value) in headers' @click='sort(value)'>{{ key }}</th>
+          <th v-model="checked" @click='check("checked")'>Link</th>
+        </tr>
+      </tfoot>
       <tbody>
         <!-- table -->
         <tr v-for='aanbieding in filteredAanbiedingen' :key='aanbieding.id'>
@@ -84,6 +91,7 @@
           <td>{{ aanbieding.store }} </td>
           <td class='has-text-success'>€{{ aanbieding.newPrice }}</td>
           <td class='has-text-danger'>€{{ aanbieding.oldPrice }}</td>
+          <td>€{{ aanbieding.literPrice }}</td>
           <td>€{{ aanbieding.discount }}</td>
           <td>{{ aanbieding.discountP }}%</td>
           <td>{{ aanbieding.volume }}</td>
@@ -103,6 +111,7 @@ export default {
     return {
       aanbiedingen: [],
       discountArray: [],
+      literArray: [],
       onlineAanbiedingen: 0,
       search: '',
       checked: false,
@@ -117,6 +126,7 @@ export default {
         store: 'Store',
         sortNewPrice: 'New',
         sortOldPrice: 'Old',
+        sortLiterPrice: 'Liter',
         sortDiscount: 'Discount',
         sortDiscountP: '%',
         volume: 'Volume'
@@ -132,14 +142,17 @@ export default {
       for (let i = 0; i < response.data.length; i++) {
         response.data[i].oldPrice = (response.data[i].pricing.oldPrice / 100).toFixed(2)
         response.data[i].newPrice = (response.data[i].pricing.newPrice / 100).toFixed(2)
+        response.data[i].literPrice = (response.data[i].pricing.literPrice / 100).toFixed(2)
         response.data[i].discount = ((response.data[i].pricing.oldPrice - response.data[i].pricing.newPrice) / 100).toFixed(2)
         response.data[i].discountP = (100 - (response.data[i].pricing.newPrice * 100 / response.data[i].pricing.oldPrice)).toPrecision(2)
 
         response.data[i].sortOldPrice = response.data[i].pricing.oldPrice
         response.data[i].sortNewPrice = response.data[i].pricing.newPrice
+        response.data[i].sortLiterPrice = response.data[i].pricing.literPrice
         response.data[i].sortDiscount = response.data[i].discount * 100
         response.data[i].sortDiscountP = response.data[i].discountP * 100
         this.discountArray.push(response.data[i].sortDiscount)
+        this.literArray.push(response.data[i].sortLiterPrice)
         if (response.data[i].uri){
           this.onlineAanbiedingen++
         }
