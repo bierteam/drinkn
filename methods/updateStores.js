@@ -8,9 +8,9 @@ function updateStores (newStores) {
       new: true,
       upsert: true,
       setDefaultsOnInsert: true },
-    function(err, result) {
+    function (err, result) {
       if (err) console.error(err)
-  });
+    })
 }
 
 module.exports = updateStores

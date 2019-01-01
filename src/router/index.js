@@ -6,7 +6,6 @@ import Login from '@/components/Login'
 import Import from '@/components/Import'
 import Storemapping from '@/components/Storemapping'
 
-
 Vue.use(Router)
 
 export default new Router({
