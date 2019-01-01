@@ -6,8 +6,8 @@ git:
   depth: false
 branches:
   only:
-  - master
-  - dev
+  - gh-pages
+  - /.*/
 cache: npm
 install:
 - npm ci
