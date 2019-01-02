@@ -12,8 +12,9 @@ const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const user = require('./models/user')
 
-// Use native ES6 Promises since mongoose's are deprecated.
-mongoose.Promise = global.Promise
+// Fix mongoose 5.4.1 deprecations
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
