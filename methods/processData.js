@@ -18,6 +18,7 @@ const processData = (data, counter, stores) => {
     }
 
     if (storeMap && storeMap.get(data[obj].store)) {
+      data[obj].rawStore = data[obj].store
       data[obj].store = storeMap.get(data[obj].store)
     }
 
@@ -44,7 +45,6 @@ const processData = (data, counter, stores) => {
 
     data[obj].batch = counter
   }
-  // console.log(newStores)
   updateStores(newStores)
   return data
 }

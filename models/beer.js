@@ -9,6 +9,10 @@ const beerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  rawStore: {
+    type: String,
+    required: false
+  },
   pricing: {
     rawOldPrice: {
       type: String,
