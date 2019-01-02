@@ -9,7 +9,7 @@ const dbImport = () => {
   scrape()
     .then(output => {
       data = output
-      let storeQuery = store.findOne({},{'_id': false})
+      let storeQuery = store.findOne({}, { '_id': false })
       let storeExec = storeQuery.exec()
       storeExec.then(function (result) {
         if (result && result._doc) stores = result._doc
