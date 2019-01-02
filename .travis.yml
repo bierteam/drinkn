@@ -9,7 +9,7 @@ branches:
   - /.*/
 cache: npm
 install:
-- npm install
+- npm ci
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_0394b0a27270_key -iv $encrypted_0394b0a27270_iv
   -in deploy_key.enc -out /tmp/deploy_key -d
