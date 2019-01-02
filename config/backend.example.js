@@ -21,41 +21,7 @@ const backend = {
   },
   scraper: {
     uri: ''
-  },
-  stores: [
-    'Agrimarkt',
-    'Albert Heijn',
-    'Aldi',
-    'Attent',
-    'Boni',
-    `Boon's markt`,
-    'Coop',
-    'Coop compact',
-    'Deen',
-    'DekaMarkt',
-    'DirckIII',
-    'Dirk',
-    'DrankDozijn',
-    'EkoPlaza',
-    'Emté',
-    'Gall & Gall',
-    'Hoogvliet',
-    'Jan Linders',
-    'Jumbo',
-    'Lidl',
-    'Makro',
-    'MCD',
-    'Mitra',
-    'Nettorama',
-    'Plus',
-    'Poiesz',
-    'Sligro',
-    'Spar',
-    'Troefmarkt',
-    'Vomar',
-    'Hanos',
-    'The SUB'
-  ]
+  }
 }
 
 module.exports = backend
