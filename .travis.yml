@@ -1,24 +1,24 @@
 sudo: false
 language: node_js
 node_js:
-- '11'
+  - '11'
 git:
   depth: false
 branches:
   only:
-  - gh-pages
-  - /.*/
+    - gh-pages
+    - /.*/
 cache: npm
 install:
-- npm ci
+  - npm ci
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_0394b0a27270_key -iv $encrypted_0394b0a27270_iv
-  -in deploy_key.enc -out /tmp/deploy_key -d
-- eval "$(ssh-agent -s)"
-- chmod 600 /tmp/deploy_key
-- ssh-add /tmp/deploy_key
-- cp config/backend.example.js config/backend.js
-- npm run build
+  - openssl aes-256-cbc -K $encrypted_0394b0a27270_key -iv $encrypted_0394b0a27270_iv
+    -in deploy_key.enc -out /tmp/deploy_key -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 /tmp/deploy_key
+  - ssh-add /tmp/deploy_key
+  - cp config/backend.example.js config/backend.js
+  - npm run build
 deploy:
   - provider: script
     skip_cleanup: true

@@ -2,25 +2,17 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <h3>Pils</h3>
-    <li>
-      <a href="#/aanbiedingen">Aanbiedingen</a>
-    </li>
-    <li>
-      <a href="#/import">Import</a>
-    </li>
-    <li>
-      <a href="#/login">Login</a>
-    </li>
-    <li>
-      <a href="#/storemapping">Storemapping</a>
-    </li>
+    <li><a href="#/aanbiedingen">Aanbiedingen</a></li>
+    <li><a href="#/import">Import</a></li>
+    <li><a href="#/login">Login</a></li>
+    <li><a href="#/storemapping">Storemapping</a></li>
   </div>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
-  data () {
+  data() {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
@@ -30,7 +22,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 ul {

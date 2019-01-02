@@ -1,4 +1,4 @@
-const uriPrettifier = (rawUri) => {
+const uriPrettifier = rawUri => {
   let uri = rawUri
     .replace(/(.*)tion:/g, '')
     .replace(/%2F/g, '/')
