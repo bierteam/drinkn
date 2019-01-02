@@ -119,8 +119,8 @@ export default {
       stores: [],
       volume: '',
       volumes: [],
-      currentSort:'',
-      currentSortDir:'desc',
+      currentSort:'sortLiterPrice',
+      currentSortDir:'asc',
       headers: {
         brand: 'Brand',
         store: 'Store',

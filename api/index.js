@@ -10,7 +10,7 @@ const dbImport = require('../methods/dbImport')
 // const requiresLogin = require('./requiresLogin')
 // let batch, stores
 
-cron.schedule('7 * * * *', () => {
+cron.schedule('7 */2 * * *', () => {
   console.log('Cron running: import()')
   dbImport()
 })
