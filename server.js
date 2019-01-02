@@ -13,8 +13,8 @@ const MongoStore = require('connect-mongo')(session)
 const user = require('./models/user')
 
 // Fix mongoose 5.4.1 deprecations
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
