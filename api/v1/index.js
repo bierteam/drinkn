@@ -9,10 +9,12 @@ const dbImport = require('../../methods/dbImport')
 let batch
 counter.findOne().exec(function (err, result) {
   if (err) console.error(err)
-  batch = result.counter
+  if (result && result.counter) batch = result.counter
 })
 counter.watch().on('change', function (data) {
-  batch = data.updateDescription.updatedFields.counter
+  if (data && data.updateDescription && data.updateDescription.updatedFields && data.updateDescription.updatedFields.counter) {
+    batch = data.updateDescription.updatedFields.counter
+  }
   aanbiedingen = []
 })
 
