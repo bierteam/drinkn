@@ -15,13 +15,8 @@
 
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="#/">
-            Home
-          </a>
-
-          <a class="navbar-item" href="#/aanbiedingen">
-            Aanbiedingen
-          </a>
+          <router-link class="navbar-item" to="/">Home</router-link>
+          <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
 
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
@@ -29,17 +24,12 @@
             </a>
 
             <div class="navbar-dropdown">
-              <a class="navbar-item" href="#/import">
-                Import
-              </a>
-              <a class="navbar-item" href="#/storemapping">
-                Map store names
-              </a>
-              <a class="navbar-item">
-                Contact
-              </a>
+              <router-link class="navbar-item" to="/import">Import</router-link>
+              <router-link class="navbar-item" to="/storemapping">Map store names</router-link>
+              <router-link class="navbar-item" to="/">Contact</router-link>
+
               <hr class="navbar-divider">
-              <a class="navbar-item" href="https://github.com/bierteam/Pils/tree/master/docs" target="_blank" rel="noopener noreferrer">
+              <a class="navbar-item" href="https://github.com/bierteam/Pils/tree/master/docs">
                 Documentation
               </a>
             </div>
@@ -49,18 +39,16 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
-                <strong>Sign up</strong>
-              </a>
-              <a class="button is-light" href="#/login">
-                Log in
-              </a>
+              <router-link class="button is-primary" to="/">Sign up</router-link>
+              <router-link class="button is-light" to="login">Log in</router-link>
             </div>
           </div>
         </div>
       </div>
     </nav>
+
     <router-view/>
+
     <footer class="footer">
       <div class="columns">
         <div class="column">

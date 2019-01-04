@@ -9,6 +9,8 @@
         {{error.message}}
       </li>
     </ul>
+    <br>
+    <br>
   </div>
 </template>
 
