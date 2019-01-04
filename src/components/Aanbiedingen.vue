@@ -95,7 +95,7 @@
           <td>€{{ aanbieding.discount }}</td>
           <td>{{ aanbieding.discountP }}%</td>
           <td>{{ aanbieding.volume }}</td>
-          <a class='button is-success' v-if='aanbieding.uri' :href='aanbieding.uri'>Buy!</a>
+          <a class='button is-primary' v-if='aanbieding.uri' :href='aanbieding.uri'>Buy!</a>
           <a v-else></a>
         </tr>
       </tbody>

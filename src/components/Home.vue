@@ -1,24 +1,13 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h3>Pils</h3>
+  <div class="container">
+    <h1>Welcome to your Pils App</h1>
+    <br>
     <li><a href="#/aanbiedingen">Aanbiedingen</a></li>
     <li><a href="#/import">Import</a></li>
     <li><a href="#/login">Login</a></li>
     <li><a href="#/storemapping">Storemapping</a></li>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'HelloWorld',
-  data() {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
-  }
-}
-</script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
