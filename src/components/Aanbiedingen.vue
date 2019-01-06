@@ -133,7 +133,7 @@ export default {
       }
     }
   },
-  mounted () {
+  beforeCreate () {
     this.getPils()
   },
   methods: {
