@@ -1,5 +1,4 @@
 const scrape = require('./scrape')
-const updateCounter = require('./updateCounter')
 const store = require('../models/store')
 const processData = require('./processData')
 const beer = require('../models/beer')
@@ -13,19 +12,21 @@ const dbImport = async () => {
   if (result && result._doc) {
     stores = result._doc
   }
-  let counterRaw = await updateCounter()
-  let counter = counterRaw.counter
   console.log('Attemping to process data...')
-  let processedData = processData(data, counter, stores)
+  let processedData = await processData(data, stores)
   console.log('Succesfully processed data')
-  console.log('Attemping to import data in database...')
-  beer.create(processedData, function (err, beer) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log(`${processedData.length} document(s) inserted`)
-    }
-  })
+  console.log('Importing to database...')
+  for (let obj of processedData) {
+    let search = { id: obj.id }
+    beer.find(search, function (err, result) {
+      if (err) console.error(err)
+      if (result.length < 1) {
+        beer.create(obj, function (err) {
+          if (err) console.error(err)
+        })
+      }
+    })
+  }
 }
 
 module.exports = dbImport

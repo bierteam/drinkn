@@ -5,7 +5,7 @@ const revHash = require('rev-hash')
 const moment = require('moment')
 moment.locale('nl')
 
-const processData = (data, counter, stores) => {
+const processData = (data, stores) => {
   let newStores = {}
   let storeMap
   if (stores) {
@@ -45,8 +45,6 @@ const processData = (data, counter, stores) => {
     if (data[obj].rawUri) {
       data[obj].uri = uriPrettifier(data[obj].rawUri)
     }
-
-    data[obj].batch = counter
   }
   updateStores(newStores)
   return data

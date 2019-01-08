@@ -67,12 +67,8 @@ const beerSchema = new mongoose.Schema({
   importDate: {
     type: Date,
     required: true
-  },
-  batch: {
-    type: Number,
-    required: true
   }
-})
+}, { autoIndex: true })
 
 const beer = mongoose.model('beer', beerSchema)
 module.exports = beer

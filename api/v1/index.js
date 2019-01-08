@@ -2,38 +2,19 @@ const express = require('express')
 const router = express.Router()
 const beer = require('../../models/beer')
 const store = require('../../models/store')
-const counter = require('../../models/counter')
+const cron = require('node-cron')
 const dbImport = require('../../methods/dbImport')
 
-// load and maintain counter in memory
-let batch
-counter.findOne().exec(function (err, result) {
-  if (err) console.error(err)
-  if (result && result.counter) batch = result.counter
-})
-counter.watch().on('change', function (data) {
-  if (data && data.updateDescription && data.updateDescription.updatedFields && data.updateDescription.updatedFields.counter) {
-    batch = data.updateDescription.updatedFields.counter
-  }
-  aanbiedingen = []
-})
-
-// load and maintain beer discounts in memory
 let aanbiedingen
-function waitForBatch () {
-  if (typeof batch !== 'undefined') {
-    beer.find({ batch }).exec(function (err, result) {
-      if (err) console.error(err)
-      aanbiedingen = result
-    })
-  } else {
-    setTimeout(waitForBatch, 250)
-  }
-}
-waitForBatch()
-
-beer.watch().on('change', function (data) {
-  aanbiedingen.push(data.fullDocument)
+beer.find({}).exec(function (err, result) {
+  if (err) console.error(err)
+  aanbiedingen = result
+})
+cron.schedule('* * * * *', () => {
+  beer.find({}).exec(function (err, result) {
+    if (err) console.error(err)
+    aanbiedingen = result
+  })
 })
 
 router.get('/aanbiedingen', function (req, res) {
@@ -43,7 +24,7 @@ router.get('/aanbiedingen', function (req, res) {
 // Example on how to get data for specific store
 router.get('/aanbiedingen:store', function (req, res) {
   let store = req.params.store
-  let query = beer.find({ batch, store })
+  let query = beer.find({ store })
   query.exec(function (err, results) {
     if (err) throw err
     res.json(results)

@@ -17,10 +17,9 @@ const scrape = async () => {
     let rawLiterPrice = $(this).find('span.ltrprijs').text()
     let volume = $(this).find('.Blikjes, .Flessen, .Kratten, .Fusten').text()
     let rawValidity = $(this).find('p:nth-child(1)').text().trim()
-    let rawUri, pricing
+    let pricing = { rawOldPrice, rawNewPrice, rawLiterPrice }
 
-    pricing = { rawOldPrice, rawNewPrice, rawLiterPrice }
-
+    let rawUri
     if ($(this).find('a.button.yellow.aanbtn').length > 0) {
       rawUri = $(this).find('a.button.yellow.aanbtn')[0].attribs.href
     }
