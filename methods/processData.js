@@ -1,6 +1,7 @@
 const uriPrettifier = require('./uriPrettifier')
 const prettyPrice = require('./prettyPrice')
 const updateStores = require('./updateStores')
+const revHash = require('rev-hash')
 const moment = require('moment')
 moment.locale('nl')
 
@@ -21,6 +22,8 @@ const processData = (data, counter, stores) => {
       data[obj].rawStore = data[obj].store
       data[obj].store = storeMap.get(data[obj].store)
     }
+
+    data[obj].id = revHash(data[obj].id)
 
     let validity = data[obj].rawValidity.replace(/(.*)t\/m /g, '')
 
