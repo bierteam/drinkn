@@ -10,7 +10,9 @@ beer.find({}).exec(function (err, result) {
   if (err) console.error(err)
   aanbiedingen = result
 })
-cron.schedule('* * * * *', () => {
+cron.schedule('7 * * * *', async () => {
+  console.log('Cron running: import()')
+  await dbImport()
   beer.find({}).exec(function (err, result) {
     if (err) console.error(err)
     aanbiedingen = result

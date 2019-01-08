@@ -1,19 +1,12 @@
 const express = require('express')
 // const bodyParser = require('body-parser')
-const cron = require('node-cron')
 const router = express.Router()
 // const user = require('../models/user')
 // const beer = require('../models/beer')
 // const store = require('../models/store')
 // const counter = require('../models/counter')
-const dbImport = require('../methods/dbImport')
 // const requiresLogin = require('./requiresLogin')
 // let batch, stores
-
-cron.schedule('7 */2 * * *', () => {
-  console.log('Cron running: import()')
-  dbImport()
-})
 
 const v1 = require('./v1')
 router.use('/v1', v1)
