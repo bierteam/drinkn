@@ -3,21 +3,25 @@ const router = express.Router()
 const beer = require('../../models/beer')
 const store = require('../../models/store')
 const cron = require('node-cron')
-const dbImport = require('../../methods/dbImport')
+const script = require('../../methods/dbImport')
 
 let aanbiedingen
-beer.find({ validity: { $gte: Date() } }).exec(function (err, result) {
-  if (err) console.error(err)
-  aanbiedingen = result
-})
-cron.schedule('7 * * * *', async () => {
-  console.log('Cron running: import()')
-  await dbImport()
+const query = () => {
   beer.find({ validity: { $gte: Date() } }).exec(function (err, result) {
     if (err) console.error(err)
     aanbiedingen = result
   })
+}
+const dbImport = async () => {
+  await script()
+  query()
+}
+cron.schedule('7 * * * *', async () => {
+  console.log('Cron running: import()')
+  await dbImport()
+  query()
 })
+query()
 
 router.get('/aanbiedingen', function (req, res) {
   res.json(aanbiedingen)

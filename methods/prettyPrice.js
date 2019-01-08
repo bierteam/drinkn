@@ -1,4 +1,4 @@
-const prettyPrice = (price) => {
+const prettyPrice = price => {
   price = parseFloat(price.replace(/,/, '.').replace(/€/, '')).toFixed(2)
   return price
 }
