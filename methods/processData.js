@@ -28,7 +28,7 @@ const processData = (data, stores) => {
     let validity = data[obj].rawValidity.replace(/(.*)t\/m /g, '')
 
     if (moment(validity, 'dddd DD MMMM').isValid()) {
-      data[obj].validity = moment(validity, 'dddd DD MMMM').toDate()
+      data[obj].validity = moment(validity, 'dddd DD MMMM').add(1, 'days').toDate()
     }
 
     data[obj].importDate = moment().toDate()
