@@ -44,7 +44,7 @@
     "npm": "^6.5.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "rev-hash": "^2.0.0",
+    "rev-hash": "^3.0.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.2"
   },
