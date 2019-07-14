@@ -5,21 +5,25 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const helmet = require('helmet')
-const favicon = require('serve-favicon')
 const app = express()
+const cors = require('cors')
 
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const user = require('./models/user')
+
+// Fix mongoose 5.4.1 deprecations
+mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
-app.set('view engine', 'ejs')
-app.use(favicon('./public/images/favicon.ico'))
+app.use(bodyParser.json())
 // security settings
+app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
 app.disable('x-powered-by')
 app.use(helmet.frameguard())
 app.use(helmet.noCache())
@@ -49,7 +53,7 @@ if (config.app.defaultAccount.autoCreate) {
       if (err) {
         console.error(err)
       } else if (!result) {
-        user.create(defaultAccount, function (err, result) {
+        user.create(defaultAccount, function (err) {
           if (err) {
             console.error(err)
           } else {
@@ -62,9 +66,9 @@ if (config.app.defaultAccount.autoCreate) {
   createDefault()
 }
 
-const routes = require('./routes/index')
-app.use('/', routes)
+const api = require('./api')
+app.use('/api', api)
 
 app.listen(config.app.port, function () {
-  console.log(`Beer app running on port ${config.app.port}!`)
+  console.log(`Beer backend running on port ${config.app.port}!`)
 })

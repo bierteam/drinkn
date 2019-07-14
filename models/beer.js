@@ -1,6 +1,11 @@
 const mongoose = require('mongoose')
 
 const beerSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true
+  },
   brand: {
     type: String,
     required: true
@@ -8,6 +13,10 @@ const beerSchema = new mongoose.Schema({
   store: {
     type: String,
     required: true
+  },
+  rawStore: {
+    type: String,
+    required: false
   },
   pricing: {
     rawOldPrice: {
@@ -18,28 +27,21 @@ const beerSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    rawLiterPrice: {
+      type: String,
+      required: true
+    },
     oldPrice: {
       type: Number,
-      required: true,
-      get: getPrice,
-      set: setPrice
+      required: true
     },
     newPrice: {
       type: Number,
-      required: true,
-      get: getPrice,
-      set: setPrice
+      required: true
     },
-    discountAmount: {
+    literPrice: {
       type: Number,
-      required: true,
-      get: getPrice,
-      set: formatPrice
-    },
-    discountPercentage: {
-      type: Number,
-      required: true,
-      set: setPercentage
+      required: true
     }
   },
   volume: {
@@ -65,29 +67,8 @@ const beerSchema = new mongoose.Schema({
   importDate: {
     type: Date,
     required: true
-  },
-  batch: {
-    type: Number,
-    required: true
   }
-})
-
-function getPrice (num) {
-  return (num / 100).toFixed(2)
-}
-
-function setPrice (num) {
-  return num * 100
-}
-
-function formatPrice (num) {
-  num.toPrecision(2)
-  return num * 100
-}
-
-function setPercentage (num) {
-  return num.toPrecision(2)
-}
+}, { autoIndex: true })
 
 const beer = mongoose.model('beer', beerSchema)
 module.exports = beer
