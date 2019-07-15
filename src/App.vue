@@ -15,7 +15,7 @@
 
       <div id="navbarBasicExample" class="navbar-menu" v-bind:class="{'is-active': burger}">
         <div class="navbar-start">
-          <router-link class="navbar-item" to="/">Home</router-link>
+          <router-link class="navbar-item" to="/home">Home</router-link>
           <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
 
           <div class="navbar-item has-dropdown is-hoverable">
@@ -78,7 +78,6 @@
 
 <script>
 // addToHomescreen();
-
 
 export default {
   name: 'App',
