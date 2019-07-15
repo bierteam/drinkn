@@ -5,6 +5,7 @@
     <li><router-link to="/aanbiedingen">Aanbiedingen</router-link></li>
     <li><router-link to="/import">Import</router-link></li>
     <li><router-link to="/login">Login</router-link></li>
+    <li><router-link to="/register">Register</router-link></li>
     <li><router-link to="/storemapping">Storemapping</router-link></li>
     <br>
     <br>

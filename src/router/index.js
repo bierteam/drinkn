@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Aanbiedingen from '@/components/Aanbiedingen'
 import Login from '@/components/Login'
+import Register from '@/components/Register'
 import Import from '@/components/Import'
 import Storemapping from '@/components/Storemapping'
 
@@ -12,6 +13,10 @@ export default new Router({
   routes: [
     {
       path: '/',
+      redirect: '/login'
+    },
+    {
+      path: '/home',
       name: 'Home',
       component: Home
     },
@@ -19,6 +24,11 @@ export default new Router({
       path: '/aanbiedingen',
       name: 'Aanbiedingen',
       component: Aanbiedingen
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
     },
     {
       path: '/login',
