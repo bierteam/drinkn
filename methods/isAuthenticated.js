@@ -6,8 +6,8 @@ const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.userId) {
       return next()
     } else {
-      // send a string to be handled by the client
-      res.send('forbidden')
+      res.status(403)
+      res.send('Thou shall not pass!')
     }
   } else {
     return next()

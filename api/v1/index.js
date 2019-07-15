@@ -29,7 +29,7 @@ router.get('/aanbiedingen', isAuthenticated, function (req, res) {
 })
 
 // Example on how to get data for specific store
-router.get('/aanbiedingen:store', function (req, res) {
+router.get('/aanbiedingen:store', isAuthenticated, function (req, res) {
   let store = req.params.store
   let query = beer.find({ store })
   query.exec(function (err, results) {
@@ -38,7 +38,7 @@ router.get('/aanbiedingen:store', function (req, res) {
   })
 })
 
-router.get('/stores', function (req, res) {
+router.get('/stores', isAuthenticated, function (req, res) {
   store.findOne({}).exec(function (err, result) {
     if (err) console.error(err)
     res.json(result)
@@ -47,14 +47,14 @@ router.get('/stores', function (req, res) {
 
 // DEBUG { $set: req.body.newStores }
 // DEBUG { $set: {"test" : "test"} }
-router.post('/stores', function (req, res) {
+router.post('/stores', isAuthenticated, function (req, res) {
   store.findOneAndUpdate({}, { $set: req.body.newStores }, { strict: false, new: true }, function (err, result) {
     if (err) console.error(err)
     res.json(result)
   })
 })
 
-router.delete('/stores', function (req, res) {
+router.delete('/stores', isAuthenticated, function (req, res) {
   console.log(req.body)
   store.updateOne({}, { $unset: req.body.remove }, { strict: false }, function (err, result) {
     if (err) console.error(err)
@@ -62,7 +62,7 @@ router.delete('/stores', function (req, res) {
   })
 })
 
-router.post('/import', function (req, res) {
+router.post('/import', isAuthenticated, function (req, res) {
   dbImport()
   res.json('received')
 })

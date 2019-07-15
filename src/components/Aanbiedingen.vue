@@ -139,9 +139,10 @@ export default {
   methods: {
     async getPils () {
       const response = await aanbiedingen.fetchPils()
-      if (response.data == 'forbidden') {
-        this.$router.push('/login')
-      }
+      // TODO implement frontend wide login check to prevent having to redirect
+      // if (response.data == 'forbidden') {
+      //   this.$router.push('/login')
+      // }
       for (let i = 0; i < response.data.length; i++) {
         response.data[i].oldPrice = (response.data[i].pricing.oldPrice / 100).toFixed(2)
         response.data[i].newPrice = (response.data[i].pricing.newPrice / 100).toFixed(2)
