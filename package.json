@@ -50,7 +50,7 @@
     "vue-router": "^3.0.2"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.9.0",
+    "@fortawesome/fontawesome-free": "5.9.0",
     "autoprefixer": "9.6.1",
     "babel-core": "6.26.3",
     "babel-eslint": "10.0.2",
@@ -61,7 +61,7 @@
     "babel-plugin-transform-vue-jsx": "3.7.0",
     "babel-preset-env": "1.7.0",
     "babel-preset-stage-2": "6.24.1",
-    "bulma-tooltip": "^2.0.2",
+    "bulma-tooltip": "2.0.2",
     "chalk": "2.4.2",
     "chromedriver": "75.1.0",
     "copy-webpack-plugin": "5.0.3",
