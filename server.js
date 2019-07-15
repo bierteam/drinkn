@@ -33,6 +33,9 @@ app.use(session({
   resave: true,
   saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: db }),
+  // TODO
+  // use cookie secure: https://github.com/expressjs/session/blob/master/README.md#cookiesecure
+  // also respect the remember credentials field at login by not hardcoding 30 days
   cookie: {
     httpOnly: false,
     maxAge: 30 * 24 * 60 * 60 * 1000 // store 30 days

@@ -1,34 +1,29 @@
 <template>
+
 <body>
   <section class="hero is-fullheight">
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
-          <h3 class="title has-text-grey">Login</h3>
-          <p class="subtitle has-text-grey">Please login to proceed.</p>
+          <h3 class="title has-text-grey">Register</h3>
+          <p class="subtitle has-text-grey">Create a new user.</p>
           <div class="box">
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="email" type="email" placeholder="Your email" autofocus="">
+                <input class="input is-large" v-model="email" type="email" placeholder="Their email" autofocus="">
               </div>
             </div>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="password" type="password" placeholder="Your password">
+                <input class="input is-large" v-model="password" type="password" placeholder="Their password">
               </div>
             </div>
-            <div class="field">
-              <label class="checkbox tooltip is-tooltip-right" data-tooltip='For 30 days'>
-                <input type="checkbox" v-model="remember">
-                Remember me
-              </label>
-            </div>
-            <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Login</button>
+            <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Register new account</button>
             </form>
           </div>
           <p class="has-text-grey">
-          <a href="../">Forgot Password</a> &nbsp;·&nbsp;
+          <a href="../">Login</a> &nbsp;·&nbsp;
           <a href="../">Need Help?</a>
           </p>
         </div>
@@ -46,7 +41,6 @@
       return {
         email: '',
         password: '',
-        remember: true
       }
     },
     computed: {
@@ -60,9 +54,8 @@
       Post() {
         const email = this.$data.email
         const password = this.$data.password
-        const remember = this.$data.remember
-        Api().post(`api/v1/login`, {
-          email, password, remember
+        Api().post(`api/v1/register`, {
+          email, password
         })
         // TODO check for result
         // .then(this.$router.push('/home'))
@@ -73,4 +66,3 @@
     }
   }
 </script>
-

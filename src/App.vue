@@ -15,7 +15,7 @@
 
       <div id="navbarBasicExample" class="navbar-menu" v-bind:class="{'is-active': burger}">
         <div class="navbar-start">
-          <router-link class="navbar-item" to="/">Home</router-link>
+          <router-link class="navbar-item" to="/home">Home</router-link>
           <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
 
           <div class="navbar-item has-dropdown is-hoverable">
@@ -39,8 +39,9 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <router-link class="button is-primary" to="/">Sign up</router-link>
+              <router-link class="button is-primary" to="register">Register</router-link>
               <router-link class="button is-light" to="login">Log in</router-link>
+              <button class="button is-light" @click='Logout'>Logout</button>
             </div>
           </div>
         </div>
@@ -78,13 +79,23 @@
 
 <script>
 // addToHomescreen();
-
+import Api from '@/services/Api'
 
 export default {
   name: 'App',
   data() {
     return {
       burger: false
+    }
+  },
+  methods: {
+    Logout() {
+      Api().get(`api/v1/logout`)
+      // TODO check for result
+      // .then(this.$router.push('/home'))
+      .catch(e => {
+        console.error(e)
+      })
     }
   }
 }
