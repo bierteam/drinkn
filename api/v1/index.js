@@ -4,6 +4,7 @@ const beer = require('../../models/beer')
 const store = require('../../models/store')
 const cron = require('node-cron')
 const script = require('../../methods/dbImport')
+const isAuthenticated = require('../../methods/isAuthenticated')
 
 let aanbiedingen
 const query = () => {
@@ -23,7 +24,7 @@ cron.schedule('7 * * * *', async () => {
 })
 query()
 
-router.get('/aanbiedingen', function (req, res) {
+router.get('/aanbiedingen', isAuthenticated, function (req, res) {
   res.json(aanbiedingen)
 })
 
