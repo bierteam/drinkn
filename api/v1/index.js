@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const user = require('../../models/user')
 const beer = require('../../models/beer')
 const store = require('../../models/store')
 const cron = require('node-cron')
@@ -65,6 +66,24 @@ router.delete('/stores', isAuthenticated, function (req, res) {
 router.post('/import', isAuthenticated, function (req, res) {
   dbImport()
   res.json('received')
+})
+
+router.post('/login', function (req, res) {
+  if (req.body.email && req.body.password) {
+    user.authenticate(req.body.email, req.body.password, function (error, user) {
+      if (error || !user) {
+        res.status(403).send('Incorrect username or password')
+      } else {
+        console.log(`User ${req.body.email} has logged in.`)
+        req.session.userId = user._id
+        res.sendStatus(200)
+        // return "this.$router.push('/home')" // idk if the client can handle this
+      }
+    })
+  } else {
+    res.status(403).send('Missing fields')
+    console.error('Missing fields at login')
+  }
 })
 
 module.exports = router

@@ -6,8 +6,7 @@ const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.userId) {
       return next()
     } else {
-      res.status(403)
-      res.send('Thou shall not pass!')
+      res.status(403).send('Thou shall not pass!')
     }
   } else {
     return next()

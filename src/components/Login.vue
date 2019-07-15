@@ -1,14 +1,4 @@
 <template>
-  <!-- <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Login</title>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
-      <link rel="stylesheet" type="text/css" href="../css/login.css">
-  </head> -->
-
 <body>
   <section class="hero is-fullheight">
     <div class="hero-body">
@@ -20,25 +10,24 @@
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" type="email" placeholder="Your Email" autofocus="">
+                <input class="input is-large" v-model="email" type="email" placeholder="Your email" autofocus="">
               </div>
             </div>
             <div class="field">
               <div class="control">
-                <input class="input is-large" type="password" placeholder="Your Password">
+                <input class="input is-large" v-model="password" type="password" placeholder="Your password">
               </div>
             </div>
             <div class="field">
-              <label class="checkbox">
-                <input type="checkbox">
+              <label class="checkbox tooltip is-tooltip-right" data-tooltip='For 30 days'>
+                <input type="checkbox" v-model="remember">
                 Remember me
               </label>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth">Login</button>
+            <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Login</button>
             </form>
           </div>
           <p class="has-text-grey">
-          <a href="../">Sign Up</a> &nbsp;·&nbsp;
           <a href="../">Forgot Password</a> &nbsp;·&nbsp;
           <a href="../">Need Help?</a>
           </p>
@@ -48,3 +37,40 @@
   </section>
 </body>
 </template>
+
+<script>
+  import Api from '@/services/Api'
+
+  export default {
+    data() {
+      return {
+        email: '',
+        password: '',
+        remember: true
+      }
+    },
+    computed: {
+      isDisabled:function() {
+        if (!this.$data.email || !this.$data.password){
+          return true
+        }
+      }
+    },
+    methods: {
+      Post() {
+        const email = this.$data.email
+        const password = this.$data.password
+        const remember = this.$data.remember
+        Api().post(`api/v1/login`, {
+          email, password, remember
+        })
+        // TODO check for result
+        // .then(this.$router.push('/home'))
+        .catch(e => {
+          console.error(e)
+        })
+      }
+    }
+  }
+</script>
+
