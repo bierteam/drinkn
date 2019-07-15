@@ -86,4 +86,37 @@ router.post('/login', function (req, res) {
   }
 })
 
+router.get('/logout', function (req, res, next) {
+  if (req.session) {
+    req.session.destroy(function (err) {
+      if (err) {
+        res.sendStatus(500)
+        console.error(err)
+      } else {
+        res.sendStatus(200)
+      }
+    })
+  }
+})
+
+router.post('/register', isAuthenticated, function (req, res) {
+  console.log(isAuthenticated)
+  console.log(req.body)
+  if (req.body.email && req.body.password) {
+    let userData = {
+      username: req.body.email,
+      password: req.body.password
+    }
+    user.create(userData, function (err, user) {
+      if (err) {
+        console.error(err)
+        res.status(200).send('Something went wrong, maybe the user already exists...')
+      } else {
+        console.log(`User account ${userData.username} has been created`)
+        res.sendStatus(201)
+      }
+    })
+  }
+})
+
 module.exports = router
