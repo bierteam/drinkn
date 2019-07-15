@@ -4,15 +4,12 @@ const devmode = config.app.devmode
 const isAuthenticated = (req, res, next) => {
   if (!devmode) {
     if (req.session && req.session.userId) {
-      console.log('isauth1')
       return next()
     } else {
-      console.log('isauth2')
-      // TODO someting vue friendly here
-      return res.redirect('/login')
+      // send a string to be handled by the client
+      res.send('forbidden')
     }
   } else {
-    console.log('isauth3')
     return next()
   }
 }
