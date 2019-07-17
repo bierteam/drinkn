@@ -1,6 +1,6 @@
 <template>
 <body>
-  <section class="hero is-fullheight">
+  <section class="hero">
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
@@ -64,8 +64,14 @@
         Api().post(`api/v1/login`, {
           email, password, remember
         })
-        // TODO check for result
-        // .then(this.$router.push('/home'))
+        // TODO check for result and handle it
+        // .then(response => {
+        //   if ( response = something ) {
+        //     this.$router.push('/home')
+        //   } else {
+        //     idk
+        //   }
+        // )
         .catch(e => {
           console.error(e)
         })
@@ -73,4 +79,3 @@
     }
   }
 </script>
-
