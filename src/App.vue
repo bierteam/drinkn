@@ -6,14 +6,14 @@
           <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
         </a> -->
 
-        <a role="button" class="navbar-burger burger" @click="burger = !burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" v-bind:class="{'is-active': burger}">
+        <a role="button" class="navbar-burger burger" v-if="isAuthenticated" @click="burger = !burger" aria-label="menu" aria-expanded="false" data-target="navbar" v-bind:class="{'is-active': burger}">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu" v-bind:class="{'is-active': burger}">
+      <div id="navbar" class="navbar-menu" v-if="isAuthenticated" @mouseleave="burger = false" v-bind:class="{'is-active': burger}">
         <div class="navbar-start">
           <router-link class="navbar-item" to="/home">Home</router-link>
           <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
@@ -40,7 +40,7 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link class="button is-primary" to="register">Register</router-link>
-              <router-link class="button is-light" to="login">Log in</router-link>
+              <!-- <router-link v-if="!isAuthenticated" class="button is-light" to="login">Log in</router-link> -->
               <button class="button is-light" @click='Logout'>Logout</button>
             </div>
           </div>
@@ -80,22 +80,34 @@
 <script>
 // addToHomescreen();
 import Api from '@/services/Api'
+import getCookie from '@/services/Cookie'
 
 export default {
   name: 'App',
   data() {
     return {
-      burger: false
+      burger: false,
+      isAuthenticated: getCookie('connect.sid') ? true : false
     }
   },
   methods: {
     Logout() {
+      document.cookie = 'connect.sid' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
       Api().get(`api/v1/logout`)
-      // TODO check for result
-      // .then(this.$router.push('/home'))
+      location.reload()
       .catch(e => {
         console.error(e)
       })
+    }
+  },
+  beforeMount: function () {
+    if (!this.isAuthenticated){
+      this.$router.push('/login')
+    }
+  },
+  beforeUpdate: function () {
+    if (!this.isAuthenticated){
+      this.$router.push('/login')
     }
   }
 }
