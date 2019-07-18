@@ -92,9 +92,7 @@ export default {
   },
   methods: {
     Logout() {
-      document.cookie = 'connect.sid' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-      Api().get(`api/v1/logout`)
-      // location.reload()
+      Api().delete(`api/v1/logout`)
       .then(response => {
         if (response.status === 200) {
           this.$data.isAuthenticated = false

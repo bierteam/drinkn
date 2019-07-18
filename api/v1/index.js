@@ -86,14 +86,14 @@ router.post('/login', function (req, res) {
   }
 })
 
-router.get('/logout', function (req, res, next) {
+router.delete('/logout', function (req, res, next) {
   if (req.session) {
     req.session.destroy(function (err) {
       if (err) {
         res.sendStatus(500)
         console.error(err)
       } else {
-        res.sendStatus(200)
+        res.clearCookie('connect.sid', { path: '/' }).status(200).send('Cookie deleted.')
       }
     })
   }
