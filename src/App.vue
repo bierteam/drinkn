@@ -106,12 +106,12 @@ export default {
       })
     }
   },
-  beforeMount: function () {
+  beforeMount: function () { // Fresh page load
     if (!this.isAuthenticated){
       this.$router.push('/login')
     }
   },
-  beforeUpdate: function () {
+  beforeUpdate: function () { // Refresh, url change, link, etc.
     if (!this.isAuthenticated){
       this.$router.push('/login')
     }

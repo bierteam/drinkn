@@ -66,7 +66,7 @@
         })
         .then(response => {
           if ( response.status === 200 ) {
-            // TODO set this.$data.isAuthenticated from App.vue to true
+            this.$parent.isAuthenticated = true
             this.$router.push('/home')
           }
         })

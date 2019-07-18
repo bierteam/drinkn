@@ -57,8 +57,13 @@
         Api().post(`api/v1/register`, {
           email, password
         })
-        // TODO check for result
-        // .then(this.$router.push('/home'))
+        .then( response => {
+          if (response.status === 201) {
+            alert('succes')
+          } else if (response.status === 200) {
+            alert(response.data)
+          }
+        })
         .catch(e => {
           console.error(e)
         })

@@ -100,8 +100,6 @@ router.get('/logout', function (req, res, next) {
 })
 
 router.post('/register', isAuthenticated, function (req, res) {
-  console.log(isAuthenticated)
-  console.log(req.body)
   if (req.body.email && req.body.password) {
     let userData = {
       username: req.body.email,
