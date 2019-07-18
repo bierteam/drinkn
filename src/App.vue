@@ -63,12 +63,12 @@
         <div class="column">
           <p>
             <a href="https://bulma.io">
-              <img src="./assets/made-with-bulma--semiblack.png" alt="Made with Bulma" width="128" height="24"></img>
+              <img src="./assets/made-with-bulma--semiblack.png" alt="Made with Bulma" width="128" height="24">
             </a>
           </p>
           <p>
             <a href="http://www.w3.org/html/logo/">
-              <img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png" width="83" height="32" alt="HTML5 Powered with CSS3 / Styling, and Semantics" title="HTML5 Powered with CSS3 / Styling, and Semantics"></img>
+              <img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png" width="83" height="32" alt="HTML5 Powered with CSS3 / Styling, and Semantics" title="HTML5 Powered with CSS3 / Styling, and Semantics">
             </a>
           </p>
         </div>
@@ -106,12 +106,20 @@ export default {
   },
   beforeMount: function () { // Fresh page load
     if (!this.isAuthenticated){
-      this.$router.push('/login')
+      if (this.$route.path === '/home' || this.$route.path === '/login') {
+        this.$router.push('/login')
+      } else {
+        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
+      }
     }
   },
   beforeUpdate: function () { // Refresh, url change, link, etc.
     if (!this.isAuthenticated){
-      this.$router.push('/login')
+      if (this.$route.path === '/home' || this.$route.path === '/login') {
+        this.$router.push('/login')
+      } else {
+        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
+      }
     }
   }
 }

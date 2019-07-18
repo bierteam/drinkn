@@ -67,7 +67,7 @@
         .then(response => {
           if ( response.status === 200 ) {
             this.$parent.isAuthenticated = true
-            this.$router.push('/home')
+            this.$router.push(this.$route.query.redirect || '/home')
           }
         })
         .catch(e => {
@@ -76,6 +76,16 @@
           console.error(e)
         })
       }
+    },
+      beforeMount: function () { // Fresh page load
+    if (this.$parent.isAuthenticated){
+      this.$router.push('/home')
     }
+  },
+  beforeUpdate: function () { // Refresh, url change, link, etc.
+    if (this.$parent.isAuthenticated){
+      this.$router.push('/home')
+    }
+  }
   }
 </script>
