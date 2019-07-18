@@ -94,18 +94,24 @@ export default {
     Logout() {
       document.cookie = 'connect.sid' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
       Api().get(`api/v1/logout`)
-      location.reload()
+      // location.reload()
+      .then(response => {
+        if (response.status === 200) {
+          this.$data.isAuthenticated = false
+          this.$router.push('/login')
+        }
+      })
       .catch(e => {
         console.error(e)
       })
     }
   },
-  beforeMount: function () {
+  beforeMount: function () { // Fresh page load
     if (!this.isAuthenticated){
       this.$router.push('/login')
     }
   },
-  beforeUpdate: function () {
+  beforeUpdate: function () { // Refresh, url change, link, etc.
     if (!this.isAuthenticated){
       this.$router.push('/login')
     }
