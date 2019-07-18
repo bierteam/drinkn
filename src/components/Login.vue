@@ -64,15 +64,15 @@
         Api().post(`api/v1/login`, {
           email, password, remember
         })
-        // TODO check for result and handle it
-        // .then(response => {
-        //   if ( response = something ) {
-        //     this.$router.push('/home')
-        //   } else {
-        //     idk
-        //   }
-        // )
+        .then(response => {
+          if ( response.status === 200 ) {
+            // TODO set this.$data.isAuthenticated from App.vue to true
+            this.$router.push('/home')
+          }
+        })
         .catch(e => {
+          // TODO better way to indicate the error, maybe a snackbar
+          alert('Email or password incorrect.')
           console.error(e)
         })
       }
