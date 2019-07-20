@@ -1,4 +1,4 @@
-const joinObjects = (primaryObjects, secundaryObjects, firstKey, secondKey) => {
+const joinObjects = (primaryObjects, secundaryObjects, firstKey, secondKey, context) => {
   /*
   This part will change:
   {
@@ -22,10 +22,16 @@ const joinObjects = (primaryObjects, secundaryObjects, firstKey, secondKey) => {
     let mappedObject = preparedObject[primaryObjects[object][firstKey]]
     // Dynamically adds each key of the mapped secundary object to the primary object
     for (let key in mappedObject) {
-      primaryObjects[object][key] = mappedObject[key]
+      if (!primaryObjects[object][key]){
+        primaryObjects[object][key] = mappedObject[key]
+      }
+      else {
+        let NewKey = context + key
+        primaryObjects[NewKey] = mappedObject[key]
+      }
     }
   }
-  console.log(primaryObjects)
+  return primaryObjects
 }
 
 module.exports = joinObjects

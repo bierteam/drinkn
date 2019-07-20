@@ -1,12 +1,18 @@
 const requestData = require('./requestData')
 const joinObjects = require('./joinObjects')
 
-const dbImport = () => {
-  requestData('aanbieding').then(function (aanbiedingen) {
-    requestData('soort').then(function (soorten) {
-      joinObjects(aanbiedingen, soorten, 'soort_uid', 'uid')
-    })
-  })
+const endPoints = ['soort', 'winkel']
+
+const dbImport = async () => {
+  let aanbiedingen = await requestData('aanbieding')
+  for (let endPoint in endPoints) {
+    let currentResponse = await requestData(endPoints[endPoint])
+    let currentEndPoint = endPoints[endPoint]
+    let currentUid = currentEndPoint + '_uid'
+    console.log(currentUid)
+    joinObjects(aanbiedingen, currentResponse, currentUid, 'uid', currentEndPoint)
+  }
+  console.log(aanbiedingen)
 }
 
 module.exports = dbImport
