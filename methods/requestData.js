@@ -1,11 +1,20 @@
 const rp = require('request-promise')
 
 const requestData = async (context) => {
-  let currentUri = `http://biernet.nl/extra/app/V3_3.3.4/${context}.php?d=`
-  console.log(currentUri)
-  const rawResponse = await rp(currentUri)
-  const parsedResponse = JSON.parse(rawResponse)
-  return parsedResponse
+  const options = { // move to config file?
+    uri: `https://biernet.nl/extra/app/V3_3.3.4/${context}.php?d=`,
+    headers: {
+      'User-Agent': 'nl.Biernet.iOS.app/V3',
+      'Accept': 'application/json, text/plain, /',
+      'Accept-Language': 'nl-nl',
+      'Connection': 'close'
+      // TODO implement: 'Accept-Encoding': 'gzip, deflate'
+    },
+    json: true // Automatically parses the JSON string in the response
+  }
+  console.log(options)
+  const response = await rp(options)
+  return response
 }
 
 module.exports = requestData
