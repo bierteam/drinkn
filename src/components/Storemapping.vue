@@ -86,7 +86,7 @@ export default {
         this.isSaving = false
       })
     },
-    Delete(remove) {
+    Delete(remove) { // WIP
       Api().delete(`api/v1/stores`, {
         data: {
           remove

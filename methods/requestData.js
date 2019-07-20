@@ -12,7 +12,6 @@ const requestData = async (context) => {
     },
     json: true // Automatically parses the JSON string in the response
   }
-  console.log(options)
   const response = await rp(options)
   return response
 }

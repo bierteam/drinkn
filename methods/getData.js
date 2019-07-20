@@ -10,9 +10,7 @@ const getData = async () => {
     let currentEndPoint = endPoints[endPoint]
     let currentUid = currentEndPoint + '_uid'
     aanbiedingen = await joinObjects(aanbiedingen, currentResponse, currentUid, 'uid', currentEndPoint)
-    // console.log(currentResponse)
   }
-  // console.log(aanbiedingen)
   return aanbiedingen
 }
 

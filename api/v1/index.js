@@ -14,16 +14,16 @@ const query = () => {
     aanbiedingen = result
   })
 }
+query()
+
 const dbImport = async () => {
   await script()
   query()
 }
-cron.schedule('7 * * * *', async () => {
-  console.log('Cron running: import()')
-  await dbImport()
-  query()
-})
-query()
+// cron.schedule('7 * * * *', async () => {
+//   console.log('Cron running: import()')
+//   await dbImport()
+// })
 
 router.get('/aanbiedingen', isAuthenticated, function (req, res) {
   res.json(aanbiedingen)
@@ -55,7 +55,7 @@ router.post('/stores', isAuthenticated, function (req, res) {
   })
 })
 
-router.delete('/stores', isAuthenticated, function (req, res) {
+router.delete('/stores', isAuthenticated, function (req, res) { // WIP
   console.log(req.body)
   store.updateOne({}, { $unset: req.body.remove }, { strict: false }, function (err, result) {
     if (err) console.error(err)
@@ -65,6 +65,12 @@ router.delete('/stores', isAuthenticated, function (req, res) {
 
 router.post('/import', isAuthenticated, function (req, res) {
   dbImport()
+  res.json('received')
+})
+
+router.post('/query', isAuthenticated, function (req, res) { // this is a temporary fix
+  query()
+  console.log('Refreshing')
   res.json('received')
 })
 
