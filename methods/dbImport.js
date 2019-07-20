@@ -5,16 +5,12 @@ const endPoints = ['agenda', 'bierkoerier', 'brouwerij', 'gisting', 'home', 'inh
 
 const dbImport = async () => {
   let aanbiedingen = await requestData('aanbieding')
-  let responses = []
   for (let endPoint in endPoints) {
-    responses[endPoint] = await requestData(endPoints[endPoint])
+    let currentResponse = await requestData(endPoints[endPoint])
+    let currentEndPoint = endPoints[endPoint]
+    let currentUid = currentEndPoint + '_uid'
+    aanbiedingen = await joinObjects(aanbiedingen, currentResponse, currentUid, 'uid', currentEndPoint)
   }
-  for (let response in responses) {
-    let currentResponse = responses[response]
-    let currentUid = currentResponse + '_uid'
-    aanbiedingen = await joinObjects(aanbiedingen, currentResponse, currentUid, 'uid', currentResponse)
-  }
-  console.log(responses)
   console.log(aanbiedingen)
 }
 
