@@ -27,10 +27,6 @@ const beerSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    rawLiterPrice: {
-      type: String,
-      required: true
-    },
     oldPrice: {
       type: Number,
       required: true
@@ -67,6 +63,18 @@ const beerSchema = new mongoose.Schema({
   importDate: {
     type: Date,
     required: true
+  },
+  color: {
+    type: String,
+    required: false
+  },
+  alcoholpercentage: {
+    type: Number,
+    required: false
+  },
+  liter: {
+    type: Number,
+    required: false
   }
 }, { autoIndex: true })
 

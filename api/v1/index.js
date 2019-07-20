@@ -14,16 +14,17 @@ const query = () => {
     aanbiedingen = result
   })
 }
+query()
+
 const dbImport = async () => {
   await script()
   query()
 }
-cron.schedule('7 * * * *', async () => {
-  console.log('Cron running: import()')
-  await dbImport()
-  query()
+cron.schedule('0 9,22 * * *', async () => {
+  const timeout = Math.round(Math.random() * 60) * 1000 * 1000
+  setTimeout(await dbImport, timeout)
+  console.log('Cron: running import in: ' + (timeout / 1000000) + ' minutes.')
 })
-query()
 
 router.get('/aanbiedingen', isAuthenticated, function (req, res) {
   res.json(aanbiedingen)
@@ -55,7 +56,7 @@ router.post('/stores', isAuthenticated, function (req, res) {
   })
 })
 
-router.delete('/stores', isAuthenticated, function (req, res) {
+router.delete('/stores', isAuthenticated, function (req, res) { // WIP
   console.log(req.body)
   store.updateOne({}, { $unset: req.body.remove }, { strict: false }, function (err, result) {
     if (err) console.error(err)
@@ -65,6 +66,12 @@ router.delete('/stores', isAuthenticated, function (req, res) {
 
 router.post('/import', isAuthenticated, function (req, res) {
   dbImport()
+  res.json('received')
+})
+
+router.post('/query', isAuthenticated, function (req, res) { // this is a temporary fix
+  query()
+  console.log('Refreshing')
   res.json('received')
 })
 
@@ -86,22 +93,20 @@ router.post('/login', function (req, res) {
   }
 })
 
-router.get('/logout', function (req, res, next) {
+router.delete('/logout', function (req, res, next) {
   if (req.session) {
     req.session.destroy(function (err) {
       if (err) {
         res.sendStatus(500)
         console.error(err)
       } else {
-        res.sendStatus(200)
+        res.clearCookie('connect.sid', { path: '/' }).status(200).send('Cookie deleted.')
       }
     })
   }
 })
 
 router.post('/register', isAuthenticated, function (req, res) {
-  console.log(isAuthenticated)
-  console.log(req.body)
   if (req.body.email && req.body.password) {
     let userData = {
       username: req.body.email,

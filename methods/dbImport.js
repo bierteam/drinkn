@@ -1,11 +1,11 @@
-const scrape = require('./scrape')
+const getData = require('./getData')
 const store = require('../models/store')
 const processData = require('./processData')
 const beer = require('../models/beer')
 
 const dbImport = async () => {
   let data, stores
-  data = await scrape()
+  data = await getData()
   let storeQuery = store.findOne({}, { '_id': false })
   let storeExec = storeQuery.exec()
   let result = await storeExec

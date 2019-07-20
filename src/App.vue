@@ -6,14 +6,14 @@
           <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
         </a> -->
 
-        <a role="button" class="navbar-burger burger" @click="burger = !burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" v-bind:class="{'is-active': burger}">
+        <a role="button" class="navbar-burger burger" v-if="isAuthenticated" @click="burger = !burger" aria-label="menu" aria-expanded="false" data-target="navbar" v-bind:class="{'is-active': burger}">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu" v-bind:class="{'is-active': burger}">
+      <div id="navbar" class="navbar-menu" v-if="isAuthenticated" @mouseleave="burger = false" v-bind:class="{'is-active': burger}">
         <div class="navbar-start">
           <router-link class="navbar-item" to="/home">Home</router-link>
           <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
@@ -40,7 +40,7 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link class="button is-primary" to="register">Register</router-link>
-              <router-link class="button is-light" to="login">Log in</router-link>
+              <!-- <router-link v-if="!isAuthenticated" class="button is-light" to="login">Log in</router-link> -->
               <button class="button is-light" @click='Logout'>Logout</button>
             </div>
           </div>
@@ -63,12 +63,12 @@
         <div class="column">
           <p>
             <a href="https://bulma.io">
-              <img src="./assets/made-with-bulma--semiblack.png" alt="Made with Bulma" width="128" height="24"></img>
+              <img src="./assets/made-with-bulma--semiblack.png" alt="Made with Bulma" width="128" height="24">
             </a>
           </p>
           <p>
             <a href="http://www.w3.org/html/logo/">
-              <img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png" width="83" height="32" alt="HTML5 Powered with CSS3 / Styling, and Semantics" title="HTML5 Powered with CSS3 / Styling, and Semantics"></img>
+              <img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png" width="83" height="32" alt="HTML5 Powered with CSS3 / Styling, and Semantics" title="HTML5 Powered with CSS3 / Styling, and Semantics">
             </a>
           </p>
         </div>
@@ -80,22 +80,46 @@
 <script>
 // addToHomescreen();
 import Api from '@/services/Api'
+import getCookie from '@/services/Cookie'
 
 export default {
   name: 'App',
   data() {
     return {
-      burger: false
+      burger: false,
+      isAuthenticated: getCookie('connect.sid') ? true : false
     }
   },
   methods: {
     Logout() {
-      Api().get(`api/v1/logout`)
-      // TODO check for result
-      // .then(this.$router.push('/home'))
+      Api().delete(`api/v1/logout`)
+      .then(response => {
+        if (response.status === 200) {
+          this.$data.isAuthenticated = false
+          this.$router.push('/login')
+        }
+      })
       .catch(e => {
         console.error(e)
       })
+    }
+  },
+  beforeMount: function () { // Fresh page load
+    if (!this.isAuthenticated){
+      if (this.$route.path === '/home' || this.$route.path === '/login') {
+        this.$router.push('/login')
+      } else {
+        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
+      }
+    }
+  },
+  beforeUpdate: function () { // Refresh, url change, link, etc.
+    if (!this.isAuthenticated){
+      if (this.$route.path === '/home' || this.$route.path === '/login') {
+        this.$router.push('/login')
+      } else {
+        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
+      }
     }
   }
 }

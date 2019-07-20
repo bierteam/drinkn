@@ -1,6 +1,6 @@
 <template>
 <body>
-  <section class="hero is-fullheight">
+  <section class="hero">
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
@@ -64,13 +64,28 @@
         Api().post(`api/v1/login`, {
           email, password, remember
         })
-        // TODO check for result
-        // .then(this.$router.push('/home'))
+        .then(response => {
+          if ( response.status === 200 ) {
+            this.$parent.isAuthenticated = true
+            this.$router.push(this.$route.query.redirect || '/home')
+          }
+        })
         .catch(e => {
+          // TODO better way to indicate the error, maybe a snackbar
+          alert('Email or password incorrect.')
           console.error(e)
         })
       }
+    },
+      beforeMount: function () { // Fresh page load
+    if (this.$parent.isAuthenticated){
+      this.$router.push('/home')
+    }
+  },
+  beforeUpdate: function () { // Refresh, url change, link, etc.
+    if (this.$parent.isAuthenticated){
+      this.$router.push('/home')
     }
   }
+  }
 </script>
-
