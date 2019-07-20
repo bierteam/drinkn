@@ -1,7 +1,7 @@
 const requestData = require('./requestData')
 const joinObjects = require('./joinObjects')
 
-const endPoints = ['soort', 'winkel']
+const endPoints = ['soort', 'winkel', 'inhoud']
 
 const dbImport = async () => {
   let aanbiedingen = await requestData('aanbieding')
@@ -9,8 +9,7 @@ const dbImport = async () => {
     let currentResponse = await requestData(endPoints[endPoint])
     let currentEndPoint = endPoints[endPoint]
     let currentUid = currentEndPoint + '_uid'
-    console.log(currentUid)
-    joinObjects(aanbiedingen, currentResponse, currentUid, 'uid', currentEndPoint)
+    aanbiedingen = await joinObjects(aanbiedingen, currentResponse, currentUid, 'uid', currentEndPoint)
   }
   console.log(aanbiedingen)
 }
