@@ -20,10 +20,11 @@ const dbImport = async () => {
   await script()
   query()
 }
-// cron.schedule('7 * * * *', async () => {
-//   console.log('Cron running: import()')
-//   await dbImport()
-// })
+cron.schedule('0 9,22 * * *', async () => {
+  const timeout = Math.round(Math.random() * 60) * 1000 * 1000
+  setTimeout(await dbImport, timeout)
+  console.log('Cron: running import in: ' + (timeout / 1000000) + ' minutes.')
+})
 
 router.get('/aanbiedingen', isAuthenticated, function (req, res) {
   res.json(aanbiedingen)
