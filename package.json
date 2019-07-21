@@ -6,15 +6,11 @@
   "scripts": {
     "start": "pm2 start server.js",
     "restart": "pm2 restart all",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test-bak": "standard && jest --coverage",
-    "test": "standard",
+    "coveralls": "cat ./test/unit/coverage/lcov.info | coveralls",
+    "test": "standard && jest --config test/unit/jest.conf.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "nodemon": "NODE_ENV=development nodemon",
-    "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
-    "lint": "standard --fix",
-    "standard": "standard",
     "build": "node build/build.js"
   },
   "repository": {
@@ -51,17 +47,30 @@
     "vue-router": "^3.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-function-sent": "^7.0.0",
+    "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/plugin-syntax-jsx": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.5.5",
+    "@babel/runtime-corejs2": "^7.5.5",
     "@fortawesome/fontawesome-free": "5.9.0",
     "autoprefixer": "9.6.1",
-    "babel-core": "6.26.3",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "10.0.2",
     "babel-helper-vue-jsx-merge-props": "2.0.3",
-    "babel-loader": "7.1.5",
-    "babel-plugin-syntax-jsx": "6.18.0",
-    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-jest": "^24.8.0",
+    "babel-loader": "^8.0.0",
+    "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-vue-jsx": "3.7.0",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-stage-2": "6.24.1",
     "bulma-tooltip": "2.0.2",
     "chalk": "2.4.2",
     "chromedriver": "75.1.0",
@@ -69,15 +78,6 @@
     "coveralls": "3.0.2",
     "cross-spawn": "6.0.5",
     "css-loader": "3.0.0",
-    "eslint": "6.0.1",
-    "eslint-config-standard": "13.0.1",
-    "eslint-friendly-formatter": "4.0.1",
-    "eslint-loader": "2.2.1",
-    "eslint-plugin-import": "2.18.0",
-    "eslint-plugin-node": "9.1.0",
-    "eslint-plugin-promise": "4.2.1",
-    "eslint-plugin-standard": "4.0.0",
-    "eslint-plugin-vue": "5.2.3",
     "extract-text-webpack-plugin": "3.0.2",
     "file-loader": "4.0.0",
     "friendly-errors-webpack-plugin": "1.7.0",
@@ -113,10 +113,5 @@
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }
