@@ -27,7 +27,9 @@ const processData = (data, stores) => {
 
     // TODO: Write function that check if all properties have a value
     if (!data[obj].brand) {
-      console.log(data[obj])
+      console.log('Object found with empty brand, removing object with aanbieding uid..' + data[obj].uid)
+      let objectIndex = obj - 1
+      data.splice(objectIndex, 1)
       continue
     }
 

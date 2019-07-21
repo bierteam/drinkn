@@ -16,12 +16,12 @@ const dbImport = async () => {
   let processedData = await processData(data, stores)
   console.log('Succesfully processed data')
   console.log('Importing to database...')
-  for (let obj in processedData) {
-    let search = { id: processedData[obj].id }
+  for (let obj of processedData) {
+    let search = { id: obj.id }
     beer.find(search).exec(function (err, result) {
       if (err) console.error(err)
       if (result.length < 1) {
-        beer.create(processedData[obj], function (err) {
+        beer.create(obj, function (err) {
           if (err) console.error(err)
         })
       }
