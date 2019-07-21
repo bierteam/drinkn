@@ -4,6 +4,13 @@ const user = require('../../models/user')
 const isAuthenticated = require('../../methods/isAuthenticated')
 // const isPrivileged = require('../../methods/isPrivileged')
 
+router.get('/', isAuthenticated, function (req, res) {
+  user.find({}).select('username').exec(function (err, results) {
+    if (err) console.error(err)
+    res.json(results)
+  })
+})
+
 router.post('/login', function (req, res) {
   if (req.body.email && req.body.password) {
     user.authenticate(req.body.email, req.body.password, function (error, user) {

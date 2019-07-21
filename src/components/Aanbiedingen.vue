@@ -26,6 +26,7 @@
         </div>
       </div>
     </nav>
+    <progress v-if="aanbiedingen.length === 0" class="progress is-small"></progress>
 
     <!-- debug: sort={{currentSort}}, dir={{currentSortDir}} -->
     <table class='table container'>
@@ -104,7 +105,7 @@
 </template>
 
 <script>
-import aanbiedingen from '@/services/Aanbiedingen'
+import Api from '@/services/Api'
 export default {
   name: 'aanbiedingen',
   data () {
@@ -133,12 +134,12 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     this.getPils()
   },
   methods: {
     async getPils () {
-      const response = await aanbiedingen.fetchPils()
+      const response = await Api().get('api/v1/aanbiedingen')
       for (let i = 0; i < response.data.length; i++) {
         response.data[i].oldPrice = (response.data[i].pricing.oldPrice / 100).toFixed(2)
         response.data[i].newPrice = (response.data[i].pricing.newPrice / 100).toFixed(2)

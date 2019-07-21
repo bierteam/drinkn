@@ -44,6 +44,7 @@ router.get('/aanbiedingen:store', isAuthenticated, function (req, res) {
 
 router.get('/stores', isAuthenticated, function (req, res) {
   store.findOne({}).exec(function (err, result) {
+    console.log(result)
     if (err) console.error(err)
     res.json(result)
   })

@@ -1,0 +1,60 @@
+<template>
+  <div>
+    <table class='container table'>
+      <thead>
+        <th>Id</th>
+        <th>Username</th>
+      </thead>
+      <tbody>
+        <tr v-for='user in users'>
+          <th>{{user._id}}</th>
+          <th>{{user.username}}</th>
+        </tr>
+        <tr>
+          <th></th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+  import Api from '@/services/Api'
+  import pwned from "havetheybeenpwned"
+
+  export default {
+    data() {
+      return {
+        users: [],
+        isPwned: false,
+        message: '',
+        error: ''
+      }
+    },
+    created () {
+        this.Users()
+    },
+    computed: {
+      isDisabled:function() {
+        pwned(this.$data.password).then(isPwned => {
+          this.$data.isPwned = isPwned
+        })
+        return ((this.$data.email && this.$data.password && !this.$data.isPwned) ? false : true)
+      }
+    },
+    methods: {
+      async Users() {
+        Api().get(`api/v1/users`, {})
+        .then( response => {
+          if (response.status === 200) {
+            this.users = response.data   
+          }
+        })
+        .catch(e => {
+          this.$data.error = e
+          console.error(e)
+        })
+      }
+    }
+  }
+</script>
