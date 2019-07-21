@@ -16,12 +16,13 @@ const dbImport = async () => {
   let processedData = await processData(data, stores)
   console.log('Succesfully processed data')
   console.log('Importing to database...')
-  for (let obj of processedData) {
+  for (let obj in processedData) {
+    // TODO: Fix this - Duplicate key errors on 2nd import
     let search = { id: obj.id }
     beer.find(search, function (err, result) {
       if (err) console.error(err)
       if (result.length < 1) {
-        beer.create(obj, function (err) {
+        beer.create(processedData[obj], function (err) {
           if (err) console.error(err)
         })
       }

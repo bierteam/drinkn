@@ -13,11 +13,6 @@ const processData = (data, stores) => {
   }
 
   for (let obj in data) {
-    // console.log(data[obj])
-    // if (!data[obj].merken_name) {
-    //   console.log(data[obj])
-    // }
-
     data[obj].store = data[obj].winkel_name
     data[obj].brand = data[obj].merken_name
     data[obj].pricing = {}
@@ -29,6 +24,12 @@ const processData = (data, stores) => {
     delete data[obj].merken_soort_omschrijving
     delete data[obj].brouwerij_omschrijving
     delete data[obj].gisting_omschrijving
+   
+    // TODO: Check all properties for a value
+    if (!data[obj].brand) {
+      console.log(data[obj])
+      continue
+    }
 
     if (data[obj].alcoholpercentage) {
       data[obj].rawAlcoholpercentage = data[obj].alcoholpercentage
@@ -63,7 +64,6 @@ const processData = (data, stores) => {
     data[obj].pricing.literPrice = data[obj].rawLiter / data[obj].pricing.newPrice
   }
   updateStores(newStores)
-  // console.log(data)
   return data
 }
 
