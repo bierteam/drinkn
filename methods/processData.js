@@ -24,8 +24,8 @@ const processData = (data, stores) => {
     delete data[obj].merken_soort_omschrijving
     delete data[obj].brouwerij_omschrijving
     delete data[obj].gisting_omschrijving
-   
-    // TODO: Check all properties for a value
+
+    // TODO: Write function that check if all properties have a value
     if (!data[obj].brand) {
       console.log(data[obj])
       continue
