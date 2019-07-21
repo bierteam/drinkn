@@ -4,6 +4,10 @@
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
+          <div v-if="error" class="notification is-danger">
+            <button class="delete" @click="error = ''"></button>
+              {{error}}
+          </div>
           <h3 class="title has-text-grey">Login</h3>
           <p class="subtitle has-text-grey">Please login to proceed.</p>
           <div class="box">
@@ -46,7 +50,8 @@
       return {
         email: '',
         password: '',
-        remember: true
+        remember: true,
+        error: ''
       }
     },
     computed: {
@@ -61,7 +66,7 @@
         const email = this.$data.email
         const password = this.$data.password
         const remember = this.$data.remember
-        Api().post(`api/v1/login`, {
+        Api().post(`api/v1/users/login`, {
           email, password, remember
         })
         .then(response => {
@@ -71,8 +76,7 @@
           }
         })
         .catch(e => {
-          // TODO better way to indicate the error, maybe a snackbar
-          alert('Email or password incorrect.')
+          this.error = e.response.data
           console.error(e)
         })
       }
