@@ -17,6 +17,7 @@ module.exports = {
     }
   },
 
+  // TODO https://stackoverflow.com/questions/55919811/timeout-while-trying-to-connect-to-selenium-server-on-port-4444-testing-with-ni
   test_settings: {
     default: {
       selenium_port: 4444,
