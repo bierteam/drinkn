@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     Logout() {
-      Api().delete(`api/v1/logout`)
+      Api().delete(`api/v1/users/logout`)
       .then(response => {
         if (response.status === 200) {
           this.$data.isAuthenticated = false
