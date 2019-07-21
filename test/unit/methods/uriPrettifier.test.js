@@ -1,5 +1,5 @@
 /* global test, expect */
-const uriPrettifier = require('./uriPrettifier')
+const uriPrettifier = require('../../../methods/uriPrettifier')
 
 test('expect a clean url back', () => {
   expect(

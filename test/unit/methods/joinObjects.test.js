@@ -1,5 +1,5 @@
 /* global test, expect */
-const joinObjects = require('./joinObjects')
+const joinObjects = require('../../../methods/joinObjects')
 
 let obj1 = [{
   'uid': '123',
