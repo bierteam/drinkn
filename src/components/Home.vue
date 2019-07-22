@@ -6,6 +6,7 @@
     <li><router-link to="/import">Import</router-link></li>
     <li><router-link to="/register">Register</router-link></li>
     <li><router-link to="/storemapping">Storemapping</router-link></li>
+    <li><router-link to="/logging">Logging</router-link></li>
     <br>
     <br>
   </div>
