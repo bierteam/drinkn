@@ -10,13 +10,14 @@
               <select v-model="store">
                 <option disabled value="">Select a context</option>
                 
-                <option v-for="option in stores">
+                <!--<option v-for="option in stores"> 
                   
                 </option>
-                
+                -->
               </select>
                
             </div>
+          <a class="button is-danger" @click.once="deleteLogs">Delete all logs</a>
           </th>
           <th></th>
           <th></th>
@@ -37,6 +38,7 @@
 
         </tr>
       </tfoot>
+      
       <tbody>
         <!-- table -->
         
@@ -73,6 +75,9 @@ export default {
     async getLogs () {
       const response = await logging.fetchLogs()
       this.logging = response.data
+    },
+    async deleteLogs() {
+      logging.deleteLogs()
     }
   }
 }

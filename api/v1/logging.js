@@ -9,5 +9,11 @@ router.get('/logs', isAuthenticated, function (req, res) {
     res.json(result)
   })
 })
+router.delete('/logs', isAuthenticated, function (req, res) {
+  logging.remove({}, function (err) {
+    if (err) console.err(err)
+    console.log('collection removed')
+  })
+})
 
 module.exports = router
