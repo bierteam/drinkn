@@ -2,8 +2,10 @@ const getData = require('./getData')
 const store = require('../models/store')
 const processData = require('./processData')
 const beer = require('../models/beer')
+const writeLog = require('./writeLog')
 
 const dbImport = async () => {
+  writeLog('test', 'test', 'test')
   let data, stores
   data = await getData()
   let storeQuery = store.findOne({}, { '_id': false })
