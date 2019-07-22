@@ -3,6 +3,8 @@ const updateStores = require('./updateStores')
 const revHash = require('rev-hash')
 const moment = require('moment')
 moment.locale('nl')
+const writeLog = require('./writeLog')
+const context = 'Import'
 
 const processData = (data, stores) => {
   let newStores = {}
@@ -27,7 +29,7 @@ const processData = (data, stores) => {
 
     // TODO: Write function that check if all properties have a value
     if (!data[obj].brand) {
-      console.log('Object found with empty brand, removing object with aanbieding uid..' + data[obj].uid)
+      writeLog(`Object found with empty brand, removing object with aanbieding uid: ${data[obj].uid}`, 'Warning', context)
       let objectIndex = obj - 1
       data.splice(objectIndex, 1)
       continue
