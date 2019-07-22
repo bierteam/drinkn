@@ -12,8 +12,6 @@ const writeLog = (message, type, context) => {
   logger.create(logMessage, function (err, user) {
     if (err) {
       console.error(err)
-    } else {
-      console.log(`Logging succesful`)
     }
   })
 }
