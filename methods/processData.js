@@ -3,8 +3,8 @@ const updateStores = require('./updateStores')
 const revHash = require('rev-hash')
 const moment = require('moment')
 moment.locale('nl')
-const validateKeys = require('./validateKeys')
-const mandatoryKeys = ['id', 'brand', 'store', 'pricing', 'volume', 'rawValidity']
+const beer = require('../models/beer')
+const mandatoryKeys = beer.schema._requiredpaths
 
 const processData = (data, stores) => {
   let newStores = {}

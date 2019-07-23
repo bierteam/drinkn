@@ -12,7 +12,7 @@ router.post('/login', function (req, res) {
       if (error || !user) {
         res.status(403).send('Incorrect username or password')
       } else {
-        writeLog(`User ${req.body.email} has logged in.`)
+        writeLog(`User ${req.body.email} has logged in.`, 'Info', context)
         if (!req.body.remember) {
           req.session.cookie.expires = false
         }
