@@ -34,16 +34,6 @@ router.get('/aanbiedingen', isAuthenticated, function (req, res) {
   res.json(aanbiedingen)
 })
 
-// Example on how to get data for specific store
-router.get('/aanbiedingen:store', isAuthenticated, function (req, res) {
-  let store = req.params.store
-  let query = beer.find({ store })
-  query.exec(function (err, results) {
-    if (err) throw err
-    res.json(results)
-  })
-})
-
 router.get('/stores', isAuthenticated, function (req, res) {
   store.findOne({}).exec(function (err, result) {
     if (err) console.error(err)

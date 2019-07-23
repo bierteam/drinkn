@@ -3,6 +3,7 @@ const updateStores = require('./updateStores')
 const revHash = require('rev-hash')
 const moment = require('moment')
 moment.locale('nl')
+const validateKeys = require('./validateKeys')
 const beer = require('../models/beer')
 const mandatoryKeys = beer.schema._requiredpaths
 
