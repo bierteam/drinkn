@@ -3,6 +3,8 @@ const router = express.Router()
 const user = require('../../models/user')
 const isAuthenticated = require('../../methods/isAuthenticated')
 // const isPrivileged = require('../../methods/isPrivileged')
+const writeLog = require('../../methods/writeLog')
+const context = 'Login'
 
 router.get('/', isAuthenticated, function (req, res) {
   user.find({}).select('username').exec(function (err, results) {
@@ -17,7 +19,10 @@ router.post('/login', function (req, res) {
       if (error || !user) {
         res.status(403).send('Incorrect username or password')
       } else {
-        console.log(`User ${req.body.email} has logged in.`)
+        writeLog(`User ${req.body.email} has logged in.`)
+        if (!req.body.remember) {
+          req.session.cookie.expires = false
+        }
         req.session.userId = user._id
         res.sendStatus(200)
       }
@@ -32,7 +37,7 @@ router.delete('/logout', function (req, res, next) {
     req.session.destroy(function (err) {
       if (err) {
         res.sendStatus(500)
-        console.error(err)
+        writeLog(err, 'Error', context)
       } else {
         res.clearCookie('connect.sid', { path: '/' }).status(200).send('Cookie deleted.')
       }
@@ -48,10 +53,10 @@ router.post('/register', isAuthenticated, function (req, res) {
     }
     user.create(userData, function (err, user) {
       if (err) {
-        console.error(err)
+        writeLog(err, 'Error', context)
         res.status(200).send('Something went wrong, maybe the user already exists...')
       } else {
-        console.log(`User account ${userData.username} has been created`)
+        writeLog(`User account ${userData.username} has been created by ${req.session.userId}`, 'Info', context)
         res.sendStatus(201)
       }
     })

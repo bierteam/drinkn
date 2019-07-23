@@ -28,20 +28,22 @@ app.disable('x-powered-by')
 app.use(helmet.frameguard())
 app.use(helmet.noCache())
 
-app.use(session({
+const options = {
   secret: config.app.secret,
   resave: true,
   saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: db }),
-  // TODO
-  // use cookie secure: https://github.com/expressjs/session/blob/master/README.md#cookiesecure
-  // also respect the remember credentials field at login by not hardcoding 30 days
   cookie: {
-    httpOnly: false,
-    maxAge: 30 * 24 * 60 * 60 * 1000 // store 30 days
+    httpOnly: false, // enable interaction with cookie from frontend code
+    maxAge: 30 * 24 * 60 * 60 * 1000 // default of 30 days
   }
-}))
+}
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1) // trust first proxy
+  options.cookie.secure = true // serve secure cookies
+}
 
+app.use(session(options))
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
   console.log('Succesfully connected to database')
