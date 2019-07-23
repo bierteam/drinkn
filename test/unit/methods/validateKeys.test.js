@@ -1,5 +1,5 @@
 /* global test, expect */
-const validateKeys = require('../../../methods/validateKeys')
+const validateKeys = require('../../../services/validateKeys')
 const mandatoryKeys = ['uid', 'name', 'date']
 
 const obj = {

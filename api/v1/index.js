@@ -1,38 +1,15 @@
 const express = require('express')
 const router = express.Router()
-const beer = require('../../models/beer')
 const store = require('../../models/store')
-const cron = require('node-cron')
-const script = require('../../methods/dbImport')
-const isAuthenticated = require('../../methods/isAuthenticated')
+const dbImport = require('../../services/dbImport')
+const isAuthenticated = require('../../services/isAuthenticated')
+const aanbieding = require('./aanbieding')
 
 const users = require('./users')
 const logging = require('./logging')
 router.use('/users', users)
 router.use('/logging', logging)
-
-let aanbiedingen
-const query = () => {
-  beer.find({ validity: { $gte: Date() } }).exec(function (err, result) {
-    if (err) console.error(err)
-    aanbiedingen = result
-  })
-}
-query()
-
-const dbImport = async () => {
-  await script()
-  query()
-}
-cron.schedule('0 9,22 * * *', async () => {
-  const timeout = Math.round(Math.random() * 60) * 1000 * 1000
-  setTimeout(await dbImport, timeout)
-  console.log('Cron: running import in: ' + (timeout / 1000000) + ' minutes.')
-})
-
-router.get('/aanbiedingen', isAuthenticated, function (req, res) {
-  res.json(aanbiedingen)
-})
+router.use(aanbieding)
 
 router.get('/stores', isAuthenticated, function (req, res) {
   store.findOne({}).exec(function (err, result) {
@@ -60,12 +37,6 @@ router.delete('/stores', isAuthenticated, function (req, res) { // WIP
 
 router.post('/import', isAuthenticated, function (req, res) {
   dbImport()
-  res.json('received')
-})
-
-router.post('/query', isAuthenticated, function (req, res) { // this is a temporary fix
-  query()
-  console.log('Refreshing')
   res.json('received')
 })
 

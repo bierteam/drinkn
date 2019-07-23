@@ -1,5 +1,5 @@
 /* global test, expect */
-const joinObjects = require('../../../methods/joinObjects')
+const joinObjects = require('../../../services/joinObjects')
 
 const obj1 = [{
   uid: '123',

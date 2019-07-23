@@ -19,6 +19,9 @@ mongoose.set('useCreateIndex', true)
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
 
+const dbImport = require('./services/dbImport')
+const cron = require('node-cron')
+
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -70,6 +73,12 @@ if (config.app.defaultAccount.autoCreate) {
   }
   createDefault()
 }
+
+cron.schedule('0 9,22 * * *', async () => {
+  const timeout = Math.round(Math.random() * 60) * 1000 * 1000
+  setTimeout(await dbImport, timeout)
+  console.log('Cron: running import in: ' + (timeout / 1000000) + ' minutes.')
+})
 
 const api = require('./api')
 app.use('/api', api)

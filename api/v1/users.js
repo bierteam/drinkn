@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
-const isAuthenticated = require('../../methods/isAuthenticated')
-// const isPrivileged = require('../../methods/isPrivileged')
-const writeLog = require('../../methods/writeLog')
+const isAuthenticated = require('../../services/isAuthenticated')
+const writeLog = require('../../services/writeLog')
 const context = 'Login'
 
 router.post('/login', function (req, res) {

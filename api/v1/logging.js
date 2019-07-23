@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const isAuthenticated = require('../../methods/isAuthenticated')
+const isAuthenticated = require('../../services/isAuthenticated')
 const logging = require('../../models/log')
 
 router.get('/logs', isAuthenticated, function (req, res) {
