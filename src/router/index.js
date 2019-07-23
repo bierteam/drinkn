@@ -6,6 +6,7 @@ import Login from '@/components/Login'
 import Register from '@/components/Register'
 import Import from '@/components/Import'
 import Storemapping from '@/components/Storemapping'
+import Logging from '@/components/Logging'
 
 Vue.use(Router)
 
@@ -44,6 +45,11 @@ export default new Router({
       path: '/storemapping',
       name: 'Storemapping',
       component: Storemapping
+    },
+    {
+      path: '/logging',
+      name: 'Logging',
+      component: Logging
     }
   ]
 })

@@ -7,7 +7,9 @@ const script = require('../../methods/dbImport')
 const isAuthenticated = require('../../methods/isAuthenticated')
 
 const users = require('./users')
+const logging = require('./logging')
 router.use('/users', users)
+router.use('/logging', logging)
 
 let aanbiedingen
 const query = () => {

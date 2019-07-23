@@ -26,6 +26,7 @@
             <div class="navbar-dropdown">
               <router-link class="navbar-item" to="/import">Import</router-link>
               <router-link class="navbar-item" to="/storemapping">Map store names</router-link>
+              <router-link class="navbar-item" to="/logging">Logging</router-link>
               <router-link class="navbar-item" to="/">Contact</router-link>
 
               <hr class="navbar-divider">

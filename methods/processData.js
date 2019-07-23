@@ -3,6 +3,8 @@ const updateStores = require('./updateStores')
 const revHash = require('rev-hash')
 const moment = require('moment')
 moment.locale('nl')
+const validateKeys = require('./validateKeys')
+const mandatoryKeys = ['id', 'brand', 'store', 'pricing', 'volume', 'rawValidity']
 
 const processData = (data, stores) => {
   let newStores = {}
@@ -12,7 +14,7 @@ const processData = (data, stores) => {
     newStores = stores
   }
 
-  for (let obj in data) {
+  for (let obj = data.length; obj--;) {
     data[obj].store = data[obj].winkel_name
     data[obj].brand = data[obj].merken_name
     data[obj].pricing = {}
@@ -21,13 +23,14 @@ const processData = (data, stores) => {
     data[obj].volume = data[obj].korte_name
     data[obj].rawUri = data[obj].aanbieding_link
     data[obj].rawValidity = data[obj].einddatum
+    data[obj].id = revHash(data[obj].uid)
     delete data[obj].merken_soort_omschrijving
     delete data[obj].brouwerij_omschrijving
     delete data[obj].gisting_omschrijving
 
-    // TODO: Write function that check if all properties have a value
-    if (!data[obj].brand) {
-      console.log(data[obj])
+    // Don't touch this devil
+    if (validateKeys(data[obj], mandatoryKeys) === false) {
+      data.splice(obj, 1)
       continue
     }
 
@@ -57,7 +60,6 @@ const processData = (data, stores) => {
       data[obj].uri = uriPrettifier(data[obj].rawUri)
     }
 
-    data[obj].id = revHash(data[obj].uid)
     data[obj].importDate = moment().toDate()
     data[obj].pricing.oldPrice = data[obj].pricing.rawOldPrice * 100
     data[obj].pricing.newPrice = data[obj].pricing.rawNewPrice * 100
