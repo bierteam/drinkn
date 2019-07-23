@@ -33,9 +33,9 @@ const options = {
   resave: true,
   saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: db }),
-  // TODO respect the remember credentials field at login by not hardcoding 30 days
   cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000 // store 30 days
+    httpOnly: false, // enable interaction with cookie from frontend code
+    maxAge: 30 * 24 * 60 * 60 * 1000 // default of 30 days
   }
 }
 if (app.get('env') === 'production') {

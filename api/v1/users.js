@@ -11,6 +11,9 @@ router.post('/login', function (req, res) {
         res.status(403).send('Incorrect username or password')
       } else {
         console.log(`User ${req.body.email} has logged in.`)
+        if (!req.body.remember) {
+          req.session.cookie.expires = false
+        }
         req.session.userId = user._id
         res.sendStatus(200)
       }
