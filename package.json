@@ -43,7 +43,6 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "rev-hash": "^3.0.0",
-    "supertest": "^4.0.2",
     "vue": "^2.5.2",
     "vue-browserupdate": "^1.2.0",
     "vue-router": "^3.0.2"
