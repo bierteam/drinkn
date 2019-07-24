@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
-const isAuthenticated = require('../../methods/isAuthenticated')
-// const isPrivileged = require('../../methods/isPrivileged')
-const writeLog = require('../../methods/writeLog')
+const isAuthenticated = require('../../services/isAuthenticated')
+const writeLog = require('../../services/writeLog')
 const context = 'Login'
 
 router.get('/', isAuthenticated, function (req, res) {
@@ -19,7 +18,7 @@ router.post('/login', function (req, res) {
       if (error || !user) {
         res.status(403).send('Incorrect username or password')
       } else {
-        writeLog(`User ${req.body.email} has logged in.`)
+        writeLog(`User ${req.body.email} has logged in.`, 'Info', context)
         if (!req.body.remember) {
           req.session.cookie.expires = false
         }
