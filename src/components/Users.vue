@@ -2,16 +2,15 @@
   <div>
     <table class='container table'>
       <thead>
-        <th>Id</th>
         <th>Username</th>
         <th>Admin</th>
+        <th>Manage</th>
       </thead>
       <tbody>
         <tr v-for='user in users'>
-          <th>{{user._id}}</th>
           <th>{{user.username}}</th>
           <th><input type="checkbox" disabled :checked="user.admin"></th>
-
+          <th><router-link :to="`/users/${user._id}`">Manage</router-link></th>
         </tr>
         <tr>
           <th></th>
