@@ -19,20 +19,23 @@
           <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
 
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              More
-            </a>
-
+            <a class="navbar-link">More</a>
             <div class="navbar-dropdown">
-              <router-link class="navbar-item" to="/import">Import</router-link>
-              <router-link class="navbar-item" to="/storemapping">Map store names</router-link>
-              <router-link class="navbar-item" to="/logging">Logging</router-link>
               <router-link class="navbar-item" to="/">Contact</router-link>
-
               <hr class="navbar-divider">
               <a class="navbar-item" href="https://github.com/bierteam/Pils/tree/master/docs">
                 Documentation
               </a>
+            </div>
+          </div>
+          <div class="navbar-item has-dropdown is-hoverable" v-if="isAdmin">
+            <a class="navbar-link">Admin stuff</a>
+            <div class="navbar-dropdown">
+              <router-link class="navbar-item" to="register">Register users</router-link>
+              <router-link class="navbar-item" to="/users">Users</router-link>
+              <router-link class="navbar-item" to="/import">Import data</router-link>
+              <router-link class="navbar-item" to="/storemapping">Map store names</router-link>
+              <router-link class="navbar-item" to="/logging">Logging</router-link>
             </div>
           </div>
         </div>
@@ -40,9 +43,7 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <router-link class="button is-primary" to="register">Register</router-link>
-              <!-- <router-link v-if="!isAuthenticated" class="button is-light" to="login">Log in</router-link> -->
-              <button class="button is-light" @click='Logout'>Logout</button>
+              <button class="button is-primary" @click='Logout'>Logout</button>
             </div>
           </div>
         </div>
@@ -97,6 +98,7 @@ export default {
       .then(response => {
         if (response.status === 200) {
           this.$data.isAuthenticated = false
+          this.$data.isAdmin = false
           localStorage.clear()
           this.$router.push('/login')
         }

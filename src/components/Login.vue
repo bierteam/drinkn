@@ -74,6 +74,7 @@
             this.$parent.isAuthenticated = true
             localStorage.setItem('isAuthenticated', 'You should not be here ಠ_ಠ')
             if (response.data.admin) {
+              this.$parent.isAdmin = true
               localStorage.setItem('isAdmin', 'You should not be here ಠ_ಠ')
             }
             this.$router.push(this.$route.query.redirect || '/home')
