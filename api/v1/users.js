@@ -50,7 +50,8 @@ router.post('/register', isAdmin, function (req, res) {
   if (req.body.email && req.body.password) {
     let userData = {
       username: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      admin: req.body.admin
     }
     user.create(userData, function (err, user) {
       if (err) {
