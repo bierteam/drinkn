@@ -43,7 +43,8 @@ router.post('/register', isAdmin, function (req, res) {
     const userData = {
       username: req.body.email,
       password: req.body.password,
-      admin: req.body.admin
+      admin: req.body.admin,
+      createdBy: req.session.userId
     }
     user.create(userData, function (err, user) {
       if (err) {
@@ -75,6 +76,7 @@ router.get('/:_id', isAdmin, function (req, res) {
 router.post('/:_id', isAdmin, function (req, res) {
   const _id = req.params._id
   const parameters = {}
+  parameters.editedBy = req.session.userId
   if (req.body.user.password) {
     parameters.password = req.body.user.password
   }

@@ -22,6 +22,14 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  createdBy: {
+    type: String,
+    required: false
+  },
+  editedBy: {
+    type: String,
+    required: false
   }
 })
 
