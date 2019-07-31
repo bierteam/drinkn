@@ -41,21 +41,6 @@ UserSchema.statics.authenticate = function (username, password, callback) {
     })
 }
 
-UserSchema.statics.isPrivileged = function (userId, callback) {
-  User.findOne({ _id: userId })
-    .exec(function (err, user) {
-      if (err) {
-        return callback(err)
-      } else if (!user.admin) {
-        let err = new Error('User not admin.')
-        err.status = 401
-        return callback(err)
-      } else if (user.admin) {
-        return callback(null, user.admin)
-      }
-    })
-}
-
 UserSchema.pre('save', function (next) {
   let user = this
   bcrypt.hash(user.password, 10, function (err, hash) {

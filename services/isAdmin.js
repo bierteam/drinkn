@@ -5,13 +5,11 @@ const user = require('../models/user')
 const isAdmin = (req, res, next) => {
   if (!devmode) {
     if (req.session && req.session.userId) {
-      user.isPrivileged(req.session.userId, function (error, result) {
-        if (error || !result) {
-          res.status(403).send('You are no admin!')
-        } else {
-          return next()
-        }
-      })
+      if (!req.session.admin) {
+        res.status(403).send('You are no admin!')
+      } else {
+        return next()
+      }
     } else {
       res.status(403).send('Thou shall not pass!')
     }

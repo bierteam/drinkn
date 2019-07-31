@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
-const isAuthenticated = require('../../services/isAuthenticated')
 const isAdmin = require('../../services/isAdmin')
 
 const writeLog = require('../../services/writeLog')
@@ -25,6 +24,7 @@ router.post('/login', function (req, res) {
           req.session.cookie.expires = false
         }
         req.session.userId = user._id
+        req.session.admin = user.admin
         res.sendStatus(200)
       }
     })
@@ -46,7 +46,7 @@ router.delete('/logout', function (req, res, next) {
   }
 })
 
-router.post('/register', isAuthenticated, function (req, res) {
+router.post('/register', isAdmin, function (req, res) {
   if (req.body.email && req.body.password) {
     let userData = {
       username: req.body.email,

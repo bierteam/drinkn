@@ -56,6 +56,7 @@ db.once('open', function () {
 if (config.app.defaultAccount.autoCreate) {
   const defaultAccount = config.app.defaultAccount
   const username = defaultAccount.username
+  defaultAccount.admin = true
   const createDefault = () => {
     user.findOne({ username }, function (err, result) {
       if (err) {
