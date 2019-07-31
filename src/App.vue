@@ -81,14 +81,14 @@
 <script>
 // addToHomescreen();
 import Api from '@/services/Api'
-import getCookie from '@/services/Cookie'
 
 export default {
   name: 'App',
   data() {
     return {
       burger: false,
-      isAuthenticated: getCookie('connect.sid') ? true : false
+      isAuthenticated: localStorage.getItem('isAuthenticated') ? true : false,
+      isAdmin: localStorage.getItem('isAdmin') ? true : false
     }
   },
   methods: {
@@ -97,6 +97,7 @@ export default {
       .then(response => {
         if (response.status === 200) {
           this.$data.isAuthenticated = false
+          localStorage.clear()
           this.$router.push('/login')
         }
       })

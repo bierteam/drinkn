@@ -37,7 +37,6 @@ const options = {
   saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: db }),
   cookie: {
-    httpOnly: false, // enable interaction with cookie from frontend code
     maxAge: 30 * 24 * 60 * 60 * 1000 // default of 30 days
   }
 }

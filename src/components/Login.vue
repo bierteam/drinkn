@@ -72,6 +72,10 @@
         .then(response => {
           if ( response.status === 200 ) {
             this.$parent.isAuthenticated = true
+            localStorage.setItem('isAuthenticated', 'You should not be here ಠ_ಠ')
+            if (response.data.admin) {
+              localStorage.setItem('isAdmin', 'You should not be here ಠ_ಠ')
+            }
             this.$router.push(this.$route.query.redirect || '/home')
           }
         })

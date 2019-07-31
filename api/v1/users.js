@@ -25,7 +25,7 @@ router.post('/login', function (req, res) {
         }
         req.session.userId = user._id
         req.session.admin = user.admin
-        res.sendStatus(200)
+        res.status(200).send({ admin: user.admin })
       }
     })
   } else {
