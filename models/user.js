@@ -12,6 +12,11 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  admin: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 })
 
@@ -33,6 +38,21 @@ UserSchema.statics.authenticate = function (username, password, callback) {
           return callback()
         }
       })
+    })
+}
+
+UserSchema.statics.isPrivileged = function (userId, callback) {
+  User.findOne({ _id: userId })
+    .exec(function (err, user) {
+      if (err) {
+        return callback(err)
+      } else if (!user.admin) {
+        let err = new Error('User not admin.')
+        err.status = 401
+        return callback(err)
+      } else if (user.admin) {
+        return callback(null, user.admin)
+      }
     })
 }
 

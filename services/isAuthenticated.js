@@ -9,6 +9,7 @@ const isAuthenticated = (req, res, next) => {
       res.status(403).send('Thou shall not pass!')
     }
   } else {
+    console.log('responding to user because of devmode')
     return next()
   }
 }

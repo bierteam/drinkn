@@ -2,10 +2,12 @@ const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
 const isAuthenticated = require('../../services/isAuthenticated')
+const isAdmin = require('../../services/isAdmin')
+
 const writeLog = require('../../services/writeLog')
 const context = 'Login'
 
-router.get('/', isAuthenticated, function (req, res) {
+router.get('/', isAdmin, function (req, res) {
   user.find({}).select('username').exec(function (err, results) {
     if (err) console.error(err)
     res.json(results)

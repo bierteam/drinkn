@@ -20,27 +20,17 @@
 
 <script>
   import Api from '@/services/Api'
-  import pwned from "havetheybeenpwned"
 
   export default {
     data() {
       return {
         users: [],
-        isPwned: false,
         message: '',
         error: ''
       }
     },
     created () {
         this.Users()
-    },
-    computed: {
-      isDisabled:function() {
-        pwned(this.$data.password).then(isPwned => {
-          this.$data.isPwned = isPwned
-        })
-        return ((this.$data.email && this.$data.password && !this.$data.isPwned) ? false : true)
-      }
     },
     methods: {
       async Users() {
