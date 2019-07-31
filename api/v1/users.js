@@ -1,10 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
-const isAuthenticated = require('../../methods/isAuthenticated')
-// const isPrivileged = require('../../methods/isPrivileged')
-const writeLog = require('../../methods/writeLog')
+const isAdmin = require('../../services/isAdmin')
+
+const writeLog = require('../../services/writeLog')
 const context = 'Login'
+
+router.get('/', isAdmin, function (req, res) {
+  user.find({}).select('username admin').exec(function (err, results) {
+    if (err) console.error(err)
+    res.json(results)
+  })
+})
 
 router.post('/login', function (req, res) {
   if (req.body.email && req.body.password) {
@@ -12,12 +19,13 @@ router.post('/login', function (req, res) {
       if (error || !user) {
         res.status(403).send('Incorrect username or password')
       } else {
-        writeLog(`User ${req.body.email} has logged in.`)
+        writeLog(`User ${req.body.email} has logged in.`, 'Info', context)
         if (!req.body.remember) {
           req.session.cookie.expires = false
         }
         req.session.userId = user._id
-        res.sendStatus(200)
+        req.session.admin = user.admin
+        res.status(200).send({ admin: user.admin })
       }
     })
   } else {
@@ -38,11 +46,12 @@ router.delete('/logout', function (req, res, next) {
   }
 })
 
-router.post('/register', isAuthenticated, function (req, res) {
+router.post('/register', isAdmin, function (req, res) {
   if (req.body.email && req.body.password) {
     let userData = {
       username: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      admin: req.body.admin
     }
     user.create(userData, function (err, user) {
       if (err) {

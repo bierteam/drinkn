@@ -54,7 +54,8 @@
 </template>
 
 <script>
-import logging from '@/services/Logging'
+import Api from '@/services/Api'
+
 export default {
   name: 'aanbiedingen',
   data () {
@@ -73,11 +74,13 @@ export default {
   },
   methods: {
     async getLogs () {
-      const response = await logging.fetchLogs()
+      const response = await Api().get('api/v1/logging')
       this.logging = response.data
     },
     async deleteLogs() {
-      logging.deleteLogs()
+      const response = Api().delete(`api/v1/logging`)
+      // TODO show message of results
+      this.$data.logging = []
     }
   }
 }

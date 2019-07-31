@@ -30,6 +30,11 @@
                 <input class="input is-large" v-model="password" type="password" placeholder="Their password">
               </div>
             </div>
+            <div class="field">
+                <input type="checkbox" v-model="admin">
+                Make this user an administrator
+              </label>
+            </div>
             <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Register new account</button>
             </form>
           </div>
@@ -53,6 +58,7 @@
       return {
         email: '',
         password: '',
+        admin: false,
         isPwned: false,
         message: '',
         error: ''
@@ -70,8 +76,9 @@
       Post() {
         const email = this.$data.email
         const password = this.$data.password
+        const admin = this.$data.admin
         Api().post(`api/v1/users/register`, {
-          email, password
+          email, password, admin
         })
         .then( response => {
           if (response.status === 201) {
