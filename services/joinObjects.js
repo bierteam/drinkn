@@ -12,21 +12,21 @@ const joinObjects = (primaryObjects, secundaryObjects, firstKey, secondKey, cont
     name: 'test'
   }
   */
-  let preparedObject = {}
-  for (let object in secundaryObjects) {
+  const preparedObject = {}
+  for (const object in secundaryObjects) {
     preparedObject[secundaryObjects[object][secondKey]] = secundaryObjects[object]
   }
 
-  for (let object in primaryObjects) {
+  for (const object in primaryObjects) {
     //  Maps The second object to the primary Object
-    let mappedObject = preparedObject[primaryObjects[object][firstKey]]
+    const mappedObject = preparedObject[primaryObjects[object][firstKey]]
     // Dynamically adds each key of the mapped secundary object to the primary object
-    for (let key in mappedObject) {
+    for (const key in mappedObject) {
       // Check if object already has property
       if (!primaryObjects[object][key]) {
         primaryObjects[object][key] = mappedObject[key]
       } else {
-        let newKey = context + '_' + key
+        const newKey = context + '_' + key
         // console.log('Key ' + key + ' Already exists, using ' + newKey)
         primaryObjects[object][newKey] = mappedObject[key]
       }

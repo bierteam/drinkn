@@ -31,7 +31,7 @@ UserSchema.statics.authenticate = function (username, password, callback) {
       if (err) {
         return callback(err)
       } else if (!user) {
-        let err = new Error('User not found.')
+        const err = new Error('User not found.')
         err.status = 401
         return callback(err)
       }
@@ -47,7 +47,7 @@ UserSchema.statics.authenticate = function (username, password, callback) {
 }
 
 UserSchema.pre('save', function (next) {
-  let user = this
+  const user = this
   bcrypt.hash(user.password, 10, function (err, hash) {
     if (err) {
       return next(err)
@@ -57,5 +57,5 @@ UserSchema.pre('save', function (next) {
   })
 })
 
-let User = mongoose.model('User', UserSchema)
+const User = mongoose.model('User', UserSchema)
 module.exports = User

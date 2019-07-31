@@ -1,6 +1,5 @@
 const config = require('../config')
 const devmode = config.app.devmode
-const user = require('../models/user')
 
 const isAdmin = (req, res, next) => {
   if (!devmode) {

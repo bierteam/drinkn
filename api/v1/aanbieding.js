@@ -4,7 +4,7 @@ const isAuthenticated = require('../../services/isAuthenticated')
 const aanbieding = require('../../services/aanbieding')
 
 router.get('/aanbiedingen', isAuthenticated, async function (req, res) {
-  let resp = await aanbieding()
+  const resp = await aanbieding()
   res.json(resp)
 })
 

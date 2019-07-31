@@ -48,7 +48,7 @@ router.delete('/logout', function (req, res, next) {
 
 router.post('/register', isAdmin, function (req, res) {
   if (req.body.email && req.body.password) {
-    let userData = {
+    const userData = {
       username: req.body.email,
       password: req.body.password,
       admin: req.body.admin

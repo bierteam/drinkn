@@ -5,9 +5,9 @@ const requestData = async (context) => {
     uri: `https://biernet.nl/extra/app/V3_3.3.4/${context}.php?d=`,
     headers: {
       'User-Agent': 'nl.Biernet.iOS.app/V3',
-      'Accept': 'application/json, text/plain, /',
+      Accept: 'application/json, text/plain, /',
       'Accept-Language': 'nl-nl',
-      'Connection': 'close'
+      Connection: 'close'
       // TODO implement: 'Accept-Encoding': 'gzip, deflate'
     },
     json: true // Automatically parses the JSON string in the response

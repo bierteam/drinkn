@@ -3,7 +3,7 @@ const moment = require('moment')
 moment.locale('nl')
 
 const writeLog = (message, type, context) => {
-  let logMessage = {
+  const logMessage = {
     message: message,
     date: moment().toDate(),
     type: type,
