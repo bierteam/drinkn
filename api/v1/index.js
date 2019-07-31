@@ -1,16 +1,19 @@
 const express = require('express')
 const router = express.Router()
+
 const aanbieding = require('./aanbieding')
+router.use(aanbieding)
+
 const store = require('./stores')
+router.use(store)
+
+const dbImport = require('./dbImport')
+router.use(dbImport)
 
 const users = require('./users')
-const logging = require('./logging')
-const dbImport = require('./dbImport')
-
 router.use('/users', users)
+
+const logging = require('./logging')
 router.use('/logging', logging)
-router.use(aanbieding)
-router.use(store)
-router.use(dbImport)
 
 module.exports = router

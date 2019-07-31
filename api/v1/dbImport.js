@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const isAuthenticated = require('../../services/isAuthenticated')
+const isAdmin = require('../../services/isAdmin')
 const dbImport = require('../../services/dbImport')
 
-router.post('/import', isAuthenticated, function (req, res) {
+router.post('/import', isAdmin, function (req, res) {
   dbImport()
   res.json('received')
 })

@@ -74,12 +74,13 @@ export default {
   },
   methods: {
     async getLogs () {
-      const response = await Api().get('api/v1/logging/logs')
+      const response = await Api().get('api/v1/logging')
       this.logging = response.data
     },
     async deleteLogs() {
-      const response = Api().delete(`api/v1/logging/logs`)
-      // TODO show message of results and remove logs of page
+      const response = Api().delete(`api/v1/logging`)
+      // TODO show message of results
+      this.$data.logging = []
     }
   }
 }
