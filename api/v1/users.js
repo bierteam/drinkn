@@ -7,7 +7,7 @@ const writeLog = require('../../services/writeLog')
 const context = 'Login'
 
 router.get('/', isAdmin, function (req, res) {
-  user.find({}).select('username').exec(function (err, results) {
+  user.find({}).select('username admin').exec(function (err, results) {
     if (err) console.error(err)
     res.json(results)
   })
