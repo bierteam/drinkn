@@ -4,6 +4,7 @@ import Home from '@/components/Home'
 import Aanbiedingen from '@/components/Aanbiedingen'
 import Login from '@/components/Login'
 import Users from '@/components/Users'
+import User from '@/components/User'
 import Register from '@/components/Register'
 import Import from '@/components/Import'
 import Storemapping from '@/components/Storemapping'
@@ -41,6 +42,11 @@ export default new Router({
       path: '/users',
       name: 'Users',
       component: Users
+    },
+    {
+      path: '/users/:id',
+      name: 'User',
+      component: User
     },
     {
       path: '/import',
