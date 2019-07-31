@@ -14,6 +14,8 @@
         </tr>
         <tr>
           <th></th>
+          <th></th>
+          <th><router-link :to="`/register`">Add</router-link></th>
         </tr>
       </tbody>
     </table>

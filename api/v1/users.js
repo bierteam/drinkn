@@ -2,16 +2,8 @@ const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
 const isAdmin = require('../../services/isAdmin')
-
 const writeLog = require('../../services/writeLog')
-const context = 'Login'
-
-router.get('/', isAdmin, function (req, res) {
-  user.find({}).select('username admin').exec(function (err, results) {
-    if (err) console.error(err)
-    res.json(results)
-  })
-})
+const context = 'Users'
 
 router.post('/login', function (req, res) {
   if (req.body.email && req.body.password) {
@@ -63,6 +55,59 @@ router.post('/register', isAdmin, function (req, res) {
       }
     })
   }
+})
+
+router.get('/', isAdmin, function (req, res) {
+  user.find().select('username admin').exec(function (err, results) {
+    if (err) console.error(err)
+    res.json(results)
+  })
+})
+
+router.get('/:_id', isAdmin, function (req, res) {
+  let _id = { _id: req.params._id }
+  user.findOne(_id).select('username admin').exec(function (err, result) {
+    if (err) console.error(err)
+    res.json(result)
+  })
+})
+
+router.post('/:_id', isAdmin, function (req, res) {
+  const _id = req.params._id
+  const parameters = {}
+  if (req.body.user.password) {
+    parameters.password = req.body.user.password
+  }
+  if (req.body.user.username) {
+    parameters.username = req.body.user.username
+  }
+  if (req.body.user.admin != null) {
+    parameters.admin = req.body.user.admin
+  }
+  user.findOneAndUpdate({ _id }, { $set: parameters }, { strict: false, new: true })
+    .select('username admin')
+    .exec(function (err, result) {
+      if (err) {
+        writeLog(err, 'Error', context)
+        res.sendStatus(500)
+      } else {
+        writeLog(`User account ${result} has been updated by ${req.session.userId}`, 'Info', context)
+        res.json(result)
+      }
+    })
+})
+
+router.delete('/:_id', isAdmin, function (req, res) {
+  user.deleteOne({ _id: req.params._id }, function (err) {
+    if (err) {
+      console.err(err)
+      writeLog(err, 'Error', context)
+      res.sendStatus(500)
+    } else {
+      res.sendStatus(200)
+      writeLog(`User account ${req.params._id} has been deleted by ${req.session.userId}`, 'Info', context)
+    }
+  })
 })
 
 module.exports = router

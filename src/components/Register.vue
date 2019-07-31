@@ -1,7 +1,5 @@
 <template>
-
-<body>
-  <section class="hero is-fullheight">
+  <body>
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
@@ -33,9 +31,8 @@
             <div class="field">
                 <input type="checkbox" v-model="admin">
                 Make this user an administrator
-              </label>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Register new account</button>
+            <button class="button is-block is-light is-large is-fullwidth" @click='Post' :disabled="isDisabled">Register new account</button>
             </form>
           </div>
           <p class="has-text-grey">
@@ -45,8 +42,7 @@
         </div>
       </div>
     </div>
-  </section>
-</body>
+  </body>
 </template>
 
 <script>

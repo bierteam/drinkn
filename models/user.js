@@ -57,5 +57,20 @@ UserSchema.pre('save', function (next) {
   })
 })
 
+UserSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
+  const user = this._update.$set
+  if (user.password) {
+    bcrypt.hash(user.password, 10, function (err, hash) {
+      if (err) {
+        return next(err)
+      }
+      user.password = hash
+      next()
+    })
+  } else {
+    next()
+  }
+})
+
 const User = mongoose.model('User', UserSchema)
 module.exports = User
