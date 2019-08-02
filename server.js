@@ -32,9 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 // security settings
 app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
-app.disable('x-powered-by')
-app.use(helmet.frameguard())
-app.use(helmet.noCache())
+app.use(helmet())
 
 const options = {
   secret: config.app.secret,
