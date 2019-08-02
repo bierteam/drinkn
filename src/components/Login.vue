@@ -64,7 +64,7 @@
         const email = this.$data.email
         const password = this.$data.password
         const remember = this.$data.remember
-        Api().post(`api/v1/users/login`, {
+        Api().post(`/api/v1/users/login`, {
           email, password, remember
         })
         .then(response => {

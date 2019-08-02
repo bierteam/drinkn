@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     async getPils () {
-      const response = await Api().get('api/v1/aanbiedingen')
+      const response = await Api().get('/api/v1/aanbiedingen')
       for (let i = 0; i < response.data.length; i++) {
         response.data[i].oldPrice = (response.data[i].pricing.oldPrice / 100).toFixed(2)
         response.data[i].newPrice = (response.data[i].pricing.newPrice / 100).toFixed(2)

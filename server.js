@@ -2,6 +2,7 @@ const config = require('./config')
 const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
 
 const express = require('express')
+const history = require('connect-history-api-fallback')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const helmet = require('helmet')
@@ -21,6 +22,10 @@ const db = mongoose.connection
 
 const dbImport = require('./services/dbImport')
 const cron = require('node-cron')
+
+// https://github.com/bripkens/connect-history-api-fallback
+// https://router.vuejs.org/guide/essentials/history-mode.html
+app.use(history())
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))

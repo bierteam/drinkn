@@ -73,7 +73,7 @@
         const email = this.$data.email
         const password = this.$data.password
         const admin = this.$data.admin
-        Api().post(`api/v1/users/register`, {
+        Api().post(`/api/v1/users/register`, {
           email, password, admin
         })
         .then( response => {

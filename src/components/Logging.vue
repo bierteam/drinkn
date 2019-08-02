@@ -78,7 +78,7 @@ export default {
       this.logging = response.data
     },
     async deleteLogs() {
-      const response = Api().delete(`api/v1/logging`)
+      const response = Api().delete(`/api/v1/logging`)
       // TODO show message of results
       this.$data.logging = []
     }

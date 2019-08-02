@@ -30,6 +30,7 @@
     "body-parser": "^1.18.3",
     "bulma": "^0.7.2",
     "cheerio": "^1.0.0-rc.2",
+    "connect-history-api-fallback": "^1.6.0",
     "connect-mongo": "^2.0.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",

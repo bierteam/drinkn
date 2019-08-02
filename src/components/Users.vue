@@ -38,7 +38,7 @@
     },
     methods: {
       async Users() {
-        Api().get(`api/v1/users`, {})
+        Api().get(`/api/v1/users`, {})
         .then( response => {
           if (response.status === 200) {
             this.users = response.data   

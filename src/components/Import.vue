@@ -36,7 +36,7 @@ export default {
   // Pushes posts to the server when called.
   methods: {
     Import() {
-      Api().post(`api/v1/import`, {
+      Api().post(`/api/v1/import`, {
       })
       .then(response => {
         this.status = response
@@ -46,7 +46,7 @@ export default {
       })
     },
     Query() { // this is temporary
-      Api().post(`api/v1/query`, {
+      Api().post(`/api/v1/query`, {
       })
       .then(response => {
         this.refreshStatus = response

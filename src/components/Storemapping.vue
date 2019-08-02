@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     Get() {
-      Api().get(`api/v1/stores`, {
+      Api().get(`/api/v1/stores`, {
       })
       .then(response => {
         this.stores = response.data
@@ -69,7 +69,7 @@ export default {
       this.isSaved = false
       this.isSaving = true
       const newStores = this.$data.newStores
-      Api().post(`api/v1/stores`, {
+      Api().post(`/api/v1/stores`, {
         newStores
       })
       .then(response => {
@@ -87,7 +87,7 @@ export default {
       })
     },
     Delete(remove) { // WIP
-      Api().delete(`api/v1/stores`, {
+      Api().delete(`/api/v1/stores`, {
         data: {
           remove
         }

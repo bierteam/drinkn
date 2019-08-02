@@ -79,7 +79,7 @@
     methods: {
       async Users() {
         const _id = this.$route.params.id
-        Api().get(`api/v1/users/${_id}`, {})
+        Api().get(`/api/v1/users/${_id}`, {})
         .then( response => {
           if (response.status === 200) {
             // get correct user from array
@@ -97,7 +97,7 @@
         this.isSaving = true
         const user = this.$data.newUser
         const _id = this.$route.params.id
-        Api().post(`api/v1/users/${_id}`, {
+        Api().post(`/api/v1/users/${_id}`, {
           user
         })
         .then(response => {
@@ -116,7 +116,7 @@
       },
       Delete() {
         const _id = this.$route.params.id
-        Api().delete(`api/v1/users/${_id}`)
+        Api().delete(`/api/v1/users/${_id}`)
         .then(response => {
           if (response.status === 200) {
             this.$router.push('/users')
