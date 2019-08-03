@@ -13,6 +13,9 @@ router.use(dbImport)
 const users = require('./users')
 router.use('/users', users)
 
+const account = require('./account')
+router.use('/account', account)
+
 const logging = require('./logging')
 router.use('/logging', logging)
 

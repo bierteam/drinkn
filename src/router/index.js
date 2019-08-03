@@ -5,6 +5,7 @@ import Aanbiedingen from '@/components/Aanbiedingen'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import Users from '@/components/Users'
+import Account from '@/components/Account'
 import User from '@/components/User'
 import Import from '@/components/Import'
 import Storemapping from '@/components/Storemapping'
@@ -19,6 +20,7 @@ export default new Router({
     { path: '/', redirect: '/home' },
     { path: '/home', component: Home },
     { path: '/aanbiedingen', component: Aanbiedingen },
+    { path: '/register', component: Register },
     { path: '/login', component: Login },
     { path: '/users', component: Users },
     { path: '/account', component: Account },
