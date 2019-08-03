@@ -27,7 +27,7 @@
                 Remember me
               </label>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Login</button>
+            <button class="button is-block is-primary is-large is-fullwidth" @click='Post' :disabled="isDisabled">Login</button>
             </form>
           </div>
           <p class="has-text-grey">

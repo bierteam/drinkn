@@ -10,7 +10,7 @@
             <button class="delete" @click="error = ''"></button>
               {{error}}
           </div>
-          <h3 class="title has-text-grey">Edit</h3>
+          <h3 class="title has-text-grey">Edit account</h3>
           <div class="box">
             <form>
             <div class="field">

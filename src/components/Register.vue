@@ -65,7 +65,7 @@
         pwned(this.$data.password).then(isPwned => {
           this.$data.isPwned = isPwned
         })
-        return ((this.$data.email && this.$data.password && !this.$data.isPwned) ? false : true)
+        return (this.$data.email && this.$data.password && !this.$data.isPwned) ? false : true
       }
     },
     methods: {

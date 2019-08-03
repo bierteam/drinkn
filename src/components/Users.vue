@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-if="error" class="notification is-danger">
+      <button class="delete" @click="error = ''"></button>
+      {{error}}
+    </div>
     <table class='container table'>
       <thead>
         <th>Username</th>
@@ -10,7 +14,7 @@
         <tr v-for='user in users'>
           <th>{{user.username}}</th>
           <th><input type="checkbox" disabled :checked="user.admin"></th>
-          <th><router-link :to="`/users/${user._id}`">Manage</router-link></th>
+          <th><router-link class="button is-primary" :disabled="user._id === 'TODO: own _id'" :to="`/users/${user._id}`">Manage</router-link></th>
         </tr>
         <tr>
           <th></th>
