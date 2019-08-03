@@ -107,37 +107,24 @@ export default {
       .catch(e => {
         console.error(e)
       })
-    }
-  },
-  beforeMount: function () { // Fresh page load
-    if (!this.isAuthenticated){
-      if (this.$route.path === '/home' || this.$route.path === '/login') {
-        this.$router.push('/login')
-      } else {
-        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
+    },
+    Redirect() {
+      if (!this.isAuthenticated){
+        const query = this.$route.query
+        if (this.$route.path !== '/home' && this.$route.path !== '/login') {
+          query.redirect = this.$route.path
+        }
+      this.$router.push({ path: '/login', query })
       }
     }
   },
-  beforeUpdate: function () { // Refresh, url change, link, etc.
-    if (!this.isAuthenticated){
-      if (this.$route.path === '/home' || this.$route.path === '/login') {
-        this.$router.push('/login')
-      } else {
-        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
-      }
-    }
+  beforeMount() { // Refresh, fresh page load
+    this.Redirect()
+  },
+  beforeUpdate () { // Uri change, link, etc.
+    this.Redirect()
   }
 }
 
 </script>
 
-<style>
-/* .wrapper { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -30px; }
-.footer, #push { height:20px;} */
-/* .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    } */
-</style>

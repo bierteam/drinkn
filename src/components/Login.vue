@@ -75,7 +75,8 @@
               this.$parent.isAdmin = true
               localStorage.setItem('isAdmin', 'You should not be here ಠ_ಠ')
             }
-            this.$router.push(this.$route.query.redirect || '/home')
+            const query = this.$route.query
+            this.$router.push((query.redirect) ? { path: query.redirect, query } : '/home' )
           }
         })
         .catch(e => {
@@ -84,15 +85,15 @@
         })
       }
     },
-      beforeMount: function () { // Fresh page load
-    if (this.$parent.isAuthenticated){
-      this.$router.push('/home')
+    beforeMount() { // Refresh, fresh page load
+      if (this.$parent.isAuthenticated){
+        this.$router.push('/home')
+      }
+    },
+    beforeUpdate () { // UrI change, link, etc.
+      if (this.$parent.isAuthenticated){
+        this.$router.push('/home')
+      }
     }
-  },
-  beforeUpdate: function () { // Refresh, url change, link, etc.
-    if (this.$parent.isAuthenticated){
-      this.$router.push('/home')
-    }
-  }
   }
 </script>
