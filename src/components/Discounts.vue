@@ -80,7 +80,7 @@
           <td>{{ discount.pricing.discount | currency }}</td>
           <td>{{ discount.pricing.discountPercent }}%</td>
           <td>{{ discount.volume }}</td>
-          <a class='button is-primary' v-if='discount.uri' :href='discount.uri'>Buy!</a>
+          <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
           <a v-else></a>
         </tr>
       </tbody>
