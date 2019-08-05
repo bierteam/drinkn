@@ -41,11 +41,11 @@
       </tfoot>
       
       <tbody> <!-- table -->
-        <tr v-for='log in logs' :key='log.id'>
+        <tr v-for='log in processed' :key='log.id'>
           <td>{{log.date}}</td>
-          <td>{{log.message}}</td>
-          <td>{{log.context}}</td>
-          <td>{{log.type}}</td>
+          <td @click='search = log.message'>{{log.message}}</td>
+          <td @click='context = log.context'>{{log.context}}</td>
+          <td @click='type = log.type'>{{log.type}}</td>
         </tr>   
       </tbody>
     </table>
@@ -54,8 +54,10 @@
 
 <script>
 import Api from '@/services/Api'
+import Vue2Filters from 'vue2-filters'
 
 export default {
+  mixins: [Vue2Filters.mixin],
   data () {
     return {
       search: '',
@@ -85,6 +87,15 @@ export default {
     this.search = this.$route.query.search
     this.context = this.$route.query.context
     this.type = this.$route.query.type
+  },
+  computed:{
+    processed:function() {
+      let data = this.logs
+      data = this.filterBy(data, this.search)
+      data = this.filterBy(data, this.context)
+      data = this.filterBy(data, this.type)
+      return data
+    }
   },
   methods: {
     async getLogs () {

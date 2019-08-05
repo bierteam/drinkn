@@ -72,14 +72,14 @@
       </tfoot>
       <tbody><!-- table -->
         <tr v-for='discount in processed' :key='discount.id'>
-          <td>{{ discount.brand }}</td>
-          <td>{{ discount.store }} </td>
+          <td @click='search = discount.brand'>{{ discount.brand }}</td>
+          <td @click='store = discount.store'>{{ discount.store }} </td>
           <td class='has-text-success'>{{ discount.pricing.newPrice / 100 | currency }}</td>
           <td class='has-text-danger'>{{ discount.pricing.oldPrice / 100 | currency }}</td>
           <td>{{ discount.pricing.literPrice | currency }}</td>
           <td>{{ discount.pricing.discount | currency }}</td>
           <td>{{ discount.pricing.discountPercent }}%</td>
-          <td>{{ discount.volume }}</td>
+          <td @click='volume = discount.volume'>{{ discount.volume }}</td>
           <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
           <a v-else></a>
         </tr>
