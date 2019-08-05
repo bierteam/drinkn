@@ -52,7 +52,6 @@
 import Api from '@/services/Api'
 
 export default {
-  name: 'aanbiedingen',
   data () {
     return {
       search: '',

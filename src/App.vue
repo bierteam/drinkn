@@ -16,7 +16,7 @@
       <div id="navbar" class="navbar-menu" v-if="isAuthenticated" @mouseleave="burger = false" v-bind:class="{'is-active': burger}">
         <div class="navbar-start">
           <router-link class="navbar-item" to="/home">Home</router-link>
-          <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
+          <router-link class="navbar-item" to="/discounts">discounts</router-link>
 
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">More</a>

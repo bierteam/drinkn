@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import Aanbiedingen from '@/components/Aanbiedingen'
+import Discounts from '@/components/Discounts'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import Users from '@/components/Users'
@@ -19,7 +19,7 @@ export default new Router({
   routes: [
     { path: '/', redirect: '/home' },
     { path: '/home', component: Home },
-    { path: '/aanbiedingen', component: Aanbiedingen },
+    { path: '/discounts', component: Discounts },
     { path: '/register', component: Register },
     { path: '/login', component: Login },
     { path: '/users', component: Users },

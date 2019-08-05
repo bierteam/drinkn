@@ -13,6 +13,7 @@ const uriPrettifier = rawUri => {
     .replace(/%253A/g, ':')
     .replace(/%252F/g, '/')
     .replace(/%23tab2(.*)/g, '')
+    .replace(/(.*)u=/g, 'https://jumbo.com')
 
   return uri
 }

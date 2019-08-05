@@ -1,6 +1,6 @@
 const beer = require('../models/beer')
 
-const aanbieding = () => {
+const discount = () => {
   return new Promise((resolve) => {
     beer.find({ validity: { $gte: Date() } }).exec(async function (err, result) {
       if (err) console.error(err)
@@ -9,4 +9,4 @@ const aanbieding = () => {
   })
 }
 
-module.exports = aanbieding
+module.exports = discount

@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-const aanbieding = require('./aanbieding')
-router.use(aanbieding)
+const discounts = require('./discounts')
+router.use(discounts)
 
 const store = require('./stores')
 router.use(store)

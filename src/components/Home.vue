@@ -3,7 +3,7 @@
     <h1>Welcome to the Pils App!</h1>
     <br>
     Maybe you are looking for some 
-    <router-link to="/aanbiedingen">Aanbiedingen</router-link>
+    <router-link to="/discounts">discounts</router-link>
     <br>
     <br>
   </div>
