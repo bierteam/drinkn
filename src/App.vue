@@ -90,7 +90,8 @@ export default {
     return {
       burger: false,
       isAuthenticated: localStorage.getItem('isAuthenticated') ? true : false,
-      isAdmin: localStorage.getItem('isAdmin') ? true : false
+      isAdmin: localStorage.getItem('isAdmin') ? true : false,
+      userId: localStorage.getItem('isAuthenticated')
     }
   },
   methods: {

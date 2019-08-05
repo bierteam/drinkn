@@ -70,7 +70,7 @@
         .then(response => {
           if ( response.status === 200 ) {
             this.$parent.isAuthenticated = true
-            localStorage.setItem('isAuthenticated', 'You should not be here ಠ_ಠ')
+            localStorage.setItem('isAuthenticated', response.data._id)
             if (response.data.admin) {
               this.$parent.isAdmin = true
               localStorage.setItem('isAdmin', 'You should not be here ಠ_ಠ')
@@ -80,7 +80,7 @@
           }
         })
         .catch(e => {
-          this.error = e.response.data
+          this.error = e.response.data || e
           console.error(e)
         })
       }

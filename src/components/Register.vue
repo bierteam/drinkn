@@ -84,7 +84,7 @@
           }
         })
         .catch(e => {
-          this.$data.error = e
+          this.$data.error = e.response.data || e
           console.error(e)
         })
       }
