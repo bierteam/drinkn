@@ -168,10 +168,10 @@ export default {
   },
   updated () {
     const query = {}
-    query.search = this.search
-    query.store = this.store
-    query.volume = this.volume
-    query.checked = this.checked
+    if (this.search) query.search = this.search
+    if (this.store) query.store = this.store
+    if (this.volume) query.volume = this.volume
+    if (this.checked) query.checked = this.checked
     this.$router.replace({query})
   },
   mounted () {

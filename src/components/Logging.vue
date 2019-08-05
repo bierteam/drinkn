@@ -1,5 +1,9 @@
 <template>
   <div class='container'>
+    <div v-if="message" @click="message = ''" class="notification is-danger">
+      <button class="delete" @click="message = ''"></button>
+      {{message}}
+    </div>
     <table class='table container'>
       <thead>
         <tr> <!-- first row -->
@@ -8,16 +12,16 @@
           <th>
             <div class="select">
               <select v-model="context">
-                <option disabled value="">Select a context</option>
-                <option v-for="option in contexts">{{option}}</option>
+                <option value="">Select a context</option>
+                <option v-for="option in contexts" :key='option'>{{option}}</option>
               </select>
             </div>
           </th>
           <th>
             <div class="select">
               <select v-model="type">
-                <option disabled value="">Select a type</option>
-                <option v-for="option in types">{{option}}</option>
+                <option value="">Select a type</option>
+                <option v-for="option in types" :key='option'>{{option}}</option>
               </select>
             </div>
           </th>
@@ -27,12 +31,12 @@
           <th></th>
         </tr>
         <tr> <!-- second row -->
-          <th v-for='(key, value) in headers' @click='sort(value)'>{{ key }}</th>
+          <th v-for='(key, value) in headers' @click='sort(value)' :key='key'>{{ key }}</th>
         </tr>
       </thead>
       <tfoot> <!-- bottom row -->
         <tr>
-          <th v-for='(key, value) in headers' @click='sort(value)'>{{ key }}</th>
+          <th v-for='(key, value) in headers' @click='sort(value)' :key='key'>{{ key }}</th>
         </tr>
       </tfoot>
       
@@ -60,6 +64,7 @@ export default {
       type: '',
       types: [],
       logs: [],
+      message: '',
       headers: {
         Date: 'Date',
         Message: 'Message',
@@ -70,9 +75,9 @@ export default {
   },
   updated () {
     const query = {}
-    query.search = this.search
-    query.context = this.context
-    query.type = this.type
+    if (this.search) query.search = this.search
+    if (this.context) query.context = this.context
+    if (this.type) query.type = this.type
     this.$router.replace({query})
   },
   mounted () {
@@ -95,8 +100,8 @@ export default {
       }
     },
     async deleteLogs() {
-      const response = Api().delete(`/api/v1/logging`)
-      // TODO show message of results
+      const response = await Api().delete(`/api/v1/logging`)
+      this.message = response.data
       this.logs = []
     }
   }
