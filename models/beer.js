@@ -68,7 +68,7 @@ const beerSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  alcoholpercentage: {
+  alcoholPercentage: {
     type: Number,
     required: false
   },
