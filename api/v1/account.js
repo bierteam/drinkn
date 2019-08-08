@@ -10,14 +10,14 @@ router.get('/', isAuthenticated, function (req, res) {
   const _id = req.session.userId
   user.findOne({ _id }).select('username otp.status').exec(function (err, results) {
     if (err) console.error(err)
-    writeLog(`${req.session.username}: ${req.session.userId} requested account data`, 'Info', context, req.ip)
+    writeLog(`${req.session.username}: ${req.session.userId} requested account data`, 'Info', context, req.realIp)
     res.json(results)
   })
 })
 
 router.get('/otp', isAuthenticated, function (req, res) {
   const result = otp.generate(req)
-  writeLog(`${req.session.username}: ${req.session.userId} requested otp secret`, 'Info', context, req.ip)
+  writeLog(`${req.session.username}: ${req.session.userId} requested otp secret`, 'Info', context, req.realIp)
   res.json(result)
 })
 
@@ -51,7 +51,7 @@ router.post('/', isAuthenticated, function (req, res) {
         writeLog(err, 'Error', context)
         res.sendStatus(500)
       } else {
-        writeLog(`${req.session.username}: ${req.session.userId} updated their account.`, 'Info', context, req.ip)
+        writeLog(`${req.session.username}: ${req.session.userId} updated their account.`, 'Info', context, req.realIp)
         res.json(result)
       }
     })
@@ -66,7 +66,7 @@ router.delete('/delete', isAuthenticated, function (req, res, next) {
       res.sendStatus(500)
     } else {
       res.clearCookie('connect.sid', { path: '/' }).status(200).send('Account deleted, removing cookie...')
-      writeLog(`User ${req.session.username}: ${req.session.userId} deleted their account.`, 'Info', context, req.ip)
+      writeLog(`User ${req.session.username}: ${req.session.userId} deleted their account.`, 'Info', context, req.realIp)
     }
   })
 })

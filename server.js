@@ -35,7 +35,7 @@ app.use(bodyParser.json())
 app.use(cors()) // Resolves "No 'Access-Control-Allow-Origin' header is present" error
 app.use(helmet())
 app.use(function (req, res, next) { // Set client ip
-  req.ip = req.header('cf-connecting-ip') || req.header('x-forwarded-for') || req.connection.remoteAddress
+  req.realIp = req.header('cf-connecting-ip') || req.header('x-forwarded-for') || req.connection.remoteAddress
   next()
 })
 

@@ -7,7 +7,7 @@ const context = 'Import'
 
 router.post('/import', isAdmin, function (req, res) {
   dbImport()
-  writeLog(`Manual import initiated by ${req.session.username}: ${req.session.userId}`, 'Info', context, req.ip)
+  writeLog(`Manual import initiated by ${req.session.username}: ${req.session.userId}`, 'Info', context, req.realIp)
   res.json('received')
 })
 

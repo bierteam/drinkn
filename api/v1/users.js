@@ -10,16 +10,16 @@ router.post('/login', function (req, res) {
   if (req.body.username && req.body.password) {
     user.authenticate(req.body.username, req.body.password, function (error, user) {
       if (error || !user) {
-        writeLog(`Failed login attempt for user: ${req.body.username}`, 'Warning', context, req.ip)
+        writeLog(`Failed login attempt for user: ${req.body.username}`, 'Warning', context, req.realIp)
         res.status(401).send('Incorrect username or password')
       } else if (user.otp && user.otp.status && !req.body.token) {
-        writeLog(`User ${user.username}: ${user._id} requires a 2fa token.`, 'Info', context, req.ip)
+        writeLog(`User ${user.username}: ${user._id} requires a 2fa token.`, 'Info', context, req.realIp)
         return res.json({ otp: true })
       } else {
         if (user.otp && user.otp.status && !otp.check(req.body.token, user.otp.secret)) {
           return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
         }
-        writeLog(`User ${user.username}: ${user._id} has logged in.`, 'Info', context, req.ip)
+        writeLog(`User ${user.username}: ${user._id} has logged in.`, 'Info', context, req.realIp)
         if (!req.body.remember) {
           req.session.cookie.expires = false
         }
@@ -30,7 +30,7 @@ router.post('/login', function (req, res) {
       }
     })
   } else {
-    writeLog(`Login try with missing fields`, 'Warning', context, req.ip)
+    writeLog(`Login try with missing fields`, 'Warning', context, req.realIp)
     res.status(403).send('Missing fields')
   }
 })
@@ -61,7 +61,7 @@ router.post('/register', isAdmin, function (req, res) {
         writeLog(err, 'Error', context)
         res.status(200).send('Something went wrong, maybe the user already exists...')
       } else {
-        writeLog(`User account ${userData.username} has been created by ${req.session.username}: ${req.session.userId}`, 'Info', context, req.ip)
+        writeLog(`User account ${userData.username} has been created by ${req.session.username}: ${req.session.userId}`, 'Info', context, req.realIp)
         res.sendStatus(201)
       }
     })
@@ -71,7 +71,7 @@ router.post('/register', isAdmin, function (req, res) {
 router.get('/', isAdmin, function (req, res) {
   user.find().select('username admin').exec(function (err, results) {
     if (err) console.error(err)
-    writeLog(`${req.session.username}: ${req.session.userId} requested users data`, 'Info', context, req.ip)
+    writeLog(`${req.session.username}: ${req.session.userId} requested users data`, 'Info', context, req.realIp)
     res.json(results)
   })
 })
@@ -80,7 +80,7 @@ router.get('/:_id', isAdmin, function (req, res) {
   const _id = { _id: req.params._id }
   user.findOne(_id).select('username admin createdBy editedBy otp.status').exec(function (err, result) {
     if (err) console.error(err)
-    writeLog(`${req.session.username}: ${req.session.userId} requested ${req.params._id}`, 'Info', context, req.ip)
+    writeLog(`${req.session.username}: ${req.session.userId} requested ${req.params._id}`, 'Info', context, req.realIp)
     res.json(result)
   })
 })
@@ -105,7 +105,7 @@ router.post('/:_id', isAdmin, function (req, res) {
         writeLog(err, 'Error', context)
         res.sendStatus(500)
       } else {
-        writeLog(`${req.session.username}: ${req.session.userId} updated ${result}`, 'Info', context, req.ip)
+        writeLog(`${req.session.username}: ${req.session.userId} updated ${result}`, 'Info', context, req.realIp)
         res.json(result)
       }
     })
@@ -119,7 +119,7 @@ router.delete('/:_id', isAdmin, function (req, res) {
       res.sendStatus(500)
     } else {
       res.sendStatus(200)
-      writeLog(`${req.session.username}: ${req.session.userId} deleted user ${req.params._id}`, 'Warning', context, req.ip)
+      writeLog(`${req.session.username}: ${req.session.userId} deleted user ${req.params._id}`, 'Warning', context, req.realIp)
     }
   })
 })

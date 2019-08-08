@@ -7,7 +7,7 @@ const context = 'Discount'
 
 router.get('/discounts', isAuthenticated, async function (req, res) {
   const resp = await discount()
-  writeLog(`${req.session.username}: ${req.session.userId} requested discount data`, 'Info', context, req.ip)
+  writeLog(`${req.session.username}: ${req.session.userId} requested discount data`, 'Info', context, req.realIp)
   res.json(resp)
 })
 
