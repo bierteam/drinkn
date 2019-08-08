@@ -26,9 +26,6 @@
             </div>
           </th>
           <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
         </tr>
         <tr> <!-- second row -->
           <th v-for='(key, value) in headers' @click='sort(value)' :key='key'>{{ key }}</th>
@@ -46,6 +43,7 @@
           <td @click='search = log.message'>{{log.message}}</td>
           <td @click='context = log.context'>{{log.context}}</td>
           <td @click='type = log.type'>{{log.type}}</td>
+          <td @click='search = log.ip'>{{log.ip}}</td>
         </tr>   
       </tbody>
     </table>
@@ -65,13 +63,15 @@ export default {
       contexts: [],
       type: '',
       types: [],
+      ip: '',
       logs: [],
       message: '',
       headers: {
         Date: 'Date',
         Message: 'Message',
         Context: 'Context',
-        Type: 'Type'
+        Type: 'Type',
+        Ip: 'Ip'
       }
     }
   },

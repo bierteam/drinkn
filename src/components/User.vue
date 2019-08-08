@@ -15,7 +15,7 @@
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="newUser.username" type="email" :placeholder="user.username">
+                <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
               </div>
             </div>
             <div class="field">
@@ -29,11 +29,11 @@
             </div>
             <div class="columns">
               <div class="column">
-                <Button class="button is-light is-large is-fullwidth" @click='Update' v-bind:class="{
+                <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
                   'is-loading': state.saving,
                   'is-success': state.saved,
                   'is-danger': state.error }"
-                  type="button" :disabled="isDisabled">Save</Button>
+                  type="submit" :disabled="isDisabled">Save</Button>
               </div>
               <div class="column">
                 <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button" >Delete</Button>
@@ -89,7 +89,6 @@
         Api().get(`/api/v1/users/${_id}`, {})
         .then( response => {
           if (response.status === 200) {
-            // get correct user from array
             this.user = response.data
             this.newUser.admin = this.user.admin
           }
@@ -110,6 +109,7 @@
         .then(response => {
           this.user = response.data
           this.newUser = {}
+          this.newUser.admin = this.user.admin
           this.state.saved = true
           this.state.saving = false
           this.state.error = false

@@ -18,7 +18,7 @@
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="newUser.username" type="email" :placeholder="user.username">
+                <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
               </div>
             </div>
             <div class="field">
@@ -40,19 +40,19 @@
               <div class="column">
                 <div class="field">
                   <div class="control">
-                    <input class="input is-large" v-model="newUser.otp" type="string" placeholder="2FA code">
+                    <input class="input is-large" :disabled="user.otp.status" v-model="newUser.otp" type="string" placeholder="2FA code">
                   </div>
                 </div>
-                <Button class="button is-light is-large is-fullwidth" @click='Update' v-bind:class="{
+                <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
                 'is-loading': state.saving,
                 'is-success': state.saved,
                 'is-danger': state.error }"
-                type="button" :disabled="isDisabled">Save</Button>
+                type="submit" :disabled="isDisabled">Save</Button>
               </div>
               <div class="column">
                 <div class="field">
                   <div class="control">
-                  <Button class="button is-info is-large is-fullwidth" @click='Otp()' type="button" >Setup 2FA</Button>
+                  <Button class="button is-info is-large is-fullwidth" @click.once='Otp()' type="button" >Setup 2FA</Button>
                   </div>
                 </div>
                 <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button" >Delete account</Button>
@@ -97,7 +97,7 @@
           QRdata: ''
         },
         newUser: {},
-        verifyPassword: '',
+        verifyPassword: undefined,
         error: '',
         state: {
           error: false,
@@ -118,7 +118,7 @@
           this.state.pwned = isPwned
         })
 
-        if (this.verifyPassword && (this.newUser.password !== this.verifyPassword)) {
+        if (this.newUser.password !== this.verifyPassword) {
           this.state.notEqual = true
         } else {
           this.state.notEqual = false
@@ -126,7 +126,7 @@
         
         const stuffToEdit = (this.newUser.password || this.newUser.username || this.newUser.otp) ? true : false
         
-        return (this.newUser.oldPassword && stuffToEdit && !(this.state.pwned || this.state.notEqual)) ? false : true
+        return (this.newUser.oldPassword && stuffToEdit && !this.state.pwned && !this.state.notEqual) ? false : true
       }
     },
     methods: {
@@ -173,6 +173,8 @@
           this.state.saving = false
           this.state.error = false
           this.newUser = {}
+          this.otp = {}
+          this.verifyPassword = undefined
         })
         .catch(e => {
           this.error = e.response.data || e

@@ -15,7 +15,7 @@
           <th>{{user.username}}</th>
           <th><input type="checkbox" disabled :checked="user.admin"></th>
           <th><router-link class="button is-primary" v-if="user._id !== $parent.userId" :to="`/users/${user._id}`">Manage</router-link>
-          <router-link class="button is-info" v-if="user._id === $parent.userId" to="/account">Manage</router-link></th>
+          <router-link class="button is-info" v-else to="/account">Manage</router-link></th>
         </tr>
         <tr>
           <th></th>

@@ -6,11 +6,9 @@ const writeLog = require('./writeLog')
 const context = 'Import'
 
 const dbImport = async () => {
-  let data, stores
-  data = await getData()
-  const storeQuery = store.findOne({}, { _id: false })
-  const storeExec = storeQuery.exec()
-  const result = await storeExec
+  let stores
+  const data = await getData()
+  const result = await store.findOne({}, { _id: false }).exec()
   if (result && result._doc) {
     stores = result._doc
   }

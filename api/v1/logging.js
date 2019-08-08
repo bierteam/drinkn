@@ -6,8 +6,9 @@ const writeLog = require('../../services/writeLog')
 const context = 'Logging'
 
 router.get('/', isAdmin, function (req, res) {
-  logging.find({}).select('message date context type ').sort({ date: 'descending' }).exec(function (err, result) {
+  logging.find({}).select('message date context type ip').sort({ date: 'descending' }).exec(function (err, result) {
     if (err) console.error(err)
+    writeLog(`${req.session.username}: ${req.session.userId} requested log data`, 'Info', context, req.ip)
     res.json(result)
   })
 })
@@ -20,7 +21,7 @@ router.delete('/', isAdmin, function (req, res) { // temporary dev function
     } else {
       res.status(200).send('Logs succesfully deleted')
     }
-    writeLog(`${req.session.userId} deleted the logs.`, 'Warning', context)
+    writeLog(`${req.session.username}: ${req.session.userId} deleted the logs.`, 'Warning', context, req.ip)
   })
 })
 

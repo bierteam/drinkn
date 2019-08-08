@@ -16,6 +16,10 @@ const logSchema = new mongoose.Schema({
   context: {
     type: String,
     required: true
+  },
+  ip: {
+    type: String,
+    required: false
   }
 })
 

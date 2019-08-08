@@ -2,12 +2,13 @@ const logger = require('../models/log')
 const moment = require('moment')
 moment.locale('nl')
 
-const writeLog = (message, type, context) => {
+const writeLog = (message, type, context, ip) => {
   const logMessage = {
-    message: message,
+    message,
     date: moment().toDate(),
-    type: type,
-    context: context
+    type,
+    context,
+    ip
   }
   logger.create(logMessage, function (err, user) {
     if (err) {

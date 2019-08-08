@@ -13,7 +13,7 @@
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="email" type="email" placeholder="Your email" autofocus="">
+                <input class="input is-large" v-model="username" type="username" placeholder="Your username" autofocus="">
               </div>
             </div>
             <div class="field">
@@ -27,7 +27,7 @@
                 Remember me
               </label>
             </div>
-            <button class="button is-block is-primary is-large is-fullwidth" @click='Post' :disabled="isDisabled">Login</button>
+            <button type="submit" class="button is-block is-primary is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Login</button>
             </form>
           </div>
           <p class="has-text-grey">
@@ -46,7 +46,7 @@
   export default {
     data() {
       return {
-        email: '',
+        username: '',
         password: '',
         remember: true,
         error: ''
@@ -54,18 +54,18 @@
     },
     computed: {
       isDisabled:function() {
-        if (!this.$data.email || !this.$data.password){
+        if (!this.$data.username || !this.$data.password){
           return true
         }
       }
     },
     methods: {
       Post() {
-        const email = this.$data.email
+        const username = this.$data.username
         const password = this.$data.password
         const remember = this.$data.remember
         Api().post(`/api/v1/users/login`, {
-          email, password, remember
+          username, password, remember
         })
         .then(response => {
           if ( response.status === 200 ) {
@@ -90,7 +90,7 @@
         this.$router.push('/home')
       }
     },
-    beforeUpdate () { // UrI change, link, etc.
+    beforeUpdate () { // Uri change, link, etc.
       if (this.$parent.isAuthenticated){
         this.$router.push('/home')
       }
