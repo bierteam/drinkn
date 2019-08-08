@@ -24,12 +24,37 @@ const UserSchema = new mongoose.Schema({
     default: false
   },
   createdBy: {
-    type: String,
-    required: false
+    type: Object,
+    required: false,
+    _id: {
+      required: true
+    },
+    username: {
+      required: true
+    }
   },
   editedBy: {
-    type: String,
-    required: false
+    type: Object,
+    required: false,
+    _id: {
+      required: true
+    },
+    username: {
+      required: true
+    }
+  },
+  otp: {
+    type: Object,
+    required: false,
+    status: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    secret: {
+      type: String,
+      required: false
+    }
   }
 })
 

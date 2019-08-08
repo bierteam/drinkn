@@ -47,7 +47,7 @@ router.post('/register', isAdmin, function (req, res) {
       username: req.body.username,
       password: req.body.password,
       admin: req.body.admin,
-      createdBy: req.session.userId
+      createdBy: { _id: req.session.userId, username: req.session.username }
     }
     user.create(userData, function (err, user) {
       if (err) {
@@ -71,7 +71,7 @@ router.get('/', isAdmin, function (req, res) {
 
 router.get('/:_id', isAdmin, function (req, res) {
   const _id = { _id: req.params._id }
-  user.findOne(_id).select('username admin').exec(function (err, result) {
+  user.findOne(_id).select('username admin createdBy editedBy otp.status').exec(function (err, result) {
     if (err) console.error(err)
     writeLog(`${req.session.username}: ${req.session.userId} requested ${req.params._id}`, 'Info', context, req.ip)
     res.json(result)
@@ -81,7 +81,7 @@ router.get('/:_id', isAdmin, function (req, res) {
 router.post('/:_id', isAdmin, function (req, res) {
   const _id = req.params._id
   const parameters = {}
-  parameters.editedBy = req.session.userId
+  parameters.editedBy = { _id: req.session.userId, username: req.session.username }
   if (req.body.user.password) {
     parameters.password = req.body.user.password
   }

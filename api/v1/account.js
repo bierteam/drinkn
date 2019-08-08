@@ -8,7 +8,7 @@ const context = 'Account'
 
 router.get('/', isAuthenticated, function (req, res) {
   const _id = req.session.userId
-  user.findOne({ _id }).select('username').exec(function (err, results) {
+  user.findOne({ _id }).select('username otp.status').exec(function (err, results) {
     if (err) console.error(err)
     writeLog(`${req.session.username}: ${req.session.userId} requested account data`, 'Info', context, req.ip)
     res.json(results)
@@ -24,7 +24,7 @@ router.get('/otp', isAuthenticated, function (req, res) {
 router.post('/', isAuthenticated, function (req, res) {
   const _id = req.session.userId
   const parameters = {}
-  parameters.editedBy = req.session.userId
+  parameters.editedBy = { _id: req.session.userId, username: req.session.username }
   if (req.body.user.password) {
     parameters.password = req.body.user.password
   }
