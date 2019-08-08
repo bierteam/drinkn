@@ -31,9 +31,13 @@ router.post('/', isAuthenticated, function (req, res) {
   if (req.body.user.username) {
     parameters.username = req.body.user.username
   }
-  if (req.body.user.oldPassword) {
-    // TODO check old password
-  } else return res.status(401).send('You need to fill in your old password.')
+  if (!req.body.user.oldPassword) return res.status(401).send('You need to fill in your old password.')
+  // TODO wizard required
+  // user.authenticate(req.session.username, req.body.user.oldPassword, function (error, user) {
+  //   if (error || !user) {
+  //     return res.status(401).send('Incorrect password')
+  //   } else return true
+  // })
 
   if (req.body.user.otp && req.session.secret) {
     if (!otp.check(req.body.user.otp, req.session.secret)) return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
@@ -41,7 +45,7 @@ router.post('/', isAuthenticated, function (req, res) {
     delete req.session.secret
   }
   user.findOneAndUpdate({ _id }, { $set: parameters }, { strict: false, new: true })
-    .select('username admin')
+    .select('username admin otp.status')
     .exec(function (err, result) {
       if (err) {
         writeLog(err, 'Error', context)

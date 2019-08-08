@@ -23,7 +23,7 @@
             </div>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="newUser.oldPassword" type="password" placeholder="Your old password *">
+                <input class="input is-large" v-model="newUser.oldPassword" type="password" placeholder="Your password *">
               </div>
             </div>
             <div class="field">
