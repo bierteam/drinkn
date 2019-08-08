@@ -38,9 +38,8 @@ const processData = (data, stores) => {
     }
 
     if (data[obj].alcoholpercentage) {
-      data[obj].rawAlcoholpercentage = data[obj].alcoholpercentage
-      data[obj].rawAlcoholpercentage = parseFloat(data[obj].rawAlcoholpercentage).toFixed(2)
-      data[obj].alcoholpercentage = data[obj].rawAlcoholpercentage * 100
+      data[obj].rawAlcoholpercentage = parseFloat(data[obj].alcoholpercentage).toFixed(2)
+      data[obj].alcoholPercentage = data[obj].rawAlcoholpercentage * 100
     }
     if (data[obj].kleur) {
       data[obj].color = data[obj].kleur
@@ -66,7 +65,7 @@ const processData = (data, stores) => {
     data[obj].importDate = moment().toDate()
     data[obj].pricing.oldPrice = data[obj].pricing.rawOldPrice * 100
     data[obj].pricing.newPrice = data[obj].pricing.rawNewPrice * 100
-    data[obj].pricing.literPrice = data[obj].rawLiter / data[obj].pricing.newPrice
+    data[obj].pricing.literPrice = data[obj].pricing.newPrice / data[obj].liter * 10
   }
   updateStores(newStores)
   return data
