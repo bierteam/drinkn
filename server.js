@@ -12,6 +12,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const user = require('./models/user')
+const writeLog = require('./services/writeLog')
 
 // Fix mongoose 5.4.1 deprecations
 mongoose.set('useFindAndModify', false)
@@ -73,6 +74,7 @@ if (config.app.defaultAccount.autoCreate) {
             console.error(err)
           } else {
             console.log('Default user account has been created')
+            writeLog('Default user account has been created', 'Info', 'Server')
           }
         })
       }
@@ -85,6 +87,7 @@ cron.schedule('0 9,22 * * *', async () => {
   const timeout = Math.round(Math.random() * 60) * 1000 * 1000
   setTimeout(await dbImport, timeout)
   console.log('Cron: running import in: ' + (timeout / 1000000) + ' minutes.')
+  writeLog('Cron: running import in: ' + (timeout / 1000000) + ' minutes.', 'Info', 'Server')
 })
 
 const api = require('./api')

@@ -40,7 +40,7 @@
               <div class="column">
                 <div class="field">
                   <div class="control">
-                    <input class="input is-large" :disabled="user.otp.status" v-model="newUser.otp" type="string" placeholder="2FA code">
+                    <input class="input is-large" :disabled="user.otp && user.otp.status" v-model="newUser.otp" type="string" placeholder="2FA code">
                   </div>
                 </div>
                 <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
@@ -52,7 +52,7 @@
               <div class="column">
                 <div class="field">
                   <div class="control">
-                  <Button class="button is-info is-large is-fullwidth" @click.once='Otp()' type="button" >Setup 2FA</Button>
+                  <Button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button" >Setup 2FA</Button>
                   </div>
                 </div>
                 <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button" >Delete account</Button>

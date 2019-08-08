@@ -31,7 +31,7 @@
     <table class='table container'>
       <thead>
         <tr><!-- first row -->
-          <th><input class='input' v-model='search' type='text' placeholder='Search' autofocus=""></th>
+          <th><input class='input' v-model='search' type='text' placeholder='Search' autofocus></th>
           <th><input type="checkbox" v-model="zero" @click='zero = !zero'></th>
           <th>
             <div class="select">

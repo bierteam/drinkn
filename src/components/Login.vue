@@ -7,21 +7,30 @@
             <button class="delete" @click="error = ''"></button>
               {{error}}
           </div>
+          <div v-if="message" class="notification is-success">
+            <button class="delete" @click="error = ''"></button>
+              {{message}}
+          </div>
           <h3 class="title has-text-grey">Login</h3>
           <p class="subtitle has-text-grey">Please login to proceed.</p>
           <div class="box">
             <form>
-            <div class="field">
+            <div v-if="!otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="username" type="username" placeholder="Your username" autofocus="">
+                <input class="input is-large" v-model="username" type="username" placeholder="Your username" autofocus>
               </div>
             </div>
-            <div class="field">
+            <div v-if="!otpRequired" class="field">
               <div class="control">
                 <input class="input is-large" v-model="password" type="password" placeholder="Your password">
               </div>
             </div>
-            <div class="field">
+            <div v-if="otpRequired" class="field">
+              <div class="control">
+                <input class="input is-large" v-model="token" type="token" placeholder="2fa code" ref="token">
+              </div>
+            </div>
+            <div v-if="!otpRequired" class="field">
               <label class="checkbox tooltip is-tooltip-right" data-tooltip='For 30 days'>
                 <input type="checkbox" v-model="remember">
                 Remember me
@@ -48,8 +57,11 @@
       return {
         username: '',
         password: '',
+        token: undefined,
+        otpRequired: false,
         remember: true,
-        error: ''
+        error: '',
+        message: ''
       }
     },
     computed: {
@@ -61,14 +73,18 @@
     },
     methods: {
       Post() {
-        const username = this.$data.username
-        const password = this.$data.password
-        const remember = this.$data.remember
-        Api().post(`/api/v1/users/login`, {
-          username, password, remember
-        })
+        const data = {
+          username: this.$data.username,
+          password: this.$data.password,
+          remember: this.$data.remember,
+          token: this.$data.token
+        }
+        Api().post(`/api/v1/users/login`, data)
         .then(response => {
-          if ( response.status === 200 ) {
+          if ( response.data.otp ) { 
+            this.otpRequired = true
+            this.message = 'Two factor authentication required.'
+          } else if ( response.status === 200 ){
             this.$parent.isAuthenticated = true
             localStorage.setItem('isAuthenticated', response.data._id)
             if (response.data.admin) {
@@ -84,6 +100,9 @@
           console.error(e)
         })
       }
+    },
+    updated() {
+      if (this.otpRequired) this.$refs.token.focus()
     },
     beforeMount() { // Refresh, fresh page load
       if (this.$parent.isAuthenticated){

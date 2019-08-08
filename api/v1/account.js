@@ -36,7 +36,7 @@ router.post('/', isAuthenticated, function (req, res) {
   } else return res.status(401).send('You need to fill in your old password.')
 
   if (req.body.user.otp && req.session.secret) {
-    if (!otp.check(req)) return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
+    if (!otp.check(req.body.user.otp, req.session.secret)) return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
     parameters.otp = { status: true, secret: req.session.secret }
     delete req.session.secret
   }

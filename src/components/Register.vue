@@ -20,7 +20,7 @@
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="username" type="username" placeholder="Their username" autofocus="">
+                <input class="input is-large" v-model="username" type="username" placeholder="Their username" autofocus>
               </div>
             </div>
             <div class="field">
