@@ -4,12 +4,6 @@
     <ul v-if="status">
       {{status.data}}
     </ul>
-    <br>
-    <br>
-    <a class="button is-success" @click="Query()">Refresh</a>  <!-- this is temporary -->
-    <ul v-if="refreshStatus">
-      {{refreshStatus.data}}
-    </ul>
 
     <ul v-if="errors && errors.length">
       <li v-for="error of errors">
@@ -28,8 +22,7 @@ export default {
   data() {
     return {
       errors: [],
-      status: null,
-      refreshStatus: null
+      status: null
     }
   },
 
@@ -40,16 +33,6 @@ export default {
       })
       .then(response => {
         this.status = response
-      })
-      .catch(e => {
-        this.errors.push(e)
-      })
-    },
-    Query() { // this is temporary
-      Api().post(`/api/v1/query`, {
-      })
-      .then(response => {
-        this.refreshStatus = response
       })
       .catch(e => {
         this.errors.push(e)

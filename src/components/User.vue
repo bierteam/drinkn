@@ -6,16 +6,16 @@
           <div v-if="state.pwned" class="notification is-warning">
               This password has been pwned.
           </div>
-          <div v-if="error" class="notification is-danger">
-            <button class="delete" @click="error = ''"></button>
-              {{error}}
+          <div v-if="state.error" class="notification is-danger">
+            <button class="delete" @click="state.error = ''"></button>
+              {{state.error}}
           </div>
           <h3 class="title has-text-grey">Edit account</h3>
           <div class="box">
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="newUser.username" type="email" :placeholder="user.username">
+                <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
               </div>
             </div>
             <div class="field">
@@ -29,14 +29,14 @@
             </div>
             <div class="columns">
               <div class="column">
-                <Button class="button is-light is-large is-fullwidth" @click='Update' v-bind:class="{
+                <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
                   'is-loading': state.saving,
                   'is-success': state.saved,
                   'is-danger': state.error }"
-                  type="button" :disabled="isDisabled">Save</Button>
+                  type="submit" :disabled="isDisabled">Save</Button>
               </div>
               <div class="column">
-                <Button class="button is-danger is-large is-fullwidth" @click='sure = !sure' type="button" >Delete</Button>
+                <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button" >Delete</Button>
               </div>
             </div>
             <div v-if="state.deleteMsg" class="notification is-light">
@@ -62,13 +62,7 @@
       return {
         user: {},
         newUser: {},
-        message: '',
         error: '',
-        isSaving: false,
-        isSaved: false,
-        isError: false,
-        isPwned: false,
-        sure: false,
         state: {
           error: false,
           saving: false,
@@ -83,13 +77,10 @@
     },
     computed: {
       isDisabled:function() {
-        pwned(this.$data.newUser.password).then(isPwned => {
-          this.$data.state.pwned = isPwned
+        pwned(this.newUser.password).then(isPwned => {
+          this.state.pwned = isPwned
         })
-        
-        const stuffToEdit = (this.$data.newUser.password || this.$data.newUser.username) ? true : false
-        
-        return (stuffToEdit && !this.$data.state.pwned) ? false : true
+        return (!this.state.pwned) ? false : true
       }
     },
     methods: {
@@ -98,20 +89,19 @@
         Api().get(`/api/v1/users/${_id}`, {})
         .then( response => {
           if (response.status === 200) {
-            // get correct user from array
             this.user = response.data
             this.newUser.admin = this.user.admin
           }
         })
         .catch(e => {
-          this.$data.error = e
+          this.state.error = e.response.data || e
           console.error(e)
         })
       },
       Update() {
         this.state.saved = false
         this.state.saving = true
-        const user = this.$data.newUser
+        const user = this.newUser
         const _id = this.$route.params.id
         Api().post(`/api/v1/users/${_id}`, {
           user
@@ -119,14 +109,14 @@
         .then(response => {
           this.user = response.data
           this.newUser = {}
+          this.newUser.admin = this.user.admin
           this.state.saved = true
           this.state.saving = false
           this.state.error = false
         })
         .catch(e => {
-          this.$data.error = e
+          this.state.error = e.response.data || e
           console.error(e)
-          this.state.error = true
           this.state.saving = false
         })
       },
@@ -139,7 +129,7 @@
           }
         })
         .catch(e => {
-        this.$data.error = e
+        this.state.error = e.response.data || e
         console.error(e)
         })
       }

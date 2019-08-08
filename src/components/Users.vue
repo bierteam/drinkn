@@ -14,7 +14,8 @@
         <tr v-for='user in users'>
           <th>{{user.username}}</th>
           <th><input type="checkbox" disabled :checked="user.admin"></th>
-          <th><router-link class="button is-primary" :disabled="user._id === 'TODO: own _id'" :to="`/users/${user._id}`">Manage</router-link></th>
+          <th><router-link class="button is-primary" v-if="user._id !== $parent.userId" :to="`/users/${user._id}`">Manage</router-link>
+          <router-link class="button is-info" v-else to="/account">Manage</router-link></th>
         </tr>
         <tr>
           <th></th>
@@ -49,7 +50,7 @@
           }
         })
         .catch(e => {
-          this.$data.error = e
+          this.$data.error = e.response.data || e
           console.error(e)
         })
       }

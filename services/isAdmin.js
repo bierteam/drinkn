@@ -10,7 +10,7 @@ const isAdmin = (req, res, next) => {
         return next()
       }
     } else {
-      res.status(403).send('Thou shall not pass!')
+      res.status(401).send('Thou shall not pass!')
     }
   } else {
     console.log('granting admin previleges because of devmode')

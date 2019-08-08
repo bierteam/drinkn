@@ -20,7 +20,7 @@
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="email" type="email" placeholder="Their email" autofocus="">
+                <input class="input is-large" v-model="username" type="username" placeholder="Their username" autofocus>
               </div>
             </div>
             <div class="field">
@@ -32,7 +32,7 @@
                 <input type="checkbox" v-model="admin">
                 Make this user an administrator
             </div>
-            <button class="button is-block is-light is-large is-fullwidth" @click='Post' :disabled="isDisabled">Register new account</button>
+            <button type="submit" class="button is-block is-light is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Register new account</button>
             </form>
           </div>
           <p class="has-text-grey">
@@ -52,7 +52,7 @@
   export default {
     data() {
       return {
-        email: '',
+        username: '',
         password: '',
         admin: false,
         isPwned: false,
@@ -65,26 +65,26 @@
         pwned(this.$data.password).then(isPwned => {
           this.$data.isPwned = isPwned
         })
-        return (this.$data.email && this.$data.password && !this.$data.isPwned) ? false : true
+        return (this.$data.username && this.$data.password && !this.$data.isPwned) ? false : true
       }
     },
     methods: {
       Post() {
-        const email = this.$data.email
+        const username = this.$data.username
         const password = this.$data.password
         const admin = this.$data.admin
         Api().post(`/api/v1/users/register`, {
-          email, password, admin
+          username, password, admin
         })
         .then( response => {
           if (response.status === 201) {
-            this.$data.message = 'Created ' + this.$data.email     
+            this.$data.message = 'Created ' + this.$data.username     
           } else if (response.status === 200) {
             this.$data.error = response.data
           }
         })
         .catch(e => {
-          this.$data.error = e
+          this.$data.error = e.response.data || e
           console.error(e)
         })
       }
