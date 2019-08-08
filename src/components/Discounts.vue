@@ -80,7 +80,7 @@
           <td class='has-text-danger'>{{ discount.oldPrice / 100 | currency }}</td>
           <td>{{ discount.literPrice | currency }}</td>
           <td>{{ discount.discount | currency }}</td>
-          <td>{{ discount.discountPercent }}%</td>
+          <td>{{ discount.discountPercentage }}%</td>
           <td @click='volume = discount.volume'>{{ discount.volume }}</td>
           <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
           <a v-else></a>
