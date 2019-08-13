@@ -5,7 +5,8 @@
 
 # Pils
 
-A simple crawler to get some usable data of [biernet.nl](https://biernet.nl/)
+A simple node app to get some usable data from [biernet.nl](https://biernet.nl/)
+We will consume this data later to generate push notifications with nice discounts when the fridge is running low for example.
 
 ## Getting Started
 
@@ -60,10 +61,20 @@ npm install
 Copy and fill config file
 
 ```
-cp config.example.js config.js
+cp config/backend.example.js config/backend.js
 ```
-Run server
+Run development servers
 ```
+npm run dev
+```
+Second terminal 
+```
+npm run nodemon
+```
+Run production server (I suggest [pm2](https://www.npmjs.com/package/pm2) instead)
+```
+npm run build
+
 node server.js
 ```
 ## Authors
