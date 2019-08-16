@@ -7,7 +7,7 @@
     "start": "pm2 start server.js",
     "restart": "pm2 restart all",
     "coveralls": "cat ./test/unit/coverage/lcov.info | coveralls",
-    "test": "standard && jest --config test/unit/jest.conf.js",
+    "test": "standard && jest --coverage --config test/unit/jest.conf.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "nodemon": "NODE_ENV=development nodemon",
     "e2e": "node test/e2e/runner.js",
