@@ -57,7 +57,7 @@
       <div class="columns">
         <div class="column">
           <a href="https://github.com/bierteam">
-            &copy; BierTeam 2018
+            &copy; BierTeam 2019
           </a>
           <p>The source code is licensed
             <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
