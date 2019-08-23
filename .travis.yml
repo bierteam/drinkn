@@ -33,3 +33,12 @@ deploy:
     script: ssh -o StrictHostKeyChecking=no -p$PRODUCTION_PORT root@$PRODUCTION_SERVER 'cd Pils/; git stash; git checkout master; git pull; npm ci --only=production; npm i -g pm2; pm2 update; npm restart;' && rsync -rvz --delete -e "ssh -p $PRODUCTION_PORT" public/ root@$PRODUCTION_SERVER:~/Pils/public
     on:
       branch: master
+addons:
+  sonarcloud:
+    organization: "bierteam"
+    token:
+      secure: "bQg+Hnpy2ZWJKGsxL+9OSlUJlBAbt19n96H5TmXqmhGQeHfhTStzYQfqJHPjF8q3vQauOZMvo1a78Rtt6AfR9GWCDwlYGw0NjkvMB/mvnZmiB8ArzpHvKJp4MvpX6GiNIaX9IxS30aqkqiMsz5V13ITa2fbfbEgFy+ze4gWXbgnSxaFXxvvJIQpo/s3HiJHpBA+eVWpKfNIqMFIM7lhXkUbaqSR0p/ScqHr2VrCBSIvMiCSnOvl+oZFNe6OEOwa0QETBWdthIWvzDrJRoj7sFBpKwZcRCzT3rew+zZNdRCZWRDqEgwr5rMWsrRTq4ZhEfCl6P2FCNvu5ZoVZTiK+pMhqs93wHf3su96fOw8Yka5gLDEEcQC/2pQe80lnOlezd9O8/+EYpf41b3EDscwW7891zg3t2SzMENGGfxxm3ifWZUMZqXwPWXXsZ/9rraHJdyI1r0gqHAsdkfEZU5n9/6M0Ar5EoY2s2AHrEE1aRloSTfHUWhiLL+K7NKHIV66GtCHluMCgLx4ent9Wv/jW/oZTrCKES2eRIXiiv7d6nQitodTDe5x6enE32TantAfqB7SqEdzeK0nWH3OA4N2Qb7CEzCsl8Q3aRaCxH9yzXIejltMwMXsHcNDNihI0Mv5LBiuKZHcos7GOd5wOliSZyrtw+ldIW6/peZLf1ot5ysQ="
+
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - sonar-scanner
