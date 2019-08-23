@@ -30,7 +30,7 @@ router.post('/login', function (req, res) {
       }
     })
   } else {
-    writeLog(`Login try with missing fields`, 'Warning', context, req.realIp)
+    writeLog('Login try with missing fields', 'Warning', context, req.realIp)
     res.status(403).send('Missing fields')
   }
 })

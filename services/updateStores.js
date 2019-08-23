@@ -4,10 +4,12 @@ function updateStores (newStores) {
   store.updateOne(
     {},
     { $set: newStores },
-    { strict: false,
+    {
+      strict: false,
       new: true,
       upsert: true,
-      setDefaultsOnInsert: true },
+      setDefaultsOnInsert: true
+    },
     function (err, result) {
       if (err) console.error(err)
     })
