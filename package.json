@@ -79,7 +79,7 @@
     "babel-plugin-transform-vue-jsx": "3.7.0",
     "bulma-tooltip": "2.0.2",
     "chalk": "2.4.2",
-    "chromedriver": "76.0.0",
+    "chromedriver": "76.0.1",
     "copy-webpack-plugin": "5.0.4",
     "coveralls": "3.0.6",
     "cross-spawn": "6.0.5",
