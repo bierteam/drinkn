@@ -136,7 +136,6 @@ export default {
         response.data[i].discount = ((response.data[i].pricing.oldPrice - response.data[i].pricing.newPrice) / 100).toFixed(2)
         response.data[i].discountPercentage = (100 - (response.data[i].pricing.newPrice * 100 / response.data[i].pricing.oldPrice)).toPrecision(2)
         // response.data[i].literPrice = response.data[i].pricing.literPrice
-        response.data[i].alcoholPercentage = response.data[i].alcoholpercentage // Temporary
         response.data[i].literPrice = response.data[i].pricing.newPrice / response.data[i].liter * 10 // Temporary
         response.data[i].newPrice = response.data[i].pricing.newPrice
         response.data[i].oldPrice = response.data[i].pricing.oldPrice
