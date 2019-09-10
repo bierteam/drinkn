@@ -58,17 +58,17 @@
               </select>
             </div>
           </th>
-          <th><input type="checkbox" v-model="checked" @click='checked = !checked'></th>
+          <th><input type="checkbox" v-model="online" @click='online = !online'></th>
         </tr>
         <tr><!-- second row -->
           <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
-          <th @click='checked = !checked'>Link</th>
+          <th @click='online = !online'>Link</th>
         </tr>
       </thead>
       <tfoot>
         <tr><!-- bottom row -->
           <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
-          <th @click='checked = !checked'>Link</th>
+          <th @click='online = !online'>Link</th>
         </tr>
       </tfoot>
       <tbody><!-- table -->
@@ -104,7 +104,7 @@ export default {
       percentageAverage: [],
       onlineCounter: 0,
       search: '',
-      checked: false,
+      online: false,
       zero: true,
       store: '',
       stores: [],
@@ -168,7 +168,7 @@ export default {
     processed:function() {
       let data = this.discounts
       data = this.orderBy(this.discounts, this.sort, this.sortDir)
-      if (this.checked) { data = data.filter(obj => obj.uri) }
+      if (this.online) { data = data.filter(obj => obj.uri) }
       if (!this.zero) { data = data.filter(obj => obj.alcoholPercentage > 100) }
       data = this.filterBy(data, this.search)
       data = this.filterBy(data, this.store)
@@ -181,7 +181,7 @@ export default {
     if (this.search) query.search = this.search
     if (this.store) query.store = this.store
     if (this.volume) query.volume = this.volume
-    if (this.checked) query.checked = this.checked
+    if (this.online) query.online = this.online
     if (this.zero) query.zero = this.zero
     this.$router.replace({query})
   },
@@ -189,7 +189,7 @@ export default {
     this.search = this.$route.query.search
     this.store = this.$route.query.store
     this.volume = this.$route.query.volume
-    this.checked = this.$route.query.checked
+    this.online = this.$route.query.online
     this.zero = this.$route.query.zero
   },
 }
