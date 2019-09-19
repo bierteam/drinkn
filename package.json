@@ -90,7 +90,7 @@
     "html-webpack-plugin": "3.2.0",
     "jest": "24.9.0",
     "jest-serializer-vue": "2.0.2",
-    "nightwatch": "1.2.2",
+    "nightwatch": "1.2.3",
     "node-notifier": "5.4.3",
     "nodemon": "1.19.2",
     "optimize-css-assets-webpack-plugin": "3.2.1",
