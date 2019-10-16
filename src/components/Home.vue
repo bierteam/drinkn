@@ -1,11 +1,9 @@
 <template>
   <div class="container">
-    <h1>Welcome to your Pils App</h1>
+    <h1>Welcome to the Pils App!</h1>
     <br>
-    <li><router-link to="/aanbiedingen">Aanbiedingen</router-link></li>
-    <li><router-link to="/import">Import</router-link></li>
-    <li><router-link to="/register">Register</router-link></li>
-    <li><router-link to="/storemapping">Storemapping</router-link></li>
+    Maybe you are looking for some 
+    <router-link to="/discounts">discounts</router-link>
     <br>
     <br>
   </div>

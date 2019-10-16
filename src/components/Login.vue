@@ -1,30 +1,42 @@
 <template>
-<body>
-  <section class="hero">
+  <body>
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
+          <div v-if="error" class="notification is-danger">
+            <button class="delete" @click="error = ''"></button>
+              {{error}}
+          </div>
+          <div v-if="message" class="notification is-success">
+            <button class="delete" @click="error = ''"></button>
+              {{message}}
+          </div>
           <h3 class="title has-text-grey">Login</h3>
           <p class="subtitle has-text-grey">Please login to proceed.</p>
           <div class="box">
             <form>
-            <div class="field">
+            <div v-if="!otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="email" type="email" placeholder="Your email" autofocus="">
+                <input class="input is-large" v-model="username" type="username" placeholder="Your username" autofocus>
               </div>
             </div>
-            <div class="field">
+            <div v-if="!otpRequired" class="field">
               <div class="control">
                 <input class="input is-large" v-model="password" type="password" placeholder="Your password">
               </div>
             </div>
-            <div class="field">
+            <div v-if="otpRequired" class="field">
+              <div class="control">
+                <input class="input is-large" v-model="token" type="token" placeholder="2fa code" ref="token">
+              </div>
+            </div>
+            <div v-if="!otpRequired" class="field">
               <label class="checkbox tooltip is-tooltip-right" data-tooltip='For 30 days'>
                 <input type="checkbox" v-model="remember">
                 Remember me
               </label>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Login</button>
+            <button type="submit" class="button is-block is-primary is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Login</button>
             </form>
           </div>
           <p class="has-text-grey">
@@ -34,8 +46,7 @@
         </div>
       </div>
     </div>
-  </section>
-</body>
+  </body>
 </template>
 
 <script>
@@ -44,48 +55,64 @@
   export default {
     data() {
       return {
-        email: '',
+        username: '',
         password: '',
-        remember: true
+        token: undefined,
+        otpRequired: false,
+        remember: true,
+        error: '',
+        message: ''
       }
     },
     computed: {
       isDisabled:function() {
-        if (!this.$data.email || !this.$data.password){
+        if (!this.$data.username || !this.$data.password){
           return true
         }
       }
     },
     methods: {
       Post() {
-        const email = this.$data.email
-        const password = this.$data.password
-        const remember = this.$data.remember
-        Api().post(`api/v1/login`, {
-          email, password, remember
-        })
+        const data = {
+          username: this.$data.username,
+          password: this.$data.password,
+          remember: this.$data.remember,
+          token: this.$data.token
+        }
+        Api().post(`/api/v1/users/login`, data)
         .then(response => {
-          if ( response.status === 200 ) {
+          if ( response.data.otp ) { 
+            this.otpRequired = true
+            this.message = 'Two factor authentication required.'
+          } else if ( response.status === 200 ){
             this.$parent.isAuthenticated = true
-            this.$router.push(this.$route.query.redirect || '/home')
+            localStorage.setItem('isAuthenticated', response.data._id)
+            if (response.data.admin) {
+              this.$parent.isAdmin = true
+              localStorage.setItem('isAdmin', 'You should not be here ಠ_ಠ')
+            }
+            const query = this.$route.query
+            this.$router.push((query.redirect) ? { path: query.redirect, query } : '/home' )
           }
         })
         .catch(e => {
-          // TODO better way to indicate the error, maybe a snackbar
-          alert('Email or password incorrect.')
+          this.error = e.response.data || e
           console.error(e)
         })
       }
     },
-      beforeMount: function () { // Fresh page load
-    if (this.$parent.isAuthenticated){
-      this.$router.push('/home')
+    updated() {
+      if (this.otpRequired) this.$refs.token.focus()
+    },
+    beforeMount() { // Refresh, fresh page load
+      if (this.$parent.isAuthenticated){
+        this.$router.push('/home')
+      }
+    },
+    beforeUpdate () { // Uri change, link, etc.
+      if (this.$parent.isAuthenticated){
+        this.$router.push('/home')
+      }
     }
-  },
-  beforeUpdate: function () { // Refresh, url change, link, etc.
-    if (this.$parent.isAuthenticated){
-      this.$router.push('/home')
-    }
-  }
   }
 </script>

@@ -1,9 +1,7 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "npm": {
-    "enabled": true
-  },
-  "updateNotScheduled": true
+  "extends": ["config:base"],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  }
 }

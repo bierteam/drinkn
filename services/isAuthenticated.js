@@ -6,9 +6,10 @@ const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.userId) {
       return next()
     } else {
-      res.status(403).send('Thou shall not pass!')
+      res.status(401).send('Thou shall not pass!')
     }
   } else {
+    console.log('responding to user because of devmode')
     return next()
   }
 }

@@ -1,17 +1,26 @@
 <template>
-
-<body>
-  <section class="hero is-fullheight">
+  <body>
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
+          <div v-if="message" class="notification is-success">
+            <button class="delete" @click="message = ''"></button>
+              {{message}}
+          </div>
+          <div v-if="isPwned" class="notification is-warning">
+              This password has been pwned.
+          </div>
+          <div v-if="error" class="notification is-danger">
+            <button class="delete" @click="error = ''"></button>
+              {{error}}
+          </div>
           <h3 class="title has-text-grey">Register</h3>
           <p class="subtitle has-text-grey">Create a new user.</p>
           <div class="box">
             <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="email" type="email" placeholder="Their email" autofocus="">
+                <input class="input is-large" v-model="username" type="username" placeholder="Their username" autofocus>
               </div>
             </div>
             <div class="field">
@@ -19,7 +28,11 @@
                 <input class="input is-large" v-model="password" type="password" placeholder="Their password">
               </div>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth" @click='Post' :disabled="isDisabled">Register new account</button>
+            <div class="field">
+                <input type="checkbox" v-model="admin">
+                Make this user an administrator
+            </div>
+            <button type="submit" class="button is-block is-light is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Register new account</button>
             </form>
           </div>
           <p class="has-text-grey">
@@ -29,42 +42,49 @@
         </div>
       </div>
     </div>
-  </section>
-</body>
+  </body>
 </template>
 
 <script>
   import Api from '@/services/Api'
+  import pwned from "havetheybeenpwned"
 
   export default {
     data() {
       return {
-        email: '',
+        username: '',
         password: '',
+        admin: false,
+        isPwned: false,
+        message: '',
+        error: ''
       }
     },
     computed: {
       isDisabled:function() {
-        if (!this.$data.email || !this.$data.password){
-          return true
-        }
+        pwned(this.$data.password).then(isPwned => {
+          this.$data.isPwned = isPwned
+        })
+        return (this.$data.username && this.$data.password && !this.$data.isPwned) ? false : true
       }
     },
     methods: {
       Post() {
-        const email = this.$data.email
+        const username = this.$data.username
         const password = this.$data.password
-        Api().post(`api/v1/register`, {
-          email, password
+        const admin = this.$data.admin
+        Api().post(`/api/v1/users/register`, {
+          username, password, admin
         })
         .then( response => {
           if (response.status === 201) {
-            alert('succes')
+            this.$data.message = 'Created ' + this.$data.username     
           } else if (response.status === 200) {
-            alert(response.data)
+            this.$data.error = response.data
           }
         })
         .catch(e => {
+          this.$data.error = e.response.data || e
           console.error(e)
         })
       }

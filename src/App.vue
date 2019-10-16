@@ -16,22 +16,26 @@
       <div id="navbar" class="navbar-menu" v-if="isAuthenticated" @mouseleave="burger = false" v-bind:class="{'is-active': burger}">
         <div class="navbar-start">
           <router-link class="navbar-item" to="/home">Home</router-link>
-          <router-link class="navbar-item" to="/aanbiedingen">Aanbiedingen</router-link>
+          <router-link class="navbar-item" to="/discounts">Discounts</router-link>
 
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              More
-            </a>
-
+            <a class="navbar-link">More</a>
             <div class="navbar-dropdown">
-              <router-link class="navbar-item" to="/import">Import</router-link>
-              <router-link class="navbar-item" to="/storemapping">Map store names</router-link>
               <router-link class="navbar-item" to="/">Contact</router-link>
-
               <hr class="navbar-divider">
               <a class="navbar-item" href="https://github.com/bierteam/Pils/tree/master/docs">
                 Documentation
               </a>
+            </div>
+          </div>
+          <div class="navbar-item has-dropdown is-hoverable" v-if="isAdmin">
+            <a class="navbar-link">Admin stuff</a>
+            <div class="navbar-dropdown">
+              <router-link class="navbar-item" to="/register">Register users</router-link>
+              <router-link class="navbar-item" to="/users">Users</router-link>
+              <router-link class="navbar-item" to="/import">Import data</router-link>
+              <router-link class="navbar-item" to="/storemapping">Map store names</router-link>
+              <router-link class="navbar-item" to="/logging">Logging</router-link>
             </div>
           </div>
         </div>
@@ -39,9 +43,8 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <router-link class="button is-primary" to="register">Register</router-link>
-              <!-- <router-link v-if="!isAuthenticated" class="button is-light" to="login">Log in</router-link> -->
-              <button class="button is-light" @click='Logout'>Logout</button>
+              <router-link class="button is-light" to="/account">Account</router-link>
+              <button class="button is-primary" @click='Logout'>Logout</button>
             </div>
           </div>
         </div>
@@ -54,7 +57,7 @@
       <div class="columns">
         <div class="column">
           <a href="https://github.com/bierteam">
-            &copy; BierTeam 2018
+            &copy; BierTeam 2019
           </a>
           <p>The source code is licensed
             <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
@@ -80,59 +83,49 @@
 <script>
 // addToHomescreen();
 import Api from '@/services/Api'
-import getCookie from '@/services/Cookie'
 
 export default {
   name: 'App',
   data() {
     return {
       burger: false,
-      isAuthenticated: getCookie('connect.sid') ? true : false
+      isAuthenticated: localStorage.getItem('isAuthenticated') ? true : false,
+      isAdmin: localStorage.getItem('isAdmin') ? true : false,
+      userId: localStorage.getItem('isAuthenticated')
     }
   },
   methods: {
     Logout() {
-      Api().delete(`api/v1/logout`)
+      Api().delete(`/api/v1/users/logout`)
       .then(response => {
         if (response.status === 200) {
           this.$data.isAuthenticated = false
+          this.$data.isAdmin = false
+          localStorage.clear()
           this.$router.push('/login')
         }
       })
       .catch(e => {
         console.error(e)
       })
-    }
-  },
-  beforeMount: function () { // Fresh page load
-    if (!this.isAuthenticated){
-      if (this.$route.path === '/home' || this.$route.path === '/login') {
-        this.$router.push('/login')
-      } else {
-        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
+    },
+    Redirect() {
+      if (!this.isAuthenticated){
+        const query = this.$route.query
+        if (this.$route.path !== '/home' && this.$route.path !== '/login') {
+          query.redirect = this.$route.path
+        }
+      this.$router.push({ path: '/login', query })
       }
     }
   },
-  beforeUpdate: function () { // Refresh, url change, link, etc.
-    if (!this.isAuthenticated){
-      if (this.$route.path === '/home' || this.$route.path === '/login') {
-        this.$router.push('/login')
-      } else {
-        this.$router.push({ path: '/login', query: { redirect: this.$route.path } })
-      }
-    }
+  beforeMount() { // Refresh, fresh page load
+    this.Redirect()
+  },
+  beforeUpdate () { // Uri change, link, etc.
+    this.Redirect()
   }
 }
 
 </script>
 
-<style>
-/* .wrapper { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -30px; }
-.footer, #push { height:20px;} */
-/* .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    } */
-</style>

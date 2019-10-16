@@ -14,3 +14,6 @@ config/backend.js
 config.js
 
 deploy_key
+selenium-server.log
+.vscode
+ecosystem.config.js

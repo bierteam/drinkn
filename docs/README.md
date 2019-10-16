@@ -1,11 +1,13 @@
-[![Build Status](https://travis-ci.org/bierteam/Pils.svg?branch=master)](https://travis-ci.org/bierteam/Pils)
-[![Coverage Status](https://coveralls.io/repos/github/bierteam/Pils/badge.svg?branch=master)](https://coveralls.io/github/bierteam/Pils?branch=master)
+Dev:
+[![Build Status](https://travis-ci.org/bierteam/Pils.svg?branch=dev)](https://travis-ci.org/bierteam/Pils)
+[![Coverage Status](https://coveralls.io/repos/github/bierteam/Pils/badge.svg?branch=dev)](https://coveralls.io/github/bierteam/Pils?branch=dev)
 [![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-dev)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
 
 # Pils
 
-A simple crawler to get some usable data of [biernet.nl](https://biernet.nl/)
+A simple node app to get some usable data from [biernet.nl](https://biernet.nl/)
+We will consume this data later to generate push notifications with nice discounts when the fridge is running low for example.
 
 ## Getting Started
 
@@ -60,10 +62,20 @@ npm install
 Copy and fill config file
 
 ```
-cp config.example.js config.js
+cp config/backend.example.js config/backend.js
 ```
-Run server
+Run development servers
 ```
+npm run dev
+```
+Second terminal 
+```
+npm run nodemon
+```
+Run production server (I suggest [pm2](https://www.npmjs.com/package/pm2) instead)
+```
+npm run build
+
 node server.js
 ```
 ## Authors
