@@ -1,12 +1,9 @@
 node_modules
 test/
 docs/
-build/
-src/
 .vscode/
 .git/
-.DS_file
 renovate.json
-package-lock.json
 .postcssrc.js
 .babelrc
+.DS_Store
