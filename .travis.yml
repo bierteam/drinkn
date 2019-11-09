@@ -16,7 +16,7 @@ install:
   - npm install
 after_script:
   - npm run coveralls
-  - docker build -t bierteam/pils:$TRAVIS_BRANCH -t bierteam/pils:$TRAVIS_TAG .
+  - docker build -t bierteam/pils:$TRAVIS_BRANCH .
   - docker push bierteam/pils
 before_deploy:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
