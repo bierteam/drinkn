@@ -1,7 +1,7 @@
 const rp = require('request-promise')
 
 const requestData = async (context) => {
-  const options = { // move to config file?
+  const options = { // move to envirioment variable?
     uri: `https://biernet.nl/extra/app/V3_3.3.4/${context}.php?d=`,
     headers: {
       'User-Agent': 'nl.Biernet.iOS.app/V3',
