@@ -22,6 +22,7 @@ FROM node:12-alpine AS release
 # set default environments
 ENV NODE_ENV production
 ENV PORT 80
+EXPOSE 80
 # Create app directory
 WORKDIR /app
 # RUN npm -g install serve
@@ -35,5 +36,5 @@ COPY --from=build /app/api ./api
 COPY --from=build /app/public ./public
 COPY --from=build /app/setup.js ./setup.js
 COPY --from=build /app/server.js .
-EXPOSE 80
+
 CMD ["node", "server.js"]
