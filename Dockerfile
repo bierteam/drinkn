@@ -29,12 +29,11 @@ COPY --from=dependencies /app/package.json ./
 # Install app dependencies
 RUN npm install --only=production
 # copy files needed
-COPY --from=build /app/config ./config
 COPY --from=build /app/models ./models
 COPY --from=build /app/services ./services
 COPY --from=build /app/api ./api
 COPY --from=build /app/public ./public
+COPY --from=build /app/setup.js ./setup.js
 COPY --from=build /app/server.js .
 EXPOSE 80
-EXPOSE 3000
 CMD ["node", "server.js"]
