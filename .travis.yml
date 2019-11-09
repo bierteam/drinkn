@@ -16,10 +16,10 @@ install:
   - npm install
 after_script:
   - npm run coveralls
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t bierteam/pils:$TRAVIS_BRANCH .
   - docker push bierteam/pils
 before_deploy:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - openssl aes-256-cbc -K $encrypted_0394b0a27270_key -iv $encrypted_0394b0a27270_iv
     -in deploy_key.enc -out /tmp/deploy_key -d
   - eval "$(ssh-agent -s)"
