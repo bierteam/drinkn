@@ -14,9 +14,10 @@ const MongoStore = require('connect-mongo')(session)
 const user = require('./models/user')
 const writeLog = require('./services/writeLog')
 
-// Fix mongoose 5.4.1 deprecations
+// Fix mongoose deprecations
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
+mongoose.set('useUnifiedTopology', true)
 
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
