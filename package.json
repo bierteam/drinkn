@@ -50,7 +50,7 @@
     "vue": "^2.5.2",
     "vue-browserupdate": "^1.2.0",
     "vue-router": "^3.1.2",
-    "vue2-filters": "^0.7.0"
+    "vue2-filters": "^0.8.0"
   },
   "devDependencies": {
     "@babel/core": "7.7.2",
