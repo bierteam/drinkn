@@ -1,5 +1,4 @@
-const config = require('../config')
-const devmode = config.app.devmode
+const devmode = process.env.DEVMODE || false
 
 const isAuthenticated = (req, res, next) => {
   if (!devmode) {

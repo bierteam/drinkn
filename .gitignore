@@ -12,6 +12,7 @@ coverage
 
 config/backend.js
 config.js
+.env
 
 deploy_key
 selenium-server.log

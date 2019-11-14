@@ -1,5 +1,6 @@
-const config = require('./config')
-const connectionString = `mongodb+srv://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.name}`
+if (process.env.NODE_ENV !== 'production') require('dotenv').config() // use the .env file for this
+require('./setup')
+const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`
 
 const express = require('express')
 const history = require('connect-history-api-fallback')
@@ -41,7 +42,7 @@ app.use(function (req, res, next) { // Set client ip
 })
 
 const options = {
-  secret: config.app.secret,
+  secret: process.env.APPSECRET,
   resave: true,
   saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: db }),
@@ -61,8 +62,12 @@ db.once('open', function () {
 })
 
 // check for (and create) default account if enabled
-if (config.app.defaultAccount.autoCreate) {
-  const defaultAccount = config.app.defaultAccount
+if (process.env.DEFAULT_USER && process.env.DEFAULT_PASS) {
+  const defaultAccount = {
+    username: process.env.DEFAULT_USER,
+    password: process.env.DEFAULT_PASS,
+    admin: true
+  }
   const username = defaultAccount.username
   defaultAccount.admin = true
   const createDefault = () => {
@@ -94,6 +99,7 @@ cron.schedule('0 9,22 * * *', async () => {
 const api = require('./api')
 app.use('/api', api)
 
-app.listen(config.app.port, function () {
-  console.log(`Beer backend running on port ${config.app.port}!`)
+const port = process.env.PORT || 3000
+app.listen(port, function () {
+  console.log(`Beer backend running on port ${port}!`)
 })
