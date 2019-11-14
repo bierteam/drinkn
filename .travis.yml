@@ -12,10 +12,12 @@ branches:
     - gh-pages
     - /.*/
 cache: npm
-install:
-  - npm install
+# Default install and script stage:
+# https://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+
 after_script:
   - npm run coveralls
+after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t bierteam/pils:$TRAVIS_BRANCH .
   - docker push bierteam/pils
