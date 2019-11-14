@@ -79,7 +79,7 @@
     "babel-plugin-syntax-jsx": "6.18.0",
     "babel-plugin-transform-vue-jsx": "3.7.0",
     "bulma-tooltip": "3.0.2",
-    "chalk": "2.4.2",
+    "chalk": "3.0.0",
     "chromedriver": "78.0.1",
     "copy-webpack-plugin": "5.0.5",
     "coveralls": "3.0.7",
