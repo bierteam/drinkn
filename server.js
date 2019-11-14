@@ -102,4 +102,4 @@ app.use('/api', api)
 const port = process.env.PORT || 3000
 app.listen(port, function () {
   console.log(`Beer backend running on port ${port}!`)
-});
+})
