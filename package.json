@@ -70,7 +70,7 @@
     "@babel/register": "7.7.0",
     "@babel/runtime-corejs2": "7.7.2",
     "@fortawesome/fontawesome-free": "5.11.2",
-    "autoprefixer": "9.7.1",
+    "autoprefixer": "9.7.2",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.3",
     "babel-helper-vue-jsx-merge-props": "2.0.3",
