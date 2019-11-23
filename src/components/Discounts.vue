@@ -27,7 +27,6 @@
       </div>
     </nav>
     <progress v-if="discounts.length === 0" class="progress is-small"></progress>
-    debug: sort={{sort}}, dir={{sortDir}}
     <table class='table container'>
       <thead>
         <tr><!-- first row -->
