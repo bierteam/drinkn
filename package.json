@@ -8,10 +8,10 @@
     "dev-back": "NODE_ENV=development nodemon",
     "test": "standard && jest --config test/unit/jest.conf.js",
     "test-e2e": "node test/e2e/runner.js",
-    "coverage": "cat ./test/unit/coverage/lcov.info | coveralls",
+    "coverage": "cat ./test/unit/coverage/lcov.info | coveralls && codecov",
     "build": "node build/build.js",
     "docker-build": "docker build . -t pils",
-    "docker-run": "docker run --env-file .env --restart always -d -p 3000:3000 pils"  
+    "docker-run": "docker run --env-file .env --restart always -d -p 3000:3000 pils"
   },
   "repository": {
     "type": "git",
@@ -83,6 +83,7 @@
     "chromedriver": "78.0.1",
     "copy-webpack-plugin": "5.0.5",
     "coveralls": "3.0.8",
+    "codecov": "3.6.1",
     "cross-spawn": "7.0.1",
     "css-loader": "3.2.0",
     "extract-text-webpack-plugin": "3.0.2",
