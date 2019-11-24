@@ -1,11 +1,9 @@
-[![Coverage Status](https://coveralls.io/repos/github/bierteam/Pils/badge.svg?branch=dev)](https://coveralls.io/github/bierteam/Pils?branch=dev)
-[![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-dev)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
 
-| Branch | Status |
-| --- | --- |
-| Master: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=master)](https://travis-ci.org/bierteam/Pils) |
-| Dev: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=dev)](https://travis-ci.org/bierteam/Pils) |
+| Branch | Status | Coverage | Quality |
+| --- | --- | --- | --- |
+| Master: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=master)](https://travis-ci.org/bierteam/Pils) | [![Coverage Status](https://coveralls.io/repos/github/bierteam/Pils/badge.svg?branch=dev)](https://coveralls.io/github/bierteam/Pils?branch=master) | [![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-master)
+| Dev: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=dev)](https://travis-ci.org/bierteam/Pils) | [![Coverage Status](https://coveralls.io/repos/github/bierteam/Pils/badge.svg?branch=dev)](https://coveralls.io/github/bierteam/Pils?branch=dev) | [![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-dev)
 
 # Pils
 
@@ -18,29 +16,35 @@ These instructions will get you a copy of the project up and running.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+What things you need to install the software
 
 ```
 git
 node
+docker (optional)
+A MongoDB database
 ```
-### Installing *Git* – the easy way
+
+### Installing *Git*
 
 > *Git* is a [free and open source](http://git-scm.com/about/free-and-open-source) distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
 
-– The [*Git* website](http://git-scm.com/)
+The [*Git* website](http://git-scm.com/)
 
-Choose one of the following options.
-- [Instructions for *Windows*](windows.md)
-- [Instructions for *Mac*](mac.md)
-- [Instructions for *Linux*](linux.md)
+### Installing *Node* 
 
-### Installing Node in 5 minutes: The Final Guide.
+[Install instructions](https://www.linode.com/docs/development/version-control/how-to-install-git-on-linux-mac-and-windows/)
 
-~~If you have shitty internet, it may take a little longer.~~
-- [Install instructions](node.md)
+### Installing *Docker* 
 
-## Installing
+[Install instructions](https://docs.docker.com/install/)
+
+### Using *MongoDB* 
+
+There are many options here, but we recommend the free Mongo Atlas tier: [Link](https://www.mongodb.com/download-center/cloud
+)
+
+## Installing project for development
 
 A step by step series of examples that tell you how to get a copy running.
 
@@ -65,35 +69,52 @@ npm install
 Copy and fill config file
 
 ```
-cp config/backend.example.js config/backend.js
+cp .example.env .env
 ```
 Run development servers
 ```
-npm run dev
+npm run dev-front
 ```
 Second terminal 
 ```
-npm run nodemon
+npm run dev-back
 ```
-Run production server (I suggest [pm2](https://www.npmjs.com/package/pm2) instead)
+## Installing project for production
+### Option 1: Docker
+This is the most simple way to run the project.
+#### Option 1.1: Run our build
+```
+docker run --env-file .env --restart always --detach --publish 3000:3000 bierteam/pils:dev
+```
+#### Option 1.2: Build your own
+```
+docker build . -t pils
+docker run --env-file .env --restart always --detach --publish 3000:3000 pils
+```
+
+### Option 2: [PM2](https://pm2.keymetrics.io/)
+A simple node process manager that handles crashes etc.
+```
+npm run build
+npm install pm2 -g
+pm2 start server.js
+```
+
+### Option 3: Node + screen
+Also a very simple way to run the project, but it doesn't account for crashes etc.
 ```
 npm run build
 
 node server.js
 ```
+
 ## Authors
 
-* **Nino Van der Laan** - *Initial work* - [NvdLaan](https://github.com/NvdLaan)
-* **Oscar Wieman** - *Initial work* - [Oscrx](https://github.com/oscrx)
+* **Nino Van der Laan** - [NvdLaan](https://github.com/NvdLaan)
+* **Oscar Wieman** - [Oscrx](https://github.com/oscrx)
 
-See also the list of [contributors](https://github.com/NvdLaan/Pils/contributors) who participated in this project.
+Other [contributors](https://github.com/bierteam/Pils/contributors) who participated in this project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* [Git guide](https://gist.github.com/derhuerst/1b15ff4652a867391f03)
-* [Node guide](https://gist.github.com/kazzkiq/fe702215173e795d49d0c1ffbea363b5)
-* [README Template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
