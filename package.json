@@ -1,5 +1,5 @@
 {
-  "name": "Pils",
+  "name": "pils",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -10,7 +10,7 @@
     "test-e2e": "node test/e2e/runner.js",
     "coverage": "cat ./test/unit/coverage/lcov.info | coveralls",
     "build": "node build/build.js",
-    "build-docker": "docker build . -t pils",
+    "docker-build": "docker build . -t pils",
     "docker-run": "docker run --env-file .env --restart always -d -p 3000:3000 pils"  
   },
   "repository": {
@@ -19,7 +19,7 @@
   },
   "keywords": [],
   "author": "Oscar Wieman - oscrx // Nino van der Laan - NvdLaan",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/bierteam/Pils/issues"
   },
