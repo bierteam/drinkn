@@ -23,7 +23,7 @@ module.exports = {
       silent: true,
       globals: {
         devServerURL:
-          'http://localhost:' + (process.env.PORT || 3000)
+          'http://localhost:' + (Number(process.env.PORT) || 3000)
       }
     },
 

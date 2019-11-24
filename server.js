@@ -99,7 +99,7 @@ cron.schedule('0 9,22 * * *', async () => {
 const api = require('./api')
 app.use('/api', api)
 
-const port = process.env.PORT || 3000
+const port = Number(process.env.PORT) || 3000
 app.listen(port, function () {
   console.log(`Beer backend running on port ${port}!`)
 })
