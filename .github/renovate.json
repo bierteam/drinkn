@@ -1,4 +1,3 @@
 {
-  "extends": ["config:base", ":docker", ":automergeMinor", ":maintainLockFilesMonthly"],
-  "baseBranches": ["master", "dev"]
+  "extends": ["config:base", ":docker", ":automergeMinor", ":maintainLockFilesMonthly"]
 }
