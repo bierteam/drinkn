@@ -1,7 +1,18 @@
 {
-  "name": "pils",
-  "version": "1.0.0",
-  "description": "",
+  "description": "Frontend",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bierteam/Pils.git"
+  },
+  "homepage": "https://github.com/bierteam/Pils/docs/README.md",
+  "contibutors": [
+    "Oscar Wieman (https://github.com/oscrx)",
+    "Nino van der Laan (https://github.com/NvdLaan)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bierteam/Pils/issues"
+  },
   "main": "server.js",
   "scripts": {
     "dev-front": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -11,19 +22,8 @@
     "coverage": "cat ./test/unit/coverage/lcov.info | coveralls && codecov",
     "build": "node build/build.js",
     "docker-build": "docker build . -t pils",
-    "docker-run": "docker run --env-file .env --restart always -d -p 3000:3000 pils"
+    "docker-run": "docker run --env-file .env -p 3000:80 pils"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bierteam/Pils.git"
-  },
-  "keywords": [],
-  "author": "Oscar Wieman - oscrx // Nino van der Laan - NvdLaan",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bierteam/Pils/issues"
-  },
-  "homepage": "https://github.com/bierteam/Pils/docs/README.md",
   "dependencies": {
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
@@ -117,9 +117,5 @@
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "2.11.5",
     "webpack-merge": "4.2.2"
-  },
-  "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
   }
 }
