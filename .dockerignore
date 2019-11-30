@@ -1,5 +1,6 @@
 .DS_Store
 .git/
+.github/
 .vscode/
 docs/
 node_modules
@@ -7,7 +8,7 @@ node_modules
 test/
 .babelrc
 .env*
-.gitignore
+.git*
 .postcssrc.js
 .travis.yml
 deploy_key.enc
