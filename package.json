@@ -59,7 +59,7 @@
     "@babel/preset-env": "7.7.6",
     "@babel/register": "7.7.4",
     "@babel/runtime-corejs2": "7.7.6",
-    "@fortawesome/fontawesome-free": "5.11.2",
+    "@fortawesome/fontawesome-free": "5.12.0",
     "autoprefixer": "9.7.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.3",
