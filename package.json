@@ -72,7 +72,7 @@
     "bulma-tooltip": "3.0.2",
     "chalk": "3.0.0",
     "cheerio": "1.0.0-rc.3",
-    "chromedriver": "78.0.1",
+    "chromedriver": "79.0.0",
     "codecov": "3.6.1",
     "copy-webpack-plugin": "5.1.1",
     "coveralls": "3.0.9",
