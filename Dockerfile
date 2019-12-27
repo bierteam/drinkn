@@ -8,8 +8,8 @@ RUN npm run build
 # --- Release with Alpine ----
 FROM node:12-alpine AS release
 ENV NODE_ENV production
-ENV PORT 80
-EXPOSE 80
+ENV PORT 3000
+EXPOSE 3000
 WORKDIR /app
 COPY package*.json ./
 COPY models ./models
