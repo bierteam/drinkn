@@ -19,7 +19,7 @@
     "dev-back": "NODE_ENV=development nodemon",
     "test": "standard && jest --config test/unit/jest.conf.js --passWithNoTests",
     "test-e2e": "node test/e2e/runner.js",
-    "coverage": "cat ./test/unit/coverage/lcov.info | coveralls && codecov",
+    "coverage": "codecov",
     "build": "node build/build.js",
     "docker-build": "docker build . -t pils",
     "docker-run": "docker run --env-file .env -p 3000:80 pils"
@@ -74,7 +74,6 @@
     "chromedriver": "79.0.0",
     "codecov": "3.6.1",
     "copy-webpack-plugin": "5.1.1",
-    "coveralls": "3.0.9",
     "cross-spawn": "7.0.1",
     "css-loader": "3.4.0",
     "dotenv": "8.2.0",

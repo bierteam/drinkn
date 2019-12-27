@@ -2,8 +2,8 @@
 
 | Branch | Status | Coverage | Quality |
 | --- | --- | --- | --- |
-| Master: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=master)](https://travis-ci.org/bierteam/Pils) | [![codecov](https://codecov.io/gh/bierteam/Pils/branch/master/graph/badge.svg)](https://codecov.io/gh/bierteam/Pils) | [![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-master)
-| Dev: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=dev)](https://travis-ci.org/bierteam/Pils) | [![codecov](https://codecov.io/gh/bierteam/Pils/branch/dev/graph/badge.svg)](https://codecov.io/gh/bierteam/Pils) | [![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-dev)
+| Master: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=master)](https://travis-ci.com/bierteam/Pils) | [![codecov](https://codecov.io/gh/bierteam/Pils/branch/master/graph/badge.svg)](https://codecov.io/gh/bierteam/Pils) | [![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-master)
+| Dev: | [![Build Status](https://travis-ci.com/bierteam/Pils.svg?branch=dev)](https://travis-ci.com/bierteam/Pils) | [![codecov](https://codecov.io/gh/bierteam/Pils/branch/dev/graph/badge.svg)](https://codecov.io/gh/bierteam/Pils) | [![codebeat badge](https://codebeat.co/badges/8f7668ab-0b6f-4a88-b5c9-ba4e47171a2d)](https://codebeat.co/projects/github-com-bierteam-pils-dev)
 
 # Pils
 
