@@ -17,7 +17,7 @@
   "scripts": {
     "dev-front": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "dev-back": "NODE_ENV=development nodemon",
-    "test": "standard && jest --config test/unit/jest.conf.js",
+    "test": "standard && jest --config test/unit/jest.conf.js --passWithNoTests",
     "test-e2e": "node test/e2e/runner.js",
     "coverage": "cat ./test/unit/coverage/lcov.info | coveralls && codecov",
     "build": "node build/build.js",
@@ -36,7 +36,6 @@
     "helmet": "^3.21.2",
     "moment": "^2.23.0",
     "mongoose": "^5.7.7",
-    "node-cron": "^2.0.3",
     "otplib": "^11.0.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",

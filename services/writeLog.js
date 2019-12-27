@@ -10,6 +10,7 @@ const writeLog = (message, type, context, ip) => {
     context,
     ip
   }
+  console.log(logMessage.message)
   logger.create(logMessage, function (err, user) {
     if (err) {
       console.error(err)
