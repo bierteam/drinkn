@@ -31,6 +31,7 @@ devConfigPromise.then(devConfig => {
     }
     if (opts.indexOf('--env') === -1) {
       opts = opts.concat(['--env', 'chrome'])
+      // opts = opts.concat(['--env', 'firefox'])
     }
 
     const spawn = require('cross-spawn')

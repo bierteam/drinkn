@@ -117,10 +117,26 @@ export default {
         }
       this.$router.push({ path: '/login', query })
       }
+    },
+    Check() {
+      Api().get(`/api/v1/users/check`)
+        .then(response => {
+        console.log(response)
+        if (!response.data) {
+          this.$data.isAuthenticated = false
+          this.$data.isAdmin = false
+          localStorage.clear()
+          this.$router.push('/login')
+        }
+      })
+      .catch(e => {
+        console.error(e)
+      })
     }
   },
   beforeMount() { // Refresh, fresh page load
     this.Redirect()
+    this.Check()
   },
   beforeUpdate () { // Uri change, link, etc.
     this.Redirect()

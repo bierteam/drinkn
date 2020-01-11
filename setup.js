@@ -1,4 +1,5 @@
 try {
+  if (process.env.DEVMODE) console.log('DEVMODE is enabled')
   if (!process.env.NODE_ENV) console.log('Please set the NODE_ENV')
   if (!process.env.APPSECRET) throw new Error('Please set your APPSECRET to something safe')
   if (!process.env.DEFAULT_USER || !process.env.DEFAULT_PASS) console.log('Not creating a default account...')

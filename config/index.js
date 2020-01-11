@@ -13,8 +13,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': 'http://localhost:' + (process.env.PORT || 3000),
-      '/favicon.ico': 'http://localhost:' + (process.env.PORT || 3000)
+      '/api': 'http://localhost:' + (Number(process.env.PORT) || 3000),
+      '/favicon.ico': 'http://localhost:' + (Number(process.env.PORT) || 3000)
     },
 
     // Various Dev Server settings

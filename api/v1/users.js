@@ -67,6 +67,13 @@ router.post('/register', isAdmin, function (req, res) {
     })
   }
 })
+router.get('/check', function (req, res) {
+  if (req.session.userId) {
+    res.send(true)
+  } else {
+    res.send(false)
+  }
+})
 
 router.get('/', isAdmin, function (req, res) {
   user.find().select('username admin').exec(function (err, results) {
