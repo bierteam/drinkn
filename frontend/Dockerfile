@@ -1,14 +1,12 @@
 # ---- Build with node ----
 FROM node:12 AS build  
 WORKDIR /app
-# COPY . ./
-COPY package*.json ./
+COPY public ./public
 COPY index.html ./
 COPY build ./build
 COPY config ./config
 COPY src ./src
-COPY public ./public
-
+COPY package*.json ./
 RUN npm install
 RUN npm run build
 
