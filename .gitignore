@@ -9,3 +9,4 @@ config.js
 .env*
 deploy_key
 pils-api
+kubeconfig
