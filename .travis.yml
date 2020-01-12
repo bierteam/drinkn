@@ -2,7 +2,7 @@
 # https://docs.travis-ci.com/user/languages/javascript-with-nodejs
 language: node_js
 node_js:
-  - node
+  - "12"
 env:
   # - PART=auth
   # - PART=bier-api
@@ -21,4 +21,5 @@ script: cd $PART; npm ci; npm run test
 after_script: cd $PART; npm run coverage
 deploy:
   provider: script
+  all_branches: true
   script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; docker build -t bierteam/$PART:$TRAVIS_BRANCH .; docker push bierteam/$PART:$TRAVIS_BRANCH
