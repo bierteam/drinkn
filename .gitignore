@@ -6,6 +6,6 @@ selenium-server.log
 ecosystem.config.js
 config/backend.js
 config.js
-.env
+.env*
 deploy_key
 pils-api
