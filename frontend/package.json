@@ -1,17 +1,17 @@
 {
-  "description": "FrontEnd",
+  "description": "frontend",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bierteam/FrontEnd.git"
+    "url": "git+https://github.com/bierteam/drinkn.git"
   },
-  "homepage": "https://github.com/bierteam/FrontEnd/docs/README.md",
+  "homepage": "https://github.com/bierteam/drinkn/docs/README.md",
   "contibutors": [
     "Oscar Wieman (https://github.com/oscrx)",
     "Nino van der Laan (https://github.com/NvdLaan)"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bierteam/FrontEnd/issues"
+    "url": "https://github.com/bierteam/drinkn/issues"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
