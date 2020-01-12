@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+node_modules/
+build/
+tmp/
+temp/
+src/config/config.ts
+./node_modules/
+ormconfig.json
