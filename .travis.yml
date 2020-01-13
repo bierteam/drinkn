@@ -18,7 +18,7 @@ branches:
   only:
     - /.*/ # run all branches
 script: cd $PART; npm ci; npm run test
-after_script: cd $PART; npm run coverage
+after_script: npm run coverage
 deploy:
   provider: script
   on:
