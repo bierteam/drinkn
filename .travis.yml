@@ -16,11 +16,12 @@ services:
   - docker
 branches:
   only:
-    - /.*/ # build all branches
+    - /.*/ # run all branches
 script: cd $PART; npm ci; npm run test
 after_script: cd $PART; npm run coverage
 deploy:
   provider: script
   on:
-    all_branches: true
+    # all_branches: true
+    branch: master
   script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; docker build -t bierteam/$PART:$TRAVIS_BRANCH .; docker push bierteam/$PART:$TRAVIS_BRANCH
