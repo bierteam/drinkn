@@ -1,8 +1,7 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
 [![Build Status](https://travis-ci.com/bierteam/drinkn.svg?branch=master)](https://travis-ci.com/bierteam/drinkn)
 [![codecov](https://codecov.io/gh/bierteam/drinkn/branch/master/graph/badge.svg)](https://codecov.io/gh/bierteam/drinkn)
-[![codebeat badge](https://codebeat.co/badges/UUID)](https://codebeat.co/projects/github-com-bierteam-drinkn-master)
-
+[![codebeat badge](https://codebeat.co/badges/27be54a6-bf6d-4297-9dc7-447d514bc476)](https://codebeat.co/projects/github-com-bierteam-drinkn-master)
 
 # drinkn
 
