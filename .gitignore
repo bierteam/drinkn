@@ -10,3 +10,6 @@ config.js
 deploy_key
 pils-api
 kubeconfig
+public
+test/e2e/reports
+test/unit/coverage
