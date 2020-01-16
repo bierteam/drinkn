@@ -13,7 +13,6 @@ EXPOSE 3000
 WORKDIR /app
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/build ./
-COPY --from=build /app/ormconfig.json ./ormconfig.json
 RUN npm install --only=production
 USER node
 CMD ["node", "index.js"]

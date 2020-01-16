@@ -5,8 +5,8 @@ node_js:
   - "12"
 env:
   # - PART=auth
-  # - PART=bier-api
-  - PART=bier-import
+  # - PART=beer-api
+  - PART=beer-import
   - PART=cocktail-api
   # - PART=cocktail-import
   - PART=frontend

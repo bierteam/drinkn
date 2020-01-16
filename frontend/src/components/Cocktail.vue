@@ -29,8 +29,8 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import Multiselect from "vue-multiselect";
+import axios from "axios"
+import Multiselect from "vue-multiselect"
 
 export default {
   components: { Multiselect },
@@ -42,47 +42,47 @@ export default {
       ingredients: [],
       selectedIngredients: [],
       myCocktails: []
-    };
+    }
   },
   methods: {
     filterData() {
       if (this.txtInput) {
         this.filteredCocktails = this.filteredCocktails.filter(cocktail =>
           cocktail.strDrink.toLowerCase().includes(this.txtInput.toLowerCase())
-        );
+        )
       }
     },
     retrieveCocktailsByIngredients() {
       axios
-        .post("http://localhost:3000/cocktail/personal", this.selectedIngredients)
-        .then(response => (this.myCocktails = response.data));
+        .post("/api/v2/cocktail/personal", this.selectedIngredients)
+        .then(response => (this.myCocktails = response.data))
     }
   },
   computed: {
     filterCocktails: function() {
-      let data;
+      let data
       if (this.myCocktails.length > 0) {
         data = this.myCocktails.filter(cocktail =>
-          cocktail.strDrink.toLowerCase().includes(this.txtInput.toLowerCase()));
+          cocktail.strDrink.toLowerCase().includes(this.txtInput.toLowerCase()))
       } else {
         data = this.cocktails.filter(cocktail =>
-          cocktail.strDrink.toLowerCase().includes(this.txtInput.toLowerCase()));
+          cocktail.strDrink.toLowerCase().includes(this.txtInput.toLowerCase()))
       }
-      return data;
+      return data
     }
   },
   created() {
     axios
-      .get("http://localhost:3000/cocktail")
-      .then(response => (this.cocktails = response.data));
+      .get("/api/v2/cocktail")
+      .then(response => (this.cocktails = response.data))
     axios
-      .get("http://localhost:3000/ingredient")
+      .get("/api/v2/cocktail/ingredient")
       .then(
         response =>
           (this.ingredients = response.data.map(obj => obj.ingredient))
-      );
+      )
   }
-};
+}
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 

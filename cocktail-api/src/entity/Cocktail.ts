@@ -5,129 +5,129 @@ import {
   Unique,
   CreateDateColumn,
   UpdateDateColumn
-} from "typeorm";
-import { Ingredient } from "./Ingredient";
+} from "typeorm"
+import { Ingredient } from "./Ingredient"
 
 @Entity()
 export class Cocktail {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
   
   @Column()
-  idDrink: number;
+  idDrink: number
   
   @Column()
-  strDrink: string;
+  strDrink: string
 
   @Column()
-  strCategory: string;
+  strCategory: string
 
   @Column()
-  strAlcoholic: string;
+  strAlcoholic: string
 
   @Column()
-  strGlass: string;
+  strGlass: string
 
   @Column()
-  strInstructions: string;
+  strInstructions: string
 
   @Column()
-  strDrinkThumb: string;
+  strDrinkThumb: string
   
   @Column()
-  strIngredient1: string;
+  strIngredient1: string
   
   @Column()
-  strIngredient2: string;
+  strIngredient2: string
   
   @Column()
-  strIngredient3: string;
+  strIngredient3: string
   
   @Column()
-  strIngredient4: string;
+  strIngredient4: string
   
   @Column()
-  strIngredient5: string;
+  strIngredient5: string
   
   @Column()
-  strIngredient6: string;
+  strIngredient6: string
   
   @Column()
-  strIngredient7: string;
+  strIngredient7: string
   
   @Column()
-  strIngredient8: string;
+  strIngredient8: string
   
   @Column()
-  strIngredient9: string;
+  strIngredient9: string
   
   @Column()
-  strIngredient10: string;
+  strIngredient10: string
   
   @Column()
-  strIngredient11: string;
+  strIngredient11: string
   
   @Column()
-  strIngredient12: string;
+  strIngredient12: string
   
   @Column()
-  strIngredient13: string;
+  strIngredient13: string
   
   @Column()
-  strIngredient14: string;
+  strIngredient14: string
   
   @Column()
-  strIngredient15: string;
+  strIngredient15: string
 
   @Column()
-  strMeasure1: string;
+  strMeasure1: string
 
   @Column()
-  strMeasure2: string;
+  strMeasure2: string
 
   @Column()
-  strMeasure3: string;
+  strMeasure3: string
 
   @Column()
-  strMeasure4: string;
+  strMeasure4: string
 
   @Column()
-  strMeasure5: string;
+  strMeasure5: string
 
   @Column()
-  strMeasure6: string;
+  strMeasure6: string
 
   @Column()
-  strMeasure7: string;
+  strMeasure7: string
 
 
   @Column()
-  strMeasure8: string;
+  strMeasure8: string
 
   @Column()
-  strMeasure9: string;
+  strMeasure9: string
 
   @Column()
-  strMeasure10: string;
+  strMeasure10: string
 
   @Column()
-  strMeasure11: string;
+  strMeasure11: string
 
   @Column()
-  strMeasure12: string;
+  strMeasure12: string
 
   @Column()
-  strMeasure13: string;
+  strMeasure13: string
 
   @Column()
-  strMeasure14: string;
+  strMeasure14: string
 
   @Column()
-  strMeasure15: string;
+  strMeasure15: string
 
   @Column()
-  ingredients: string;
+  ingredients: string
 
   @Column()
-  dateModified: Date;
+  dateModified: Date
 }

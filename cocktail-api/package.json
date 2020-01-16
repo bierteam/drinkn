@@ -1,23 +1,22 @@
 {
-   "name": "cocktail",
-   "version": "0.0.1",
-   "description": "",
-   "main": "build/index.js",
+   "description": "API to get cocktail recepies",
    "repository": {
       "type": "git",
-      "url": "git+https://github.com/bierteam/Cocktail-app.git"
+      "url": "git+https://github.com/bierteam/drinkn.git"
    },
-   "keywords": [],
-   "author": "Nino van der Laan - NvdLaan",
+   "homepage": "https://github.com/bierteam/drinkn/README.md",
+   "contibutors": [
+      "Nino van der Laan (https://github.com/NvdLaan)",
+      "Oscar Wieman (https://github.com/oscrx)"
+   ],
    "license": "MIT",
    "bugs": {
-      "url": "https://github.com/bierteam/Cocktail-app/issues"
+      "url": "https://github.com/bierteam/drinkn/issues"
    },
-   "homepage": "https://github.com/bierteam/Cocktail-app/docs/README.md",
-   "devDependencies": {
-      "@types/node": "12.12.24",
-      "ts-node": "8.6.2",
-      "typescript": "3.7.4"
+   "main": "build/index.js",
+   "scripts": {
+      "build": "tsc",
+      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts"
    },
    "dependencies": {
       "@types/bcryptjs": "^2.4.2",
@@ -38,10 +37,10 @@
       "ts-node-dev": "^1.0.0-pre.44",
       "typeorm": "^0.2.20"
    },
-   "scripts": {
-      "build": "tsc",
-      "docker-build": "docker build . -t cocktail",
-      "docker-run": "docker run --restart always -d -p 3000:3000 cocktail",
-      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts"
+   "devDependencies": {
+      "@types/node": "12.12.24",
+      "dotenv": "8.2.0",
+      "ts-node": "8.6.1",
+      "typescript": "3.7.4"
    }
 }

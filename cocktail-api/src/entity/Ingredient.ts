@@ -2,13 +2,13 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column
-} from "typeorm";
+} from "typeorm"
 
 @Entity()
 export class Ingredient {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
   
   @Column()
-  ingredient: string;
+  ingredient: string
 }

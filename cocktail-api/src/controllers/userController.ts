@@ -1,163 +1,163 @@
-import { Request, Response } from "express";
-import { getRepository, Timestamp } from "typeorm";
-import { validate } from "class-validator";
+import { Request, Response } from "express"
+import { getRepository, Timestamp } from "typeorm"
+import { validate } from "class-validator"
 
-import { User } from "../entity/User";
+import { User } from "../entity/User"
 
 class UserController {
 
   static listAll = async (req: Request, res: Response) => {
     //Get users from database
-    const userRepository = getRepository(User);
+    const userRepository = getRepository(User)
     const users = await userRepository.find({
       select: ["id", "username", "role"] //We dont want to send the passwords on response
-    });
+    })
 
     //Send the users object
-    res.send(users);
-  };
+    res.send(users)
+  }
 
   static getOneById = async (req: Request, res: Response) => {
     //Get the ID from the url
-    const id: string = req.params.id;
+    const id: string = req.params.id
 
     //Get the user from database
-    const userRepository = getRepository(User);
+    const userRepository = getRepository(User)
     try {
       const user = await userRepository.findOneOrFail(id, {
         select: ["id", "username", "role"] //We dont want to send the password on response
-      });
+      })
     } catch (error) {
-      res.status(404).send("User not found");
+      res.status(404).send("User not found")
     }
-  };
+  }
 
   static newUser = async (req: Request, res: Response) => {
     //Get parameters from the body
-    let { username, password, role } = req.body;
-    let user = new User();
-    user.username = username;
-    user.password = password;
-    user.role = role;
+    let { username, password, role } = req.body
+    let user = new User()
+    user.username = username
+    user.password = password
+    user.role = role
 
     //Validade if the parameters are ok
-    const errors = await validate(user);
+    const errors = await validate(user)
     if (errors.length > 0) {
-      res.status(400).send(errors);
-      return;
+      res.status(400).send(errors)
+      return
     }
 
     //Hash the password, to securely store on DB
-    user.hashPassword();
+    user.hashPassword()
 
     //Try to save. If fails, the username is already in use
-    const userRepository = getRepository(User);
+    const userRepository = getRepository(User)
     try {
-      await userRepository.save(user);
+      await userRepository.save(user)
     } catch (e) {
-      res.status(409);
-      return;
+      res.status(409)
+      return
     }
 
     //If all ok, send 201 response
-    res.status(201).send("User created");
-  };
+    res.status(201).send("User created")
+  }
 
   static editUser = async (req: Request, res: Response) => {
     //Get the ID from the url
-    const id = req.params.id;
+    const id = req.params.id
 
     //Get values from the body
-    const { username, role } = req.body;
+    const { username, role } = req.body
 
     //Try to find user on database
-    const userRepository = getRepository(User);
-    let user;
+    const userRepository = getRepository(User)
+    let user
     try {
-      user = await userRepository.findOneOrFail(id);
+      user = await userRepository.findOneOrFail(id)
     } catch (error) {
       //If not found, send a 404 response
-      res.status(404).send("User not found");
-      return;
+      res.status(404).send("User not found")
+      return
     }
 
     //Validate the new values on model
-    user.username = username;
-    user.role = role;
-    const errors = await validate(user);
+    user.username = username
+    user.role = role
+    const errors = await validate(user)
     if (errors.length > 0) {
-      res.status(400).send(errors);
-      return;
+      res.status(400).send(errors)
+      return
     }
 
     //Try to safe, if fails, that means username already in use
     try {
-      await userRepository.insert(user);
+      await userRepository.insert(user)
     } catch (e) {
-      res.status(409).send("username already in use");
-      return;
+      res.status(409).send("username already in use")
+      return
     }
     //After all send a 204 (no content, but accepted) response
-    res.status(204).send();
-  };
+    res.status(204).send()
+  }
 
   static deleteUser = async (req: Request, res: Response) => {
     //Get the ID from the url
-    const id = req.params.id;
+    const id = req.params.id
 
-    const userRepository = getRepository(User);
-    let user: User;
+    const userRepository = getRepository(User)
+    let user: User
     try {
-      user = await userRepository.findOneOrFail(id);
+      user = await userRepository.findOneOrFail(id)
     } catch (error) {
-      res.status(404).send("User not found");
-      return;
+      res.status(404).send("User not found")
+      return
     }
-    userRepository.delete(id);
+    userRepository.delete(id)
 
     //After all send a 204 (no content, but accepted) response
-    res.status(204).send();
-  };
+    res.status(204).send()
+  }
 
   static saveIngredients = async (req: Request, res: Response) => {
     //Get the ID from the url
-    const id = req.params.id;
+    const id = req.params.id
     console.log(req.body)
     //Get values from the body
-    const ingredients = req.body;
+    const ingredients = req.body
 
     //Try to find user on database
-    const userRepository = getRepository(User);
-    let user;
+    const userRepository = getRepository(User)
+    let user
     try {
-      user = await userRepository.findOneOrFail(id);
+      user = await userRepository.findOneOrFail(id)
     } catch (error) {
       //If not found, send a 404 response
-      res.status(404).send("User not found");
-      return;
+      res.status(404).send("User not found")
+      return
     }
 
     //Validate the new values on model
-    user.ingredients = ingredients;
-    const errors = await validate(user);
+    user.ingredients = ingredients
+    const errors = await validate(user)
     if (errors.length > 0) {
-      res.status(400).send(errors);
-      return;
+      res.status(400).send(errors)
+      return
     }
 
     //Try to safe, if fails, that means username already in use
     try {
       console.log(user)
-      delete user.role;
-      await userRepository.save(user);
+      delete user.role
+      await userRepository.save(user)
     } catch (e) {
-      console.log(e);
-      res.status(409).send("Error while saving ingredients");
-      return;
+      console.log(e)
+      res.status(409).send("Error while saving ingredients")
+      return
     }
 
-    res.status(200).send();
-  };
-};
+    res.status(200).send()
+  }
+}
 
-export default UserController;
+export default UserController
