@@ -19,7 +19,7 @@
     "lint": "standard && vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "0.19.1",
+    "axios": "0.19.2",
     "core-js": "3.6.4",
     "vue": "2.6.11",
     "vue-multiselect": "2.1.6",
