@@ -121,7 +121,8 @@ class UserController {
 
   static saveIngredients = async (req: Request, res: Response) => {
     //Get the ID from the url
-    const id = req.params.id;
+    const id = req.params;
+    console.log(id)
     console.log(req.body)
     //Get values from the body
     const ingredients = req.body;
@@ -130,7 +131,7 @@ class UserController {
     const userRepository = getRepository(User);
     let user;
     try {
-      user = await userRepository.findOneOrFail(id);
+      user = await userRepository.findOneOrFail({username: "dorst"});
     } catch (error) {
       //If not found, send a 404 response
       res.status(404).send("User not found");
@@ -148,7 +149,6 @@ class UserController {
     //Try to safe, if fails, that means username already in use
     try {
       console.log(user)
-      delete user.role;
       await userRepository.save(user);
     } catch (e) {
       console.log(e);

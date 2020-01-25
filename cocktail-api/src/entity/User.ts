@@ -13,7 +13,7 @@ import * as bcrypt from "bcryptjs";
 @Unique(["username"])
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  _id: number;
 
   @Column()
   @Length(4, 20)
