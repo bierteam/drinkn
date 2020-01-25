@@ -54,7 +54,7 @@ export default {
     },
     retrieveCocktailsByIngredients() {
       axios
-        .post("/api/v2/cocktail/personal", this.selectedIngredients)
+        .post("/api/v2/mix/personal", this.selectedIngredients)
         .then(response => (this.myCocktails = response.data))
     }
   },
@@ -73,10 +73,10 @@ export default {
   },
   created() {
     axios
-      .get("/api/v2/cocktail")
+      .get("/api/v2/mix/cocktail")
       .then(response => (this.cocktails = response.data))
     axios
-      .get("/api/v2/cocktail/ingredient")
+      .get("/api/v2/mix/ingredient")
       .then(
         response =>
           (this.ingredients = response.data.map(obj => obj.ingredient))

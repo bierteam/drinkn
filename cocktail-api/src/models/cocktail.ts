@@ -1,4 +1,4 @@
-import { Document, Schema, Model, model, Error } from "mongoose";
+import { Document, Schema, Model, model, Error } from 'mongoose'
 
 export interface ICocktail extends Document {
   idDrink: String;
@@ -9,22 +9,23 @@ export interface ICocktail extends Document {
 
 export const cocktailSchema = new Schema({
   idDrink: {
-    type: String, required: true,
+    type: String,
+    required: true,
     unique: true
   },
   strDrink: {
-    type: String, required: true,
+    type: String,
+    required: true,
     unique: true
   },
   strInstructions: {
-    type: String, required: true,
+    type: String,
+    required: true,
     unique: true
   },
   ingredients: {
-    type: Array, required: true,
-  },
-});
+    type: Array, required: true
+  }
+})
 
-
-
-export const Cocktail: Model<ICocktail> = model<ICocktail>("Cocktail", cocktailSchema);
+export const Cocktail: Model<ICocktail> = model<ICocktail>('Cocktail', cocktailSchema)

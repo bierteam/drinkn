@@ -16,7 +16,11 @@
    "main": "build/index.js",
    "scripts": {
       "build": "tsc",
-      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/server.ts"
+      "start": "ts-node-dev --respawn --transpileOnly src/server.ts",
+      "lint": "standardx --parser @typescript-eslint/parser --plugin @typescript-eslint/eslint-plugin **/*.ts",
+      "fix": "npm run lint -- --fix",
+      "docker-build": "docker build . -t cocktail-api",
+      "docker-run": "docker run --env-file .env cocktail-api"
    },
    "dependencies": {
       "@types/bcrypt-nodejs": "0.0.30",
@@ -36,8 +40,12 @@
       "uuid": "^3.4.0"
    },
    "devDependencies": {
+      "@typescript-eslint/eslint-plugin": "^2.17.0",
+      "@typescript-eslint/parser": "^2.17.0",
       "concurrently": "^4.1.2",
+      "standardx": "^5.0.0",
       "ts-node": "^8.5.2",
+      "ts-node-dev": "^1.0.0-pre.44",
       "tslint": "^5.20.1",
       "typescript": "^3.7.5"
    }

@@ -1,4 +1,4 @@
-import { Document, Schema, Model, model, Error } from "mongoose";
+import { Document, Schema, Model, model, Error } from 'mongoose'
 
 export interface IIngredient extends Document {
   ingredient: string;
@@ -6,11 +6,10 @@ export interface IIngredient extends Document {
 
 export const ingredientSchema = new Schema({
   ingredient: {
-    type: String, required: true,
+    type: String,
+    required: true,
     unique: true
   }
-});
+})
 
-
-
-export const Ingredient: Model<IIngredient> = model<IIngredient>("Ingredient", ingredientSchema);
+export const Ingredient: Model<IIngredient> = model<IIngredient>('Ingredient', ingredientSchema)

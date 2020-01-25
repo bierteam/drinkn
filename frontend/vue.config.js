@@ -1,7 +1,7 @@
 module.exports = {
   devServer: {
     proxy: {
-      '^/api/v2/cocktail': {
+      '^/api/v2/mix': {
         target: 'http://localhost:3001/',
         ws: true
       },
