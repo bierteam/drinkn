@@ -1,20 +1,11 @@
+
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { Ingredient } from "../models/ingredient";
 
-import { Ingredient } from "../entity/Ingredient";
-let ingredients;
-class IngredientController{
+export class IngredientController {
 
-static listAll = async (req: Request, res: Response) => {
-  const cocktailRepository = getRepository(Ingredient);
-  if (!ingredients) {
-    ingredients = await cocktailRepository.find();
+  public async getIngredients(req: Request, res: Response): Promise<void> {
+    const ingredients = await Ingredient.find();
+    res.json(ingredients);
   }
-  res.send(ingredients);
-};
-//TODO: Create ingredient here
-
-
-};
-
-export default IngredientController;
+}
