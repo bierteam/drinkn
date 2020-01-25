@@ -1,5 +1,10 @@
-.vscode
-.data
-node_modules
-.env
+.idea/
+.vscode/
+node_modules/
 build/
+tmp/
+temp/
+src/config/config.ts
+./node_modules/
+ormconfig.json
+.env

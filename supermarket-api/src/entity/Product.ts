@@ -2,35 +2,35 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-} from "typeorm";
-import { Length, IsNotEmpty } from "class-validator";
+} from "typeorm"
+import { Length, IsNotEmpty } from "class-validator"
 
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn()
-  prod_id: string;
+  prod_id: string
 
   @Column()
   @Length(4, 20)
-  username: String;
+  username: String
 
   @Column()
   @IsNotEmpty()
-  quantity: Number;
+  quantity: Number
 
   @Column()
-  discount_label: String;
+  discount_label: String
 
   @Column()
-  unit: String;
+  unit: String
 
   @Column()
-  price: Number;
+  price: Number
 
   @Column()
-  img: String;
+  img: String
 
   @Column()
-  name: String;
+  name: String
 
 }

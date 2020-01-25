@@ -1,44 +1,44 @@
 {
-  "name": "cocktail",
-  "version": "0.0.1",
-  "description": "",
-  "scripts": {
-    "build": "tsc",
-    "docker-build": "docker build . -t cocktail",
-    "docker-run": "docker run --restart always -d -p 3000:3000 cocktail",
-    "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/server.ts"
-  },
-  "dependencies": {
-    "@types/bcrypt-nodejs": "0.0.30",
-    "@types/compression": "0.0.36",
-    "@types/cors": "^2.8.6",
-    "@types/express": "^4.17.2",
-    "@types/mongoose": "^5.5.43",
-    "@types/node": "^11.15.4",
-    "@types/uuid": "^3.4.6",
-    "bcrypt-nodejs": "0.0.3",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "mongoose": "^5.8.9",
-    "nodemon": "^1.19.4",
-    "uuid": "^3.4.0"
-  },
-  "devDependencies": {
-    "concurrently": "^4.1.2",
-    "ts-node": "^8.5.2",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.5"
-  },
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "author": "Nino",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bierteam/Cocktail-app/issues"
-  }
+   "description": "API to get cocktail recepies",
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/bierteam/drinkn.git"
+   },
+   "homepage": "https://github.com/bierteam/drinkn/README.md",
+   "contibutors": [
+      "Nino van der Laan (https://github.com/NvdLaan)",
+      "Oscar Wieman (https://github.com/oscrx)"
+   ],
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/bierteam/drinkn/issues"
+   },
+   "main": "build/index.js",
+   "scripts": {
+      "build": "tsc",
+      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts"
+   },
+   "dependencies": {
+      "@types/bcrypt-nodejs": "0.0.30",
+      "@types/compression": "0.0.36",
+      "@types/cors": "^2.8.6",
+      "@types/express": "^4.17.2",
+      "@types/mongoose": "^5.5.43",
+      "@types/node": "^11.15.4",
+      "@types/uuid": "^3.4.6",
+      "bcrypt-nodejs": "0.0.3",
+      "compression": "^1.7.4",
+      "cors": "^2.8.5",
+      "dotenv": "^8.2.0",
+      "express": "^4.17.1",
+      "mongoose": "^5.8.9",
+      "nodemon": "^1.19.4",
+      "uuid": "^3.4.0"
+   },
+   "devDependencies": {
+      "concurrently": "^4.1.2",
+      "ts-node": "^8.5.2",
+      "tslint": "^5.20.1",
+      "typescript": "^3.7.5"
+   }
 }

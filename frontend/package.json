@@ -1,38 +1,38 @@
 {
-  "description": "FrontEnd",
+  "description": "frontend",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bierteam/FrontEnd.git"
+    "url": "git+https://github.com/bierteam/drinkn.git"
   },
-  "homepage": "https://github.com/bierteam/FrontEnd/docs/README.md",
+  "homepage": "https://github.com/bierteam/drinkn/docs/README.md",
   "contibutors": [
     "Oscar Wieman (https://github.com/oscrx)",
     "Nino van der Laan (https://github.com/NvdLaan)"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bierteam/FrontEnd/issues"
+    "url": "https://github.com/bierteam/drinkn/issues"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "standard && vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "0.19.1",
-    "core-js": "3.6.3",
+    "axios": "0.19.2",
+    "core-js": "3.6.4",
     "vue": "2.6.11",
     "vue-multiselect": "2.1.6",
-    "vue-router": "3.1.3"
+    "vue-router": "3.1.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.1.2",
     "@vue/cli-plugin-eslint": "4.1.2",
     "@vue/cli-service": "4.1.2",
-    "@vue/eslint-config-standard": "4.0.0",
+    "@vue/eslint-config-standard": "5.1.0",
     "babel-eslint": "10.0.3",
     "eslint": "5.16.0",
-    "eslint-plugin-vue": "5.2.3",
+    "eslint-plugin-vue": "6.1.2",
     "vue-template-compiler": "2.6.11"
   },
   "eslintConfig": {
