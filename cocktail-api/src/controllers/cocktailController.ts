@@ -6,7 +6,6 @@ export class CocktailController {
 
   public async getCocktails(req: Request, res: Response): Promise<void> {
     const cocktails = await Cocktail.find();
-    console.log(cocktails);
     res.json(cocktails);
   }
 
