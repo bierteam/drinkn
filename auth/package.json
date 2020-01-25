@@ -29,7 +29,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.9",
     "morgan": "~1.9.1",
-    "validator": "^12.1.0"
+    "otplib": "^11.0.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "codecov": "3.6.1",

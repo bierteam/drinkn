@@ -6,8 +6,6 @@ EXPOSE 3000
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
-# COPY models ./models
-COPY routes ./routes
-COPY server.js ./
+COPY . .
 USER node
 CMD ["node", "server.js"]

@@ -1,7 +1,8 @@
-if (process.env.NODE_ENV !== 'production') require('dotenv').config() // use the .env file for this
+require('./env-setup')
 const createError = require('http-errors')
-const express = require('express')
 const cookieParser = require('cookie-parser')
+const mongoose = require('mongoose')
+const express = require('express')
 const logger = require('morgan')
 
 const app = express()
@@ -12,8 +13,14 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-const v2 = require('./routes')
-app.use('/api/v2/auth', v2)
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true
+})
+
+const routes = require('./routes')
+app.use('/api/v2/auth', routes)
 
 const health = require('./routes/health')
 app.use('/health', health)

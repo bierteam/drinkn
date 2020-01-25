@@ -1,10 +1,14 @@
 const express = require('express')
 const router = express.Router()
 
-// This tells the client login status
+// This tells the client their login status
 
 router.get('/', function (req, res) {
-  res.send('test')
+  if (req.session.userId) {
+    res.send(true)
+  } else {
+    res.send(false)
+  }
 })
 
 module.exports = router
