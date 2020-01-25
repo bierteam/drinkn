@@ -16,7 +16,7 @@
    "main": "build/index.js",
    "scripts": {
       "build": "tsc",
-      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts"
+      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/server.ts"
    },
    "dependencies": {
       "@types/bcrypt-nodejs": "0.0.30",
