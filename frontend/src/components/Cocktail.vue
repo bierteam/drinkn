@@ -79,7 +79,7 @@ export default {
     },
     retrieveCocktailsByIngredients() {
       axios
-        .post("/api/v2/mix/personal", this.selectedIngredients)
+        .post("/api/v2/mix/cocktail/personal", this.selectedIngredients)
         .then(response => (this.myCocktails = response.data));
     },
     popoverMethod() {
