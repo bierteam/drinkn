@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-   <nav class="main-nav">
+    <nav class="main-nav">
       <Burger></Burger>
     </nav>
 
@@ -17,24 +17,24 @@
         </li>
       </ul>
     </Sidebar>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 <script>
-import Burger from './components/Burger.vue'
-import Sidebar from './components/Sidebar.vue'
+import Burger from "./components/Burger.vue";
+import Sidebar from "./components/Sidebar.vue";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     Burger,
     Sidebar
   }
-}
+};
 </script>
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -55,20 +55,19 @@ export default {
 }
 
 ul {
-    text-align: center;
-    list-style-position: inside;
+  text-align: center;
+  list-style-position: inside;
 }
-/*  */
+
 html {
   height: 100%;
-  overflow: hidden;
 }
 body {
   border: 0;
   margin: 0;
   padding: 0;
   font-family: "Lato";
-  height: 100%;
+
   background: rgb(101, 31, 87);
   background: linear-gradient(
     45deg,

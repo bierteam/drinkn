@@ -1,6 +1,6 @@
 import express from 'express'
 import mongoose from 'mongoose'
-
+require('dotenv').config()
 import compression from 'compression'
 import cors from 'cors'
 
@@ -8,7 +8,7 @@ import { MONGODB_URI } from './util/secrets'
 
 import { CocktailRoutes } from './routes/cocktailRoutes'
 import { IngredientRoutes } from './routes/ingredientRoutes'
-require('dotenv').config()
+
 
 // Fix mongoose deprecations
 mongoose.set('useFindAndModify', false)

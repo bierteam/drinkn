@@ -5,7 +5,7 @@ import { Cocktail, ICocktail } from '../models/cocktail'
 export class CocktailController {
 
   public async getCocktails(req: Request, res: Response): Promise<void> {
-    const cocktails = await Cocktail.find();
+    const cocktails = await Cocktail.find({},{strDrink: 1, ingredients: 1, strInstructions: 1});
     res.json(cocktails);
   }
 
