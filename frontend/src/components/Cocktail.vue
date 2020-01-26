@@ -2,7 +2,7 @@
   <div class="about">
     <div>
       <b-form-input v-model="txtInput" @keyup="filterData" placeholder="Search.." id="txtname"></b-form-input>
-      <div class="row d-flex justify-content-center">
+      <!-- <div class="row d-flex justify-content-center"> -->
       <multiselect
         v-model="selectedIngredients"
         :options="ingredients"
@@ -10,11 +10,11 @@
         :multiple="true"
         :close-on-select="true"
         :show-labels="false"
-        style="margin-bottom: 20px; width: 45% !important;"
+        style="margin-bottom: 20px; width 50%;"
         placeholder="Select ingredients"
         @input="retrieveCocktailsByIngredients"
       ></multiselect>
-      </div>
+      <!-- </div> -->
     </div>
     <div></div>
     <div class="cocktails">
@@ -128,9 +128,8 @@ li {
   margin-right: 10 !important;
 }
 
-input#txtname {
+ input#txtname {
   margin-bottom: 10px;
-  width: 50%;
-  display: inline-block;
-}
+} 
+
 </style>
