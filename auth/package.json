@@ -1,0 +1,44 @@
+{
+  "description": "auth",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bierteam/import-bier.git"
+  },
+  "homepage": "https://github.com/bierteam/import-bier/docs/README.md",
+  "contibutors": [
+    "Oscar Wieman (https://github.com/oscrx)",
+    "Nino van der Laan (https://github.com/NvdLaan)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bierteam/FrontEnd/issues"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon",
+    "test": "standard",
+    "coverage": "codecov",
+    "docker-build": "docker build . -t auth",
+    "docker-run": "docker run --env-file .env auth"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "~1.4.4",
+    "express": "^4.17.1",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.9",
+    "morgan": "~1.9.1",
+    "otplib": "^11.0.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "codecov": "3.6.1",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "jest": "24.9.0",
+    "nodemon": "^2.0.2",
+    "rimraf": "3.0.0",
+    "standard": "14.3.1"
+  }
+}

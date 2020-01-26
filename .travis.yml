@@ -4,7 +4,7 @@ language: node_js
 node_js:
   - "12"
 env:
-  # - PART=auth
+  - PART=auth
   # - PART=beer-api
   - PART=beer-import
   - PART=cocktail-api
