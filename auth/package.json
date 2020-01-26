@@ -34,10 +34,10 @@
   },
   "devDependencies": {
     "codecov": "3.6.1",
-    "debug": "~2.6.9",
-    "dotenv": "^8.2.0",
+    "debug": "2.6.9",
+    "dotenv": "8.2.0",
     "jest": "24.9.0",
-    "nodemon": "^2.0.2",
+    "nodemon": "2.0.2",
     "rimraf": "3.0.0",
     "standard": "14.3.1"
   }
