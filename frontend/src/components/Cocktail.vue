@@ -81,11 +81,6 @@ export default {
       axios
         .post("/api/v2/mix/cocktail/personal", this.selectedIngredients)
         .then(response => (this.myCocktails = response.data));
-    },
-    popoverMethod() {
-      // Returns the content as a string
-      // Will be called each time the popover is opened
-      return new Date();
     }
   },
   computed: {
