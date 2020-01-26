@@ -18,7 +18,6 @@
     <div class="cocktails">
       <b-card-group>
         <div class="cocktail" v-for="cocktail in filterCocktails" :key="cocktail.idDrink">
-          <!-- <img src="../assets/placeholder.png" /> -->
           <div>
             <b-card
               title
@@ -31,18 +30,18 @@
             >
               <b-card-text>{{cocktail.strDrink}}</b-card-text>
               <b-card-text>
+                <div>Ingredients:</div>
                 <ul>
-                    <li
-                      v-for="(ingredient, index) in cocktail.ingredients"
-                      :key="index"
-                    >{{ingredient}}</li>
+                  <li
+                    v-for="(ingredient, index) in cocktail.ingredients"
+                    :key="index"
+                  >{{ingredient}}</li>
                 </ul>
               </b-card-text>
 
               <b-col md="3" class="py-3">
                 <b-button
-                  v-b-popover.hover.bottom="'Just mix it all'"
-                  title="Ingredients"
+                  v-b-popover.hover.bottom="cocktail.strInstructions"
                   variant="primary"
                 >Show instructions</b-button>
               </b-col>
@@ -82,6 +81,11 @@ export default {
       axios
         .post("/api/v2/mix/personal", this.selectedIngredients)
         .then(response => (this.myCocktails = response.data));
+    },
+    popoverMethod() {
+      // Returns the content as a string
+      // Will be called each time the popover is opened
+      return new Date();
     }
   },
   computed: {
@@ -118,9 +122,9 @@ export default {
 
 <style>
 li {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .mr-1 {
