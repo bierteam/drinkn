@@ -4,7 +4,7 @@ const router = express.Router()
 // This tells the client their login status
 
 router.get('/', function (req, res) {
-  if (true) {
+  if (req) {
     res.send(true)
   } else {
     res.send(false)
