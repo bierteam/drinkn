@@ -23,7 +23,7 @@
       "docker-run": "docker run --env-file .env cocktail-api"
    },
    "dependencies": {
-      "@types/bcrypt-nodejs": "0.0.30",
+      "@types/bcrypt-nodejs": "0.0.31",
       "@types/compression": "1.0.1",
       "@types/cors": "^2.8.6",
       "@types/express": "^4.17.2",
