@@ -24,7 +24,7 @@
    },
    "dependencies": {
       "@types/bcrypt-nodejs": "0.0.31",
-      "@types/compression": "1.0.1",
+      "@types/compression": "1.7.0",
       "@types/cors": "^2.8.6",
       "@types/express": "^4.17.2",
       "@types/mongoose": "^5.5.43",
