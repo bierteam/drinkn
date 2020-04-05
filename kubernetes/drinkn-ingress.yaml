@@ -1,0 +1,90 @@
+﻿apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: drinkn-ingress
+  namespace: oscar
+spec:
+  rules:
+  - host: drinkn.oscarr.nl
+    http:
+      paths:
+      - backend:
+          serviceName: drinkn-auth
+          servicePort: 80
+        path: /api/v2/auth
+      - backend:
+          serviceName: drinkn-beer-api
+          servicePort: 80
+        path: /api/v2/beer
+      - backend:
+          serviceName: drinkn-cocktail-api
+          servicePort: 80
+        path: /api/v2/mix
+      - backend:
+          serviceName: drinkn-supermarket-api
+          servicePort: 80
+        path: /api/v2/supermarket
+      - backend:
+          serviceName: drinkn-frontend
+          servicePort: 80
+  - host: xn--xj8haa.tk
+    http:
+      paths:
+      - backend:
+          serviceName: drinkn-auth
+          servicePort: 80
+        path: /api/v2/auth
+      - backend:
+          serviceName: drinkn-beer-api
+          servicePort: 80
+        path: /api/v2/beer
+      - backend:
+          serviceName: drinkn-cocktail-api
+          servicePort: 80
+        path: /api/v2/mix
+      - backend:
+          serviceName: drinkn-supermarket-api
+          servicePort: 80
+        path: /api/v2/supermarket
+      - backend:
+          serviceName: drinkn-frontend
+          servicePort: 80
+  - host: drinkn.ml
+    http:
+      paths:
+      - backend:
+          serviceName: drinkn-auth
+          servicePort: 80
+        path: /api/v2/auth
+      - backend:
+          serviceName: drinkn-beer-api
+          servicePort: 80
+        path: /api/v2/beer
+      - backend:
+          serviceName: drinkn-cocktail-api
+          servicePort: 80
+        path: /api/v2/mix
+      - backend:
+          serviceName: drinkn-supermarket-api
+          servicePort: 80
+        path: /api/v2/supermarket
+      - backend:
+          serviceName: drinkn-frontend
+          servicePort: 80
+  - host: pils.oscarr.nl
+    http:
+      paths:
+      - backend:
+          serviceName: drinkn-frontend-v1
+          servicePort: 80
+      - backend:
+          serviceName: drinkn-pils-api
+          servicePort: 80
+        path: /api
+  tls:
+  - hosts:
+    - drinkn.oscarr.nl
+    - drinkn.ml
+    - xn--xj8haa.tk
+    - pils.oscarr.nl
+status:

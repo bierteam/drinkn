@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: drinkn-cocktail-api
+  name: drinkn-cocktail-api
+  namespace: oscar
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: drinkn-cocktail-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: drinkn-cocktail-api
+    spec:
+      containers:
+      - image: bierteam/cocktail-api:master
+        envFrom:
+        - secretRef:
+            name: drinkn-env
+            optional: false
+        imagePullPolicy: Always
+        name: drinkn-cocktail-api
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drinkn-cocktail-api
+  namespace: oscar
+spec:
+  selector:
+    app: drinkn-cocktail-api
+  ports:
+    - port: 80
+      name: default
+      protocol: TCP
+      targetPort: 3000

@@ -4,24 +4,42 @@ language: node_js
 node_js:
   - "12"
 env:
-  - PART=auth
-  # - PART=beer-api
-  - PART=beer-import
-  - PART=cocktail-api
-  # - PART=cocktail-import
-  - PART=frontend
-  - PART=supermarket-api
-  # - PART=supermarket-import
+  - FOLDER=auth
+  # - FOLDER=beer-api
+  - FOLDER=beer-import
+  - FOLDER=cocktail-api
+  # - FOLDER=cocktail-import
+  - FOLDER=frontend
+  - FOLDER=supermarket-api
+  # - FOLDER=supermarket-import
 services:
   - docker
 branches:
   only:
     - /.*/ # run all branches
-script: cd $PART; npm ci; npm run test
+script: cd $FOLDER && npm ci; npm run test
 after_script: npm run coverage
 deploy:
   provider: script
   on:
     # all_branches: true
     branch: master
-  script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; docker build -t bierteam/$PART:$TRAVIS_BRANCH .; docker push bierteam/$PART:$TRAVIS_BRANCH
+  script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+    docker build -t bierteam/$FOLDER:$TRAVIS_BRANCH .;
+    docker push bierteam/$FOLDER:$TRAVIS_BRANCH
+jobs:
+  include:
+    - stage: deploy
+      env: FOLDER=kubernetes
+      script: echo "skipping test"
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_c25bfdc08df8_key -iv $encrypted_c25bfdc08df8_iv -in $FOLDER/kubeconfig.enc -out /tmp/kubeconfig -d
+        - openssl aes-256-cbc -K $encrypted_0cc3cf931584_key -iv $encrypted_0cc3cf931584_iv -in $FOLDER/secrets.yaml.enc -out $FOLDER/secrets.yaml -d
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script: echo $PWD; docker run --rm -v /tmp/kubeconfig:/.kube/config -v $PWD/$FOLDER:/files bitnami/kubectl:latest apply -f /files &&
+          docker run --rm -v /tmp/kubeconfig:/.kube/config -v $PWD/$FOLDER:/files bitnami/kubectl:latest rollout restart -f /files;
+          echo "Hope that worked" #TODO only restart kubernetes stuff that supports restarting to prevent errors and the deployment failing
+        on:
+          branch: master

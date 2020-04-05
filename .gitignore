@@ -13,3 +13,5 @@ kubeconfig
 public
 test/e2e/reports
 test/unit/coverage
+kubernetes/secrets.yaml
+kubernetes/secrets.yml

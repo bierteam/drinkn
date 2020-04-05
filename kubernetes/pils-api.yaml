@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: drinkn-pils-api
+  name: drinkn-pils-api
+  namespace: oscar
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: drinkn-pils-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: drinkn-pils-api
+    spec:
+      containers:
+      - image: bierteam/pils-api:v1
+        envFrom:
+        - secretRef:
+            name: drinkn-env
+            optional: false
+        imagePullPolicy: Always
+        name: drinkn-pils-api
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drinkn-pils-api
+  namespace: oscar
+spec:
+  selector:
+    app: drinkn-pils-api
+  ports:
+    - port: 80
+      name: default
+      protocol: TCP
+      targetPort: 3000

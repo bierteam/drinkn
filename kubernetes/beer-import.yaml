@@ -1,0 +1,36 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: beer-import
+  namespace: oscar
+spec:
+  jobTemplate:
+    metadata:
+    spec:
+      template:
+        metadata:
+        spec:
+          containers:
+          - image: bierteam/beer-import:master
+            imagePullPolicy: Always
+            name: beer-import
+            resources: {}
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {}
+              privileged: false
+              readOnlyRootFilesystem: false
+              runAsNonRoot: false
+            stdin: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            tty: true
+          dnsPolicy: ClusterFirst
+          restartPolicy: Never
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+  schedule: 0 9,22 * * *
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
+status: {}
