@@ -14,6 +14,10 @@
 #           - image: bierteam/supermarket-import:master
 #             imagePullPolicy: Always
 #             name: supermarket-import
+#             envFrom:
+#             - secretRef:
+#                 name: drinkn-env
+#                 optional: false
 #             resources: {}
 #             securityContext:
 #               allowPrivilegeEscalation: false

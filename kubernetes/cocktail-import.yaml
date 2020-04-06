@@ -14,6 +14,10 @@
 #           - image: bierteam/cocktail-import:master
 #             imagePullPolicy: Always
 #             name: cocktail-import
+#             envFrom:
+#             - secretRef:
+#                 name: drinkn-env
+#                 optional: false
 #             resources: {}
 #             securityContext:
 #               allowPrivilegeEscalation: false
