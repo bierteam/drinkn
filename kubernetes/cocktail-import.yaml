@@ -1,7 +1,7 @@
 # apiVersion: batch/v1beta1
 # kind: CronJob
 # metadata:
-#   name: cocktail-import
+#   name: drinkn-cocktail-import
 #   namespace: oscar
 # spec:
 #   jobTemplate:

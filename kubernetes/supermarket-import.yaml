@@ -1,7 +1,7 @@
 # apiVersion: batch/v1beta1
 # kind: CronJob
 # metadata:
-#   name: supermarket-import
+#   name: drinkn-supermarket-import
 #   namespace: oscar
 # spec:
 #   jobTemplate:

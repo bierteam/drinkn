@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: beer-import
+  name: drinkn-beer-import
   namespace: oscar
 spec:
   jobTemplate:
