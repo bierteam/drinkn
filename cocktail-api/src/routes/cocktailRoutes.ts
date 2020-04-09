@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { CocktailController } from '../controllers/cocktailController'
+import { checkJwt } from '../middlewares/checkJwt';
 
 export class CocktailRoutes {
   public router: Router;
@@ -11,7 +12,7 @@ export class CocktailRoutes {
   }
 
   routes () {
-    this.router.get('/', this.cocktailController.getCocktails)
+    this.router.get('/', checkJwt, this.cocktailController.getCocktails)
     this.router.get('/:id', this.cocktailController.getCocktail)
     this.router.post('/personal', this.cocktailController.getCocktailsIncludingIngredients)
   }

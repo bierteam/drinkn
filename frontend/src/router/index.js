@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
 import Cocktail from '@/components/Cocktail.vue'
 import Login from '@/components/Login.vue'
 
@@ -10,7 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HelloWorld
+    redirect: '/login'
   },
   {
     path: '/cocktail',

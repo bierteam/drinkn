@@ -18,6 +18,6 @@
         }
     },
     "include": [
-        "src/**/*"
+        "src/**/*", "src/middlewares/checkJwt.ts"
     ]
 }

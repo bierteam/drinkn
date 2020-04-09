@@ -1,8 +1,7 @@
 <template>
   <div class="about">
     <div>
-      <b-form-input v-model="txtInput" @keyup="filterData" placeholder="Search.." id="txtname"></b-form-input>
-      <!-- <div class="row d-flex justify-content-center"> -->
+      <b-form-input v-model="txtInput" @input="retrieveSingleCocktailByName(txtInput)" placeholder="Search.." id="txtname"></b-form-input>
       <multiselect
         v-model="selectedIngredients"
         :options="ingredients"
@@ -68,22 +67,44 @@ export default {
       ingredients: [],
       selectedIngredients: [],
       myCocktails: [],
-      show: false
+      show: false,
+      pageSize: 50
     };
   },
   methods: {
-    filterData() {
-      if (this.txtInput) {
-        this.filteredCocktails = this.filteredCocktails.filter(cocktail =>
-          cocktail.strDrink.toLowerCase().includes(this.txtInput.toLowerCase())
-        );
-      }
+    retrieveCocktailsAndIngredients(pageSize){
+      const cocktailUrl = `/api/v2/mix/cocktail?pagesize=${pageSize}`
+      console.log(cocktailUrl)
+      const ingredientUrl = "/api/v2/mix/ingredient"
+      const cocktailRequest = axios.get(cocktailUrl, { headers: { authorization: this.$cookie.get("token") }});
+      const ingredientRequest = axios.get(ingredientUrl, this.$cookie.get('token'));
+      axios.all([cocktailRequest, ingredientRequest]).then(axios.spread((...responses) => {
+        if(responses[0].status !== 200 || responses[1].status !== 200){
+          window.location.href = "http://localhost:8080/Login"
+        }
+        this.cocktails = responses[0].data
+        this.ingredients = responses[1].data.map(obj => obj.ingredient)
+        })).catch(errors => {
+          window.location.href = "http://localhost:8080/Login"
+        })
     },
     retrieveCocktailsByIngredients() {
       axios
         .post("/api/v2/mix/cocktail/personal", this.selectedIngredients)
         .then(response => (this.myCocktails = response.data));
+    },
+    retrieveSingleCocktailByName(cocktailName){
+      axios
+        .get(`/api/v2/mix/cocktail/${cocktailName}`)
+        .then(response => (this.myCocktails = response.data));
+    },
+    handleScroll () {
+      //Bottom of the page
+      if ((window.innerHeight + window.scrollY + 10) >= document.body.offsetHeight) {
+        this.pageSize += 50;
+        this.retrieveCocktailsAndIngredients(this.pageSize);
     }
+  }
   },
   computed: {
     filterCocktails: function() {
@@ -101,15 +122,8 @@ export default {
     }
   },
   created() {
-    axios
-      .get("/api/v2/mix/cocktail")
-      .then(response => (this.cocktails = response.data));
-    axios
-      .get("/api/v2/mix/ingredient")
-      .then(
-        response =>
-          (this.ingredients = response.data.map(obj => obj.ingredient))
-      );
+    window.addEventListener('scroll', this.handleScroll);
+    this.retrieveCocktailsAndIngredients(this.pageSize);
   }
 };
 </script>
@@ -128,8 +142,13 @@ li {
   margin-right: 10 !important;
 }
 
- input#txtname {
-  margin-bottom: 10px;
-} 
-
+input#txtname {
+    margin-bottom: 10px;
+    display: inline-block;
+    width: 80%;
+}
+.multiselect{
+    display: inline-block;
+    width: 80%;
+}
 </style>

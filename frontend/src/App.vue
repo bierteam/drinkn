@@ -1,16 +1,13 @@
 <template>
   <div id="app">
     <nav class="main-nav">
-      <Burger></Burger>
+      <Burger v-if="!['login'].includes($route.name)"></Burger>
     </nav>
 
-    <Sidebar>
+    <Sidebar v-if="!['login'].includes($route.name)">
       <ul class="sidebar-panel-nav">
         <li>
           <a href="/Login">Login</a>
-        </li>
-        <li>
-          <a href="/about">About</a>
         </li>
         <li>
           <a href="/cocktail">Cocktails</a>
