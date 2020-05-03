@@ -44,7 +44,7 @@
       "@typescript-eslint/parser": "2.30.0",
       "concurrently": "5.2.0",
       "standardx": "5.0.0",
-      "ts-node": "8.9.1",
+      "ts-node": "8.10.0",
       "ts-node-dev": "1.0.0-pre.44",
       "tslint": "5.20.1",
       "typescript": "3.8.3"
