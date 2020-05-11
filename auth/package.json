@@ -39,6 +39,6 @@
     "jest": "25.4.0",
     "nodemon": "2.0.2",
     "rimraf": "3.0.2",
-    "standard": "14.3.3"
+    "standard": "14.3.4"
   }
 }
