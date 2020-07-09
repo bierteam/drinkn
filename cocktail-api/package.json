@@ -45,7 +45,7 @@
       "concurrently": "5.2.0",
       "standardx": "5.0.0",
       "ts-node": "8.10.2",
-      "ts-node-dev": "1.0.0-pre.50",
+      "ts-node-dev": "1.0.0-pre.51",
       "tslint": "5.20.1",
       "typescript": "3.9.6"
    }
