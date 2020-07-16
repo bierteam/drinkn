@@ -43,6 +43,6 @@
       "@types/node": "12.12.50",
       "dotenv": "8.2.0",
       "ts-node": "8.10.2",
-      "typescript": "3.9.6"
+      "typescript": "3.9.7"
    }
 }
