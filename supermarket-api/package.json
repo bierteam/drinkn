@@ -40,7 +40,7 @@
       "typeorm": "0.2.25"
    },
    "devDependencies": {
-      "@types/node": "12.12.53",
+      "@types/node": "12.12.54",
       "dotenv": "8.2.0",
       "ts-node": "8.10.2",
       "typescript": "3.9.7"
