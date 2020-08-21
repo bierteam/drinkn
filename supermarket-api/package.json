@@ -24,7 +24,7 @@
       "@types/bcryptjs": "^2.4.2",
       "@types/body-parser": "^1.17.1",
       "@types/cors": "^2.8.6",
-      "@types/helmet": "0.0.47",
+      "@types/helmet": "0.0.48",
       "@types/jsonwebtoken": "^8.3.5",
       "bcryptjs": "^2.4.3",
       "body-parser": "^1.18.1",
