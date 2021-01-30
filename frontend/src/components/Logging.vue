@@ -7,7 +7,13 @@
     <table class='table container'>
       <thead>
         <tr> <!-- first row -->
-          <th><a class="button is-danger" @click.once="deleteLogs">Delete all logs</a></th>
+          <th><a class="button is-danger" @click='state.deleteMsg = !state.deleteMsg'>Delete all logs</a></th>
+            <div v-if="state.deleteMsg" class="notification is-light">
+              <button class="delete" @click="state.deleteMsg = false"></button>
+              Are you sure? This is permanent.
+              <br><br>
+              <Button class="button is-danger is-large" @click.once="deleteLogs" type="button" >I am sure!</Button>
+            </div>
           <th><input class='input' type='text' placeholder='Search' v-model="search"></th>
           <th>
             <div class="select">
@@ -72,6 +78,9 @@ export default {
         Context: 'Context',
         Type: 'Type',
         Ip: 'Ip'
+      },
+      state: {
+        deleteMsg: false
       }
     }
   },
