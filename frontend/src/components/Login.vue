@@ -27,7 +27,7 @@
 
 <script>
 import axios from "axios";
-import { store, mutations } from '@/store.js'
+import mutations from '@/store.js'
 
 export default {
   data() {
