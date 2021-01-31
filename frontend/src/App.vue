@@ -7,7 +7,7 @@
     <Sidebar>
       <ul class="sidebar-panel-nav">
         <li>
-          <a href="/Login">Login</a>
+          <a href="/login">Login</a>
         </li>
         <li>
           <a href="/about">About</a>

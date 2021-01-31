@@ -1,13 +1,13 @@
 <template>
   <div>
-    <b-form @submit="onSubmit">
-      <b-form-group id="input-group-1" label="Email address:" label-for="input-1">
+    <b-form @submit.prevent="onSubmit()" v-on:keydown.enter.prevent="onSubmit()">
+      <b-form-group id="input-group-1" label="Username:" label-for="input-1">
         <b-form-input
           id="input-1"
-          v-model="form.email"
-          type="email"
+          v-model="form.username"
+          type="text"
           required
-          placeholder="Enter email"
+          placeholder="Enter username"
         ></b-form-input>
         <b-form>
           <label for="text-password">Password:</label>
@@ -27,12 +27,13 @@
 
 <script>
 import axios from "axios";
+import { store, mutations } from '@/store.js'
 
 export default {
   data() {
     return {
       form: {
-        email: "",
+        username: "",
         password: ""
       },
       response: ""
@@ -41,8 +42,8 @@ export default {
   methods: {
     onSubmit(evt) {
       axios
-        .post("/api/v2/auth/login", evt)
-        .then(response => (this.response = response.data));
+        .post("/api/v2/auth/login", this.form)
+        .then(response => (mutations.setJwt(response.data.jwt)))
     }
   }
 };
