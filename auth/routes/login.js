@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
     }
     // TODO log here that the user succeeded
     const jwt = await user.generateAuthToken()
-    res.send({ user, jwt })
+    res.send({ jwt })
   } catch (error) {
     res.status(400).send(error)
   }
