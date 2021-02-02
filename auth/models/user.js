@@ -66,7 +66,7 @@ const userSchema = mongoose.Schema({
   },
   refreshToken:{
     type: Object,
-    token: {
+    id: {
       type: String,
       required: false
     },
@@ -133,11 +133,11 @@ userSchema.statics.findByCredentials = async (username, password) => {
 userSchema.methods.generateRefreshToken = async function () {
   const user = this
   user.refreshToken = {
-    token : uuid(),
+    id : uuid(),
     expires : new Date(Date.now() + 24) 
   }
   await user.save()
-  return user.refreshToken.token
+  return user.refreshToken.id
 }
 
 userSchema.statics.validateRefreshToken = async function (refreshToken) {
@@ -145,7 +145,7 @@ userSchema.statics.validateRefreshToken = async function (refreshToken) {
   if(!user){
     throw new Error({ error: 'Invalid refresh token' })
   }
-  return await User.findOne({'refreshToken.token' : refreshToken })
+  return await User.findOne({'refreshToken.id' : refreshToken })
 }
 
 const User = mongoose.model('User', userSchema)
