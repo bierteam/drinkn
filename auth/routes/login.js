@@ -36,8 +36,7 @@ router.post('/refresh', async (req, res) => {
   }
   const jwt = await user.generateAuthToken()
   const token = await user.generateRefreshToken()
-  res.status(200).send({jwt, token})
+  res.status(200).send({jwt, refreshToken : token})
 })
-
 
 module.exports = router
