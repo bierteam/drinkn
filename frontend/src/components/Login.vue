@@ -26,9 +26,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import mutations from '@/store.js'
-
+import { mutations } from '@/store'
+import { httpClient } from '@/services/httpclient' 
 export default {
   data() {
     return {
@@ -40,10 +39,9 @@ export default {
     };
   },
   methods: {
-    onSubmit(evt) {
-      axios
-        .post("/api/v2/auth/login", this.form)
-        .then(response => (mutations.setJwt(response.data.jwt)))
+    onSubmit() {
+      httpClient.postForm(this.form)
+        .then(response => (mutations.setJwt(response.data.jwt), window.$cookies.set("refreshToken", response.data.refreshToken)))
     }
   }
 };

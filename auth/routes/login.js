@@ -19,10 +19,25 @@ router.post('/', async (req, res) => {
     }
     // TODO log here that the user succeeded
     const jwt = await user.generateAuthToken()
-    res.send({ jwt })
+    const refreshToken = await user.generateRefreshToken()
+    res.status(200).send({jwt, refreshToken})
   } catch (error) {
-    res.status(400).send(error)
+    res.status(401).send(error)
   }
 })
+
+router.post('/refresh', async (req, res) => {
+  const { refreshToken } = req.body
+  let user;
+  try {
+    user = await User.validateRefreshToken(refreshToken);
+  } catch {
+    return res.status(401).send()
+  }
+  const jwt = await user.generateAuthToken()
+  const token = await user.generateRefreshToken()
+  res.status(200).send({jwt, token})
+})
+
 
 module.exports = router

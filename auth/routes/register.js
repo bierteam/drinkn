@@ -8,7 +8,8 @@ router.post('/', async (req, res) => {
     const user = new User(req.body)
     await user.save()
     const token = await user.generateAuthToken()
-    res.status(201).send({ token })
+    const refreshToken = await user.generateRefreshToken()
+    res.status(201).send({ token, refreshToken })
   } catch (error) {
     res.status(400).send(error)
   }
