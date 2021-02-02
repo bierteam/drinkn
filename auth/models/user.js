@@ -141,7 +141,7 @@ userSchema.methods.generateRefreshToken = async function () {
 }
 
 userSchema.statics.validateRefreshToken = async function (refreshToken) {
-  var user = await User.findOne({'refreshToken.token' : refreshToken });
+  const user = await User.findOne({'refreshToken.token' : refreshToken });
   if(!user){
     throw new Error({ error: 'Invalid refresh token' })
   }
