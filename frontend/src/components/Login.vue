@@ -41,7 +41,10 @@ export default {
   methods: {
     onSubmit() {
       httpClient.postForm(this.form)
-        .then(response => (mutations.setJwt(response.data.jwt), window.$cookies.set("refreshToken", response.data.refreshToken)))
+        .then(response => (mutations.setJwt(response.data.jwt), this.setCookie(response.data.refreshToken)))
+    },
+    setCookie(refreshToken){
+      location.protocol === "https:" ? window.$cookies.set('refreshToken', refreshToken,'7d',null,null,true,'None') : window.$cookies.set('refreshToken', refreshToken)
     }
   }
 };

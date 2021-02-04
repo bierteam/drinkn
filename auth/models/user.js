@@ -68,11 +68,11 @@ const userSchema = mongoose.Schema({
     type: Object,
     id: {
       type: String,
-      required: false
+      required: true
     },
     expires: {
       type: Date,
-      required: false
+      required: true
     }
   }
 })
