@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 })
 
 router.post('/refresh', async (req, res) => {
-  const { refreshToken } = req.body
+  const refreshToken = req.cookies ? req.cookies.refreshToken : res.status(401).send();
   let user;
   try {
     user = await User.validateRefreshToken(refreshToken);

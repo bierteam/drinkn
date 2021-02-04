@@ -32,7 +32,7 @@ export const httpClient = {
   },
   async refreshToken(){
     try {
-    var result = await axios.post("/api/v2/auth/login/refresh", { refreshToken:  window.$cookies.get("refreshToken" )})
+    var result = await axios.post("/api/v2/auth/login/refresh")
     return result
     } catch {
       window.location.href = "/login"
