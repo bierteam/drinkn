@@ -20,12 +20,6 @@ const userSchema = mongoose.Schema({
     required: true,
     minLength: 7
   },
-  tokens: [{
-    token: {
-      type: String,
-      required: true
-    }
-  }],
   admin: {
     type: Boolean,
     required: true,
@@ -62,17 +56,6 @@ const userSchema = mongoose.Schema({
     secret: {
       type: String,
       required: false
-    }
-  },
-  refreshToken:{
-    type: Object,
-    id: {
-      type: String,
-      required: true
-    },
-    expires: {
-      type: Date,
-      required: true
     }
   }
 })
@@ -112,10 +95,16 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   // Generate an auth token for the user
   const user = this
-  const token = jwt.sign({ _id: user._id }, process.env.JWTSECRET)
-  user.tokens = user.tokens.concat({ token })
-  await user.save()
+  const token = jwt.sign({ _id: user._id }, process.env.JWTSECRET, { expiresIn: '15m' })
   return token
+}
+
+userSchema.statics.findByUserId = async (_id) => {
+  const user = await User.findOne({ _id })
+  if (!user) {
+    throw new Error({ error: 'No user found' })
+  }
+  return user
 }
 
 userSchema.statics.findByCredentials = async (username, password) => {
@@ -123,31 +112,11 @@ userSchema.statics.findByCredentials = async (username, password) => {
   if (!user) {
     throw new Error({ error: 'Invalid login credentials' })
   }
-  const isPasswordMatch = await bcrypt.compare(password, user.password)
-  if (!isPasswordMatch) {
+  const passwordMatch = await bcrypt.compare(password, user.password)
+  if (!passwordMatch) {
     throw new Error({ error: 'Invalid login credentials' })
   }
   return user
-}
-
-userSchema.methods.generateRefreshToken = async function () {
-  const user = this
-  const expireDate = new Date(new Date())
-  expireDate.setDate(expireDate.getDate() + 1) //24h
-  user.refreshToken = {
-    id : uuid(),
-    expires : expireDate
-  }
-  await user.save()
-  return user.refreshToken.id
-}
-
-userSchema.statics.validateRefreshToken = async function (refreshToken) {
-  const user = await User.findOne({'refreshToken.token' : refreshToken });
-  if(!user){
-    throw new Error({ error: 'Invalid refresh token' })
-  }
-  return user;
 }
 
 const User = mongoose.model('User', userSchema)

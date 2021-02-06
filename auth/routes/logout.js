@@ -1,29 +1,30 @@
 const express = require('express')
 require('../models/user')
+const Token = require('../models/token')
 const auth = require('../middleware/auth')
 const router = express.Router()
 
-router.post('/', auth, async (req, res) => {
+router.delete('/', auth, async (req, res) => {
   // Log user out of the application
   try {
-    req.user.tokens = req.user.tokens.filter((token) => {
-      return token.token !== req.token
-    })
-    await req.user.save()
-    res.send()
+    await Token.findOneAndDelete({ userId: req.user._id })
+    res
+      .clearCookie('refreshToken')
+      .send()
   } catch (error) {
-    res.status(500).send(error)
+    res.status(500).send()
   }
 })
 
-router.post('/all', auth, async (req, res) => {
+router.delete('/all', auth, async (req, res) => {
   // Log user out of all devices
   try {
-    req.user.tokens.splice(0, req.user.tokens.length)
-    await req.user.save()
-    res.send()
+    await Token.deleteMany({ userId: req.user._id })
+    res
+      .clearCookie('refreshToken')
+      .send()
   } catch (error) {
-    res.status(500).send(error)
+    res.status(500).send()
   }
 })
 
