@@ -16,7 +16,9 @@
   "scripts": {
     "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "standard && vue-cli-service lint"
+    "lint": "standard && vue-cli-service lint",
+    "docker-build": "docker build . -t frontend",
+    "docker-run": "docker run --rm -p 3000:80 frontend"
   },
   "dependencies": {
     "axios": "0.21.1",

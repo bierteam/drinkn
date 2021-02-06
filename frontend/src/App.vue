@@ -7,13 +7,13 @@
     <Sidebar>
       <ul class="sidebar-panel-nav">
         <li>
-          <a href="/login">Login</a>
+          <router-link to="/login">Login</router-link>
         </li>
         <li>
-          <a href="/about">About</a>
+          <router-link to="/about">About</router-link>
         </li>
         <li>
-          <a href="/cocktail">Cocktails</a>
+          <router-link to="/cocktail">Cocktails</router-link>
         </li>
       </ul>
     </Sidebar>
@@ -21,16 +21,16 @@
   </div>
 </template>
 <script>
-import Burger from "./components/Burger.vue";
-import Sidebar from "./components/Sidebar.vue";
+  import Burger from "./components/Burger.vue"
+  import Sidebar from "./components/Sidebar.vue"
 
-export default {
-  name: "app",
-  components: {
-    Burger,
-    Sidebar
+  export default {
+    name: "app",
+    components: {
+      Burger,
+      Sidebar
+    }
   }
-};
 </script>
 <style>
 #app {

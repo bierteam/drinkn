@@ -15,7 +15,7 @@
   },
   "main": "server.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "NODE_ENV=development nodemon",
     "test": "standard",
     "coverage": "codecov",
     "docker-build": "docker build . -t auth",
