@@ -38,8 +38,8 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500)
-  res.render('error')
+  res.json(err)
 })
 
-const port = Number(process.env.PORT) || 3000
+const port = Number(process.env.PORT) || 3004
 app.listen(port, () => console.log(`Auth api listening on port ${port}!`))

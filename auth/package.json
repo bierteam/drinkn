@@ -19,7 +19,7 @@
     "test": "standard",
     "coverage": "codecov",
     "docker-build": "docker build . -t auth",
-    "docker-run": "docker run --env-file .env auth"
+    "docker-run": "docker run --rm --env-file .env -p 3004:3000 auth"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

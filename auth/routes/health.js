@@ -1,9 +1,13 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const router = express.Router()
 
 router.get('/', function (req, res) {
-  // TODO check for healthy database connection
-  res.sendStatus(200)
+  if (mongoose.connection.readyState) {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
 })
 
 module.exports = router
