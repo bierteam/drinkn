@@ -8,7 +8,6 @@ router.get('/', async (req, res) => {
   try {
     if (refreshToken) {
       const tokens = await Token.generateByRefresh(refreshToken)
-      const jwt = tokens.auth
       const options = {
         httpOnly: true,
         expires: tokens.refresh.expires
@@ -17,12 +16,12 @@ router.get('/', async (req, res) => {
       res
         .cookie('refreshToken', tokens.refresh.id, options)
         .status(200)
-        .send({ jwt })
+        .send({ jwt: tokens.auth })
     } else {
       res.status(401).send()
     }
   } catch (error) {
-    // TODO log error
+    console.error(error)
     return res.status(401).send()
   }
 })

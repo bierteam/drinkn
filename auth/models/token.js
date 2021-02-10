@@ -25,7 +25,7 @@ tokenSchema.statics.validateRefreshToken = async function (refreshToken) {
   if (token) {
     return token
   } else {
-    throw new Error({ error: 'Invalid token' })
+    throw new Error('Invalid token')
   }
 }
 

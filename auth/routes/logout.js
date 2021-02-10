@@ -7,7 +7,7 @@ const router = express.Router()
 router.delete('/', auth, async (req, res) => {
   // Log user out of the application
   try {
-    await Token.findOneAndDelete({ userId: req.user._id })
+    await Token.findOneAndDelete({ _id: req.token })
     res
       .clearCookie('refreshToken')
       .send()

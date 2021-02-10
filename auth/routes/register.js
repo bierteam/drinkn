@@ -7,10 +7,10 @@ const router = express.Router()
 router.post('/', async (req, res) => {
   // Create a new user
   try {
-    const user = new User(req.body)
+    const { username, password } = req.body
+    const user = new User({ username, password })
     await user.save()
     const tokens = await Auth.generateByUser(user)
-    const jwt = tokens.auth
     const options = {
       httpOnly: true,
       expires: tokens.refresh.expires
@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
     res
       .cookie('refreshToken', tokens.refresh.id, options)
       .status(200)
-      .send({ jwt })
+      .send({ jwt: tokens.auth })
   } catch (error) {
     res.status(400).send(error)
   }
