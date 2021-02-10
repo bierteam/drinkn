@@ -37,10 +37,10 @@
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.1.0",
       "ts-node-dev": "^1.0.0-pre.44",
-      "typeorm": "0.2.30"
+      "typeorm": "0.2.31"
    },
    "devDependencies": {
-      "@types/node": "12.19.15",
+      "@types/node": "12.19.16",
       "dotenv": "8.2.0",
       "ts-node": "8.10.2",
       "typescript": "3.9.7"
