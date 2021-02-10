@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const User = require('../models/user')
 const denied = [
   'Denied!',
   'Thou shall not pass!',
@@ -19,8 +18,7 @@ const auth = async (req, res, next) => {
     } else {
       throw new Error()
     }
-    const data = jwt.verify(token, process.env.JWTSECRET)
-    const user = await User.findOne({ _id: data._id, 'tokens.token': token })
+    const user = jwt.verify(token, process.env.JWTSECRET)
     if (!user) {
       throw new Error()
     }
