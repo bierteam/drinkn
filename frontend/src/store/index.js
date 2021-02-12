@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import decode from 'jwt-decode'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    jwt: '', // toggle in vue devtools
+    jwt: '',
     isNavOpen: false
   },
   mutations: {
@@ -14,6 +15,11 @@ export default new Vuex.Store({
     },
     setNav (state) {
       state.isNavOpen = !state.isNavOpen
+    }
+  },
+  getters: {
+    decodedJWT: state => {
+      if (state.jwt) return decode(state.jwt)
     }
   },
   actions: {

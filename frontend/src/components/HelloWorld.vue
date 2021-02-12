@@ -3,6 +3,7 @@
     <h1>{{ msg }}</h1>
     <b-alert v-if="message" show variant="info" dismissible>{{message}}</b-alert>
     <b-alert v-if="error" show variant="danger" dismissible>{{error}}</b-alert>
+    <button type="button" class="btn btn-primary" @click="logJWT">log jwt</button>
     <button type="button" class="btn btn-primary" @click="resetJWT">Delete jwt</button>
     <button type="button" class="btn btn-primary" @click="check">Check login</button>
     <button type="button" class="btn btn-primary" @click="logout">logout</button>
@@ -25,6 +26,11 @@
       msg: String
     },
     methods: {
+      logJWT () {
+        console.log(this.$store.state.jwt)
+        console.log(this.$store.getters.decodedJWT)
+        this.$data.message = 'Logged JWT to console'
+      },
       resetJWT () {
         this.$store.commit('saveJWT', "")
         this.$data.message = 'Deleted JWT'
