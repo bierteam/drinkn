@@ -95,14 +95,19 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   // Generate an auth token for the user
   const user = this
-  const token = jwt.sign({ _id: user._id }, process.env.JWTSECRET, { expiresIn: '15m' })
+  const info = {
+    _id: user._id,
+    admin: this.admin,
+    username: this.username
+  }
+  const token = jwt.sign(info, process.env.JWTSECRET, { expiresIn: '15m' })
   return token
 }
 
 userSchema.statics.findByUserId = async (_id) => {
   const user = await User.findOne({ _id })
   if (!user) {
-    throw new Error({ error: 'No user found' })
+    throw new Error('No user found')
   }
   return user
 }
@@ -110,11 +115,11 @@ userSchema.statics.findByUserId = async (_id) => {
 userSchema.statics.findByCredentials = async (username, password) => {
   const user = await User.findOne({ username })
   if (!user) {
-    throw new Error({ error: 'Invalid login credentials' })
+    throw new Error('Invalid login credentials')
   }
   const passwordMatch = await bcrypt.compare(password, user.password)
   if (!passwordMatch) {
-    throw new Error({ error: 'Invalid login credentials' })
+    throw new Error('Invalid login credentials')
   }
   return user
 }
