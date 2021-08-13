@@ -37,7 +37,7 @@
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.1.0",
       "ts-node-dev": "^1.0.0-pre.44",
-      "typeorm": "0.2.36"
+      "typeorm": "0.2.37"
    },
    "devDependencies": {
       "@types/node": "12.20.19",
