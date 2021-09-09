@@ -35,7 +35,7 @@
   "devDependencies": {
     "codecov": "3.8.3",
     "dotenv": "8.6.0",
-    "jest": "25.5.4",
+    "jest": "26.0.0",
     "nodemon": "2.0.12",
     "rimraf": "3.0.2",
     "standard": "16.0.3"
