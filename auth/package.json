@@ -30,7 +30,7 @@
     "mongoose": "^5.12.3",
     "morgan": "~1.10.0",
     "otplib": "^11.0.1",
-    "uuid": "^7.0.0"
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
     "codecov": "3.8.3",
