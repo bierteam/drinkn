@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import decode from 'jwt-decode'
+import Decode from 'jwt-decode'
+import Api from '../services/Api'
 
 Vue.use(Vuex)
 
@@ -19,10 +20,21 @@ export default new Vuex.Store({
   },
   getters: {
     decodedJWT: state => {
-      if (state.jwt) return decode(state.jwt)
+      if (state.jwt) return Decode(state.jwt)
     }
   },
   actions: {
+    refresh: state => {
+      Api().get('auth/refresh')
+        .then(response => {
+          if (response.status === 200) {
+            state.commit('saveJWT', response.data.jwt)
+          }
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    }
   },
   modules: {
   },
