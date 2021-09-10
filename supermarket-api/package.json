@@ -43,7 +43,7 @@
    "devDependencies": {
       "@types/node": "12.20.24",
       "dotenv": "8.6.0",
-      "nodemon": "^2.0.12",
+      "nodemon": "2.0.12",
       "ts-node": "8.10.2",
       "typescript": "3.9.10"
    }
