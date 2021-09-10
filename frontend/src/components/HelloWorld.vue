@@ -1,8 +1,14 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <b-alert v-if="message" show variant="info" dismissible>{{message}}</b-alert>
-    <b-alert v-if="error" show variant="danger" dismissible>{{error}}</b-alert>
+    <div v-if="message" class="alert alert-info alert-dismissible fade show" role="alert">
+      {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div v-if="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{error}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <button type="button" class="btn btn-primary" @click="logJWT">log jwt</button>
     <button type="button" class="btn btn-primary" @click="resetJWT">Delete jwt</button>
     <button type="button" class="btn btn-primary" @click="check">Check login</button>

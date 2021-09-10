@@ -19,11 +19,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI, {})
 
 const routes = require('./routes')
 app.use('/api/v2/auth', routes)

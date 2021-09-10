@@ -23,15 +23,15 @@
   },
   "dependencies": {
     "moment": "^2.23.0",
-    "mongoose": "^5.12.3",
+    "mongoose": "^6.0.5",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "rev-hash": "^3.0.0"
   },
   "devDependencies": {
     "codecov": "3.8.3",
-    "dotenv": "8.6.0",
-    "jest": "25.5.4",
+    "dotenv": "^10.0.0",
+    "jest": "^27.1.1",
     "rimraf": "3.0.2",
     "standard": "16.0.3"
   }

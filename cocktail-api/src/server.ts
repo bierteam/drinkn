@@ -9,13 +9,6 @@ import { MONGODB_URI } from './util/secrets'
 import { CocktailRoutes } from './routes/cocktailRoutes'
 import { IngredientRoutes } from './routes/ingredientRoutes'
 
-
-// Fix mongoose deprecations
-mongoose.set('useFindAndModify', false)
-mongoose.set('useCreateIndex', true)
-mongoose.set('useUnifiedTopology', true)
-mongoose.set('useNewUrlParser', true)
-
 class Server {
   public app: express.Application;
 

@@ -1,12 +1,15 @@
 <template>
   <div>
-    <b-form class="form-signin">
+    <form class="form-signin">
       <div class="text-center mb-4">
         <img class="mb-4" alt="Household logo" width="100" height="100" src="../assets/drinks.svg">
         <!-- <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> -->
         <h1 class="h3 mb-3 font-weight-normal">Drinkn</h1>
       </div>
-      <b-alert v-if="error" show variant="danger" dismissible>{{error}}</b-alert>
+      <div v-if="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
       <div class="form-label-group">
         <input type="username" id="inputUsername" class="form-control" placeholder="Username" v-model="username" required autofocus>
         <label class="text-left" for="inputUsername">Username</label>
@@ -21,7 +24,7 @@
         <router-link :to="{ name: 'Register', params: { nextUri: this.$route.params.nextUri }}">Or register if you don't have an account yet</router-link>
       </div>
       <p class="mt-5 mb-3 text-muted text-center">&copy; 2021 BierTeam</p>
-    </b-form>
+    </form>
   </div>
 </template>
 
