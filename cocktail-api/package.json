@@ -30,7 +30,7 @@
       "uuid": "^8.3.2"
    },
    "devDependencies": {
-      "nodemon": "2.0.12",
+      "nodemon": "2.0.13",
       "@types/compression": "1.7.2",
       "@types/cors": "2.8.12",
       "concurrently": "6.2.1",
