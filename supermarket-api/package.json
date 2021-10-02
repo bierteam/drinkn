@@ -38,7 +38,7 @@
       "request": "^2.88.2",
       "sqlite3": "^5.0.0",
       "ts-node-dev": "^1.0.0-pre.44",
-      "typeorm": "0.2.37"
+      "typeorm": "0.2.38"
    },
    "devDependencies": {
       "@types/node": "14.17.20",
