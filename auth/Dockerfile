@@ -1,5 +1,5 @@
 # --- Release with Alpine ----
-FROM node:16-alpine AS release
+FROM node:17-alpine AS release
 ENV NODE_ENV production
 ENV PORT 3000
 EXPOSE 3000
