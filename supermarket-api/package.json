@@ -36,7 +36,7 @@
       "mongodb": "^4.0.0",
       "reflect-metadata": "^0.1.10",
       "request": "^2.88.2",
-      "sqlite3": "^5.0.0",
+      "sqlite3": "^5.0.3",
       "ts-node-dev": "^1.0.0-pre.44",
       "typeorm": "0.2.41"
    },
