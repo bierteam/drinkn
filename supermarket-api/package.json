@@ -31,7 +31,7 @@
       "class-validator": "^0.13.0",
       "cors": "^2.8.5",
       "express": "^4.15.4",
-      "helmet": "^4.0.0",
+      "helmet": "^5.0.0",
       "jsonwebtoken": "^8.5.1",
       "mongodb": "^4.0.0",
       "reflect-metadata": "^0.1.10",
