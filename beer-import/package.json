@@ -22,7 +22,7 @@
     "docker-run": "docker run --env-file .env import-bier"
   },
   "dependencies": {
-    "moment": "^2.23.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.0.5",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
