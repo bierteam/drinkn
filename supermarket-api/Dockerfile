@@ -1,12 +1,12 @@
 # ---- Build ----
-FROM node:16 AS build  
+FROM node:19 AS build  
 WORKDIR /app
 COPY . ./
 RUN npm install
 RUN npm run build
 
 # --- Release with Alpine ----
-FROM node:16-alpine AS release
+FROM node:19-alpine AS release
 ENV NODE_ENV production
 ENV PORT 3000
 EXPOSE 3000
