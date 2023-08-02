@@ -39,7 +39,7 @@
     "otplib": "^11.0.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "rev-hash": "^3.0.0",
+    "rev-hash": "^4.0.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
