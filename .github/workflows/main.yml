@@ -11,10 +11,9 @@ jobs:
     strategy:
       matrix:
         folder:
-          - beer-import-legacy
-          - pils-legacy
-          - frontend-legacy
-          # - frontend
+          - beer-import
+          - pils
+          - pils-frontend
     steps:
       -
         uses: actions/checkout@v3
@@ -52,8 +51,7 @@ jobs:
   #   strategy:
   #     matrix:
   #       folder:
-  #        - beer-import
-  #        - pils
+  #        - api
   #   steps:
   #     -
   #       uses: actions/checkout@v3
@@ -70,7 +68,7 @@ jobs:
   #       run: go test -v ./...
 
   docker:
-    if: github.ref == 'refs/heads/master' || github.event == 'push'
+    if: github.ref == 'refs/heads/main' || github.event == 'push'
     needs:
       - test-node
       # - test-go
@@ -78,12 +76,10 @@ jobs:
     strategy:
       matrix:
         folder:
-          # - beer-import
-          - beer-import-legacy
-          # - frontend
-          - frontend-legacy
-          # - pils
-          - pils-legacy
+          - beer-import
+          - pils-frontend
+          - pils
+          # - api
 
     steps:
       -
@@ -118,11 +114,11 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ${{ matrix.folder }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
-          cache-from: type=registry,ref=${{ github.repository }}
-          cache-to: type=registry,ref=${{ github.repository }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.folder }}
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.folder }}
           # https://docs.docker.com/build/building/cache/backends/#cache-mode
