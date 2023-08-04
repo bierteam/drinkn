@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         folder:
-          - beer-import
+          - beer-import-legacy
           - pils-legacy
           - frontend-legacy
     steps:
@@ -51,7 +51,7 @@ jobs:
     strategy:
       matrix:
         folder:
-         - beer-import-go
+         - beer-import
          - pils
     steps:
       -
@@ -78,7 +78,7 @@ jobs:
       matrix:
         folder:
           - beer-import
-          - beer-import-go
+          - beer-import-legacy
           - frontend
           - frontend-legacy
           - pils

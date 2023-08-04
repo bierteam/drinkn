@@ -27,7 +27,6 @@ const db = mongoose.connection
 // https://router.vuejs.org/guide/essentials/history-mode.html
 app.use(history())
 
-app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 // security settings
