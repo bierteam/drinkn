@@ -32,7 +32,7 @@
     "express-session": "^1.15.6",
     "helmet": "^3.21.2",
     "moment": "^2.23.0",
-    "mongoose": "^5.7.7",
+    "mongoose": "^5.13.20",
     "otplib": "^11.0.1",
     "rev-hash": "^3.0.0",
     "uuid": "^3.3.2"
