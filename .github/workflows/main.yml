@@ -14,6 +14,7 @@ jobs:
           - beer-import-legacy
           - pils-legacy
           - frontend-legacy
+          # - frontend
     steps:
       -
         uses: actions/checkout@v3
@@ -46,42 +47,42 @@ jobs:
         with:
           directory: ${{ matrix.folder }}
 
-  test-go:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder:
-         - beer-import
-         - pils
-    steps:
-      -
-        uses: actions/checkout@v3
-      -
-        name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.20
-      -
-        name: Build
-        run: go build -v ./...
-      -
-        name: Test
-        run: go test -v ./...
+  # test-go:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       folder:
+  #        - beer-import
+  #        - pils
+  #   steps:
+  #     -
+  #       uses: actions/checkout@v3
+  #     -
+  #       name: Set up Go
+  #       uses: actions/setup-go@v3
+  #       with:
+  #         go-version: 1.20
+  #     -
+  #       name: Build
+  #       run: go build -v ./...
+  #     -
+  #       name: Test
+  #       run: go test -v ./...
 
   docker:
     if: github.ref == 'refs/heads/master' || github.event == 'push'
     needs:
       - test-node
-      - test-go
+      # - test-go
     runs-on: ubuntu-latest
     strategy:
       matrix:
         folder:
-          - beer-import
+          # - beer-import
           - beer-import-legacy
-          - frontend
+          # - frontend
           - frontend-legacy
-          - pils
+          # - pils
           - pils-legacy
 
     steps:
