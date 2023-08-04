@@ -1,12 +1,12 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
-[![Build Status](https://travis-ci.com/bierteam/bier-import.svg?branch=master)](https://travis-ci.com/bierteam/bier-import)
-[![codecov](https://codecov.io/gh/bierteam/bier-import/branch/master/graph/badge.svg)](https://codecov.io/gh/bierteam/bier-import)
-[![codebeat badge](https://codebeat.co/badges/1609fb34-95f2-4952-a55e-6e50061c1521)](https://codebeat.co/projects/github-com-bierteam-bier-import-master)
+[![Build Status](https://travis-ci.com/bierteam/drinkn.svg?branch=master)](https://travis-ci.com/bierteam/drinkn)
+[![codecov](https://codecov.io/gh/bierteam/drinkn/branch/master/graph/badge.svg)](https://codecov.io/gh/bierteam/drinkn)
+[![codebeat badge](https://codebeat.co/badges/27be54a6-bf6d-4297-9dc7-447d514bc476)](https://codebeat.co/projects/github-com-bierteam-drinkn-master)
+[![DeepScan grade](https://deepscan.io/api/teams/6712/projects/8821/branches/111878/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=6712&pid=8821&bid=111878)
 
+# Drinkn
 
-# Pils v1
-
-some simple node apps to get some usable data from [biernet.nl](https://biernet.nl/)
+Some simple docker containers to get some usable data from [biernet.nl](https://biernet.nl/)
 We will consume this data later to generate push notifications with nice discounts when the fridge is running low for example.
 
 ## Authors

@@ -1,5 +1,5 @@
 # --- Release with Alpine ----
-FROM node:12-alpine AS release
+FROM node:18-alpine AS release
 ENV NODE_ENV production
 WORKDIR /app
 COPY package*.json ./

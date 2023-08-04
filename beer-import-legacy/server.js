@@ -4,11 +4,6 @@ const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env
 
 const mongoose = require('mongoose')
 
-// Fix mongoose deprecations
-mongoose.set('useFindAndModify', false)
-mongoose.set('useCreateIndex', true)
-mongoose.set('useUnifiedTopology', true)
-
 mongoose.connect(connectionString, { useNewUrlParser: true })
 const db = mongoose.connection
 
