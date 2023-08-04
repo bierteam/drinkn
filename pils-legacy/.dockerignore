@@ -10,8 +10,6 @@ test/
 .env*
 .git*
 .postcssrc.js
-.travis.yml
-deploy_key.enc
 renovate.json
 selenium-server.log
 npm-debug.log*

@@ -1,103 +1,127 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Main
-
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
-
+    branches: [ main ]
 
 jobs:
-  test:
+  test-node:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         folder:
-        - auth
-        # - beer-api
-        - beer-import
-        - cocktail-api
-        # - cocktail-import
-        - frontend
-        - supermarket-api
-        # - supermarket-import
-        node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        - 15.x
-        - 16.x
-
+          - beer-import
+          - pils-legacy
+          - frontend-legacy
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2.5.2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
-      with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
-        path: ~/.npm
-        key: ${{ runner.OS }}-node-${{ matrix.node-version }}-${{ matrix.folder }}-${{ hashFiles('${{ matrix.folder }}/package-lock.json') }}
+      -
+        uses: actions/checkout@v3
+      -
+        name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      -
+        name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-${{ matrix.folder }}-${{ hashFiles('${{ matrix.folder }}/package-lock.json') }}
+      -
+        run: npm ci
+        working-directory: ${{ matrix.folder }}
+      -
+        run: npm run build --if-present
+        working-directory: ${{ matrix.folder }}
+      -
+        run: npm run test --if-present
+        working-directory: ${{ matrix.folder }}
+      -
+        run: npm run lint --if-present
+        working-directory: ${{ matrix.folder }}
+      -
+        uses: codecov/codecov-action@v2
+        with:
+          directory: ${{ matrix.folder }}
 
-    - run: npm ci
-      working-directory: ${{ matrix.folder }}
-    - run: npm run build --if-present
-      working-directory: ${{ matrix.folder }}
-    - run: npm run test --if-present
-      working-directory: ${{ matrix.folder }}
-    - run: npm run lint --if-present
-      working-directory: ${{ matrix.folder }}
-
-    - uses: codecov/codecov-action@v2
-      with:
-        directory: ${{ matrix.folder }}
+  test-go:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder:
+         - beer-import-go
+         - pils
+    steps:
+      -
+        uses: actions/checkout@v3
+      -
+        name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 20
+      -
+        name: Build
+        run: go build -v ./...
+      -
+        name: Test
+        run: go test -v ./...
 
   docker:
     if: github.ref == 'refs/heads/master' || github.event == 'push'
-    needs: test
+    needs:
+      - test-node
+      - test-go
     runs-on: ubuntu-latest
     strategy:
       matrix:
         folder:
-        - auth
-        # - beer-api
-        - beer-import
-        - cocktail-api
-        # - cocktail-import
-        - frontend
-        - supermarket-api
-        # - supermarket-import
+          - beer-import
+          - beer-import-go
+          - frontend
+          - frontend-legacy
+          - pils
+          - pils-legacy
+
     steps:
-    - name: Check Out Repo 
-      uses: actions/checkout@v2
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: bierteamtravis
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
-
-    - name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        context: ${{ matrix.folder }}
-        builder: ${{ steps.buildx.outputs.name }}
-        push: true
-        tags:  bierteam/${{ matrix.folder }}:latest
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      - 
+        name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}/${{ matrix.folder }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+          flavor: |
+            latest=true
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to GitHub Package Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
+          cache-from: type=registry,ref=${{ github.repository }}
+          cache-to: type=registry,ref=${{ github.repository }}
+          # https://docs.docker.com/build/building/cache/backends/#cache-mode
