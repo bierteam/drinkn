@@ -4,9 +4,9 @@
 [![codebeat badge](https://codebeat.co/badges/27be54a6-bf6d-4297-9dc7-447d514bc476)](https://codebeat.co/projects/github-com-bierteam-drinkn-master)
 [![DeepScan grade](https://deepscan.io/api/teams/6712/projects/8821/branches/111878/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=6712&pid=8821&bid=111878)
 
-# drinkn
+# Drinkn
 
-some simple docker containers to get some usable data from [biernet.nl](https://biernet.nl/)
+Some simple docker containers to get some usable data from [biernet.nl](https://biernet.nl/)
 We will consume this data later to generate push notifications with nice discounts when the fridge is running low for example.
 
 ## Authors
