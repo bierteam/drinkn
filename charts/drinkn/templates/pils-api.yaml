@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pils
+  name: pils
+spec:
+  replicas: 2
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: pils
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pils
+    spec:
+      containers:
+        - image: "ghcr.io/bierteam/pils:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          envFrom:
+            - secretRef:
+                name: drinkn-env
+                optional: false
+          imagePullPolicy: Always
+          name: pils
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pils
+spec:
+  selector:
+    app: pils
+  ports:
+    - port: 80
+      name: default
+      protocol: TCP
+      targetPort: 3000

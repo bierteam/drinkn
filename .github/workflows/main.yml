@@ -24,7 +24,7 @@ jobs:
           node-version: 20.x
       -
         name: Cache Node.js modules
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
@@ -42,7 +42,7 @@ jobs:
         run: npm run lint --if-present
         working-directory: ${{ matrix.folder }}
       -
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v2
         with:
           directory: ${{ matrix.folder }}
 
@@ -111,7 +111,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.folder }}
           push: ${{ github.event_name != 'pull_request' }}
@@ -121,3 +121,31 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha
           # https://docs.docker.com/build/building/cache/backends/#cache-mode
+
+  deploy:
+    needs:
+      - docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Deploy using Argo CD
+        run: |
+          # Access the commit SHA from GitHub context
+          COMMIT_SHA="${{ github.sha }}"
+          
+          # Trim the first few characters to match the desired format (e.g., sha-c27d339)
+          SHORT_SHA="sha-${COMMIT_SHA:0:7}"
+          
+          # Change appVersion in charts/drinkn/Chart.yaml
+          sed -i "s|appVersion:.*|appVersion: \"$SHORT_SHA\"|" charts/drinkn/Chart.yaml
+
+          # Commit and push the changes to the deploy branch
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add charts/drinkn/Chart.yaml
+          git commit -m "Update appVersion to $SHORT_SHA"
+          git push origin main
