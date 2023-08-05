@@ -48,7 +48,7 @@
     "html-webpack-plugin": "3.2.0",
     "jest": "24.9.0",
     "jest-serializer-vue": "^3.1.0",
-    "nightwatch": "1.3.2",
+    "nightwatch": "1.7.13",
     "node-notifier": "6.0.0",
     "nodemon": "3.0.1",
     "npm": "6.13.6",
