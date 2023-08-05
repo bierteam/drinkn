@@ -51,7 +51,7 @@
     "nightwatch": "1.7.13",
     "node-notifier": "6.0.0",
     "nodemon": "3.0.1",
-    "npm": "6.13.6",
+    "npm": "9.8.1",
     "ora": "4.0.3",
     "portfinder": "1.0.32",
     "postcss-import": "12.0.1",
