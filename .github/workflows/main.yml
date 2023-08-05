@@ -68,7 +68,6 @@ jobs:
   #       run: go test -v ./...
 
   docker:
-    if: github.ref == 'refs/heads/main' || github.event == 'push'
     needs:
       - test-node
       # - test-go
@@ -96,7 +95,7 @@ jobs:
             type=ref,event=branch
             type=sha
           flavor: |
-            latest=true
+            latest=auto
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -115,10 +114,10 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.folder }}
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.folder }}
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.folder }}
+          cache-from: type=gha
+          cache-to: type=gha
           # https://docs.docker.com/build/building/cache/backends/#cache-mode
