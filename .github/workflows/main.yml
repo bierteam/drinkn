@@ -42,7 +42,7 @@ jobs:
         run: npm run lint --if-present
         working-directory: ${{ matrix.folder }}
       -
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           directory: ${{ matrix.folder }}
 
