@@ -126,6 +126,7 @@ jobs:
     needs:
       - docker
     runs-on: ubuntu-latest
+    environment: kubernetes
     permissions:
       contents: write
     steps:
