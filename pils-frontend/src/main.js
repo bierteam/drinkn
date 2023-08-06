@@ -7,7 +7,6 @@ import Vue2Filters from 'vue2-filters'
 import VueBrowserUpdate from 'vue-browserupdate'
 import './../node_modules/bulma/css/bulma.css'
 import './../node_modules/bulma-tooltip/dist/css/bulma-tooltip.min.css'
-// import './../node_modules/@fortawesome/fontawesome-free/css/all.css'
 
 Vue.config.productionTip = false
 

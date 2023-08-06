@@ -1,11 +1,12 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
-const uuid = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
+const SALT_ROUNDS = 10
 
 const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: uuid
+    default: uuidv4
   },
   username: {
     type: String,
@@ -58,50 +59,50 @@ const UserSchema = new mongoose.Schema({
   }
 })
 
-UserSchema.statics.authenticate = function (username, password, callback) {
-  User.findOne({ username })
-    .exec(function (err, user) {
-      if (err) {
-        return callback(err)
-      } else if (!user) {
-        const err = new Error('User not found.')
-        err.status = 401
-        return callback(err)
-      }
-      bcrypt.compare(password, user.password, function (err, result) {
-        if (err) console.error(err)
-        if (result === true) {
-          return callback(null, user)
-        } else {
-          return callback()
-        }
-      })
-    })
+UserSchema.statics.authenticate = async function (username, password, callback) {
+  try {
+    const user = await User.findOne({ username }).exec()
+
+    if (!user) {
+      const err = new Error('User not found.')
+      err.status = 401
+      throw err
+    }
+
+    const result = await bcrypt.compare(password, user.password)
+
+    if (result === true) {
+      return callback(null, user)
+    } else {
+      return callback()
+    }
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
 }
 
-UserSchema.pre('save', function (next) {
-  const user = this
-  bcrypt.hash(user.password, 10, function (err, hash) {
-    if (err) {
-      return next(err)
-    }
+UserSchema.pre('save', async function (next) {
+  try {
+    const user = this
+    const hash = await bcrypt.hash(user.password, SALT_ROUNDS)
     user.password = hash
     next()
-  })
+  } catch (err) {
+    next(err)
+  }
 })
 
-UserSchema.pre(['updateOne', 'findOneAndUpdate'], function (next) {
-  const user = this._update.$set
-  if (user.password) {
-    bcrypt.hash(user.password, 10, function (err, hash) {
-      if (err) {
-        return next(err)
-      }
+UserSchema.pre(['updateOne', 'findOneAndUpdate'], async function (next) {
+  try {
+    const user = this._update.$set
+    if (user.password) {
+      const hash = await bcrypt.hash(user.password, SALT_ROUNDS)
       user.password = hash
-      next()
-    })
-  } else {
+    }
     next()
+  } catch (err) {
+    next(err)
   }
 })
 

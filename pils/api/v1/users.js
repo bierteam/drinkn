@@ -6,13 +6,12 @@ const otp = require('../../services/otp')
 const writeLog = require('../../services/writeLog')
 const context = 'Users'
 
-router.post('/login', function (req, res) {
+router.post('/login', async function (req, res) {
   if (req.body.username && req.body.password) {
-    user.authenticate(req.body.username, req.body.password, function (error, user) {
-      if (error || !user) {
-        writeLog(`Failed login attempt for user: ${req.body.username}`, 'Warning', context, req.realIp)
-        res.status(401).send('Incorrect username or password')
-      } else if (user.otp?.status && !req.body.token) {
+    try {
+      const user = await authenticateUser(req.body.username, req.body.password, req.body.token)
+
+      if (user.otp?.status && !req.body.token) {
         writeLog(`User ${user.username}: ${user._id} requires a 2fa token.`, 'Info', context, req.realIp)
         return res.json({ otp: true })
       } else {
@@ -28,12 +27,27 @@ router.post('/login', function (req, res) {
         req.session.username = user.username
         res.status(200).send({ admin: user.admin, _id: user._id })
       }
-    })
+    } catch (error) {
+      writeLog(`Failed login attempt for user: ${req.body.username}`, 'Warning', context, req.realIp)
+      res.status(401).send('Incorrect username or password')
+    }
   } else {
     writeLog('Login try with missing fields', 'Warning', context, req.realIp)
     res.status(403).send('Missing fields')
   }
 })
+
+async function authenticateUser (username, password, token) {
+  return new Promise((resolve, reject) => {
+    user.authenticate(username, password, function (error, user) {
+      if (error || !user) {
+        reject(error || 'Incorrect username or password')
+      } else {
+        resolve(user)
+      }
+    })
+  })
+}
 
 router.delete('/logout', function (req, res, next) {
   if (req.session) {
@@ -48,87 +62,95 @@ router.delete('/logout', function (req, res, next) {
   }
 })
 
-router.post('/register', isAdmin, function (req, res) {
+router.post('/register', isAdmin, async function (req, res) {
   if (req.body.username && req.body.password) {
-    const userData = {
-      username: req.body.username,
-      password: req.body.password,
-      admin: req.body.admin,
-      createdBy: { _id: req.session.userId, username: req.session.username }
-    }
-    user.create(userData, function (err, user) {
-      if (err) {
-        writeLog(err, 'Error', context)
-        res.status(200).send('Something went wrong, maybe the user already exists...')
-      } else {
-        writeLog(`User account ${userData.username} has been created by ${req.session.username}: ${req.session.userId}`, 'Info', context, req.realIp)
-        res.sendStatus(201)
+    try {
+      const userData = {
+        username: req.body.username.toString(),
+        password: req.body.password.toString(),
+        admin: req.body.admin,
+        createdBy: { _id: req.session.userId, username: req.session.username }
       }
-    })
+      await user.create(userData)
+      writeLog(`User account ${userData.username} has been created by ${req.session.username}: ${req.session.userId}`, 'Info', context, req.realIp)
+      res.sendStatus(201)
+    } catch (err) {
+      writeLog(err, 'Error', context)
+      res.status(200).send('Something went wrong, maybe the user already exists...')
+    }
   }
 })
-router.get('/check', function (req, res) {
-  if (req.session.userId) {
-    res.send(true)
-  } else {
-    res.send(false)
+router.get('/check', async function (req, res) {
+  try {
+    const isUserLoggedIn = !!req.session.userId
+    res.send(isUserLoggedIn)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Server error' })
   }
 })
 
-router.get('/', isAdmin, function (req, res) {
-  user.find().select('username admin').exec(function (err, results) {
-    if (err) console.error(err)
+router.get('/', isAdmin, async function (req, res) {
+  try {
+    const results = await user.find().select('username admin').exec()
     writeLog(`${req.session.username}: ${req.session.userId} requested users data`, 'Info', context, req.realIp)
     res.json(results)
-  })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Server error' })
+  }
 })
 
-router.get('/:_id', isAdmin, function (req, res) {
-  const _id = { _id: req.params._id }
-  user.findOne(_id).select('username admin createdBy editedBy otp.status').exec(function (err, result) {
-    if (err) console.error(err)
+router.get('/:_id', isAdmin, async function (req, res) {
+  try {
+    const _id = { _id: req.params._id }
+    const result = await user.findOne(_id).select('username admin createdBy editedBy otp.status').exec()
     writeLog(`${req.session.username}: ${req.session.userId} requested ${req.params._id}`, 'Info', context, req.realIp)
     res.json(result)
-  })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Server error' })
+  }
 })
 
-router.post('/:_id', isAdmin, function (req, res) {
-  const _id = req.params._id
-  const parameters = {}
-  parameters.editedBy = { _id: req.session.userId, username: req.session.username }
-  if (req.body.user.password) {
-    parameters.password = req.body.user.password
-  }
-  if (req.body.user.username) {
-    parameters.username = req.body.user.username
-  }
-  if (req.body.user.admin != null) {
-    parameters.admin = req.body.user.admin
-  }
-  user.findOneAndUpdate({ _id }, { $set: parameters }, { strict: false, new: true })
-    .select('username admin')
-    .exec(function (err, result) {
-      if (err) {
-        writeLog(err, 'Error', context)
-        res.sendStatus(500)
-      } else {
-        writeLog(`${req.session.username}: ${req.session.userId} updated ${result}`, 'Info', context, req.realIp)
-        res.json(result)
-      }
-    })
-})
+router.post('/:_id', isAdmin, async function (req, res) {
+  try {
+    const _id = req.params._id
+    const parameters = {}
+    parameters.editedBy = { _id: req.session.userId, username: req.session.username }
 
-router.delete('/:_id', isAdmin, function (req, res) {
-  user.deleteOne({ _id: req.params._id }, function (err) {
-    if (err) {
-      console.err(err)
-      writeLog(err, 'Error', context)
-      res.sendStatus(500)
-    } else {
-      res.sendStatus(200)
-      writeLog(`${req.session.username}: ${req.session.userId} deleted user ${req.params._id}`, 'Warning', context, req.realIp)
+    if (req.body.user.password) {
+      parameters.password = req.body.user.password
     }
-  })
+    if (req.body.user.username) {
+      parameters.username = req.body.user.username
+    }
+    if (req.body.user.admin != null) {
+      parameters.admin = req.body.user.admin
+    }
+
+    const result = await user.findOneAndUpdate({ _id }, { $set: parameters }, { strict: false, new: true })
+      .select('username admin')
+      .exec()
+
+    writeLog(`${req.session.username}: ${req.session.userId} updated ${result}`, 'Info', context, req.realIp)
+    res.json(result)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+router.delete('/:_id', isAdmin, async function (req, res) {
+  try {
+    await user.deleteOne({ _id: req.params._id })
+    res.sendStatus(200)
+    writeLog(`${req.session.username}: ${req.session.userId} deleted user ${req.params._id}`, 'Warning', context, req.realIp)
+  } catch (err) {
+    console.error(err)
+    writeLog(err, 'Error', context)
+    res.sendStatus(500)
+  }
 })
 
 module.exports = router

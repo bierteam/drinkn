@@ -127,6 +127,7 @@ jobs:
           # https://docs.docker.com/build/building/cache/backends/#cache-mode
 
   deploy:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - docker
     runs-on: ubuntu-latest

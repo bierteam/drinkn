@@ -1,12 +1,13 @@
 const beer = require('../models/beer')
 
-const discount = () => {
-  return new Promise((resolve) => {
-    beer.find({ validity: { $gte: Date() } }).exec(async function (err, result) {
-      if (err) console.error(err)
-      resolve(result)
-    })
-  })
+const discount = async () => {
+  try {
+    const result = await beer.find({ validity: { $gte: Date() } }).exec()
+    return result
+  } catch (err) {
+    console.error(err)
+    return []
+  }
 }
 
 module.exports = discount
