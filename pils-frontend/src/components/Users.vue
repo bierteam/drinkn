@@ -5,6 +5,7 @@
       {{error}}
     </div>
     <table class='container table'>
+      <caption>Table of users</caption>
       <thead>
         <th>Username</th>
         <th>Admin</th>

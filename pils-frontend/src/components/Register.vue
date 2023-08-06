@@ -36,7 +36,7 @@
             </form>
           </div>
           <p class="has-text-grey">
-          <a href="../">Login</a> &nbsp;·&nbsp;
+          <a href="../">Login</a> &nbsp·&nbsp
           <a href="../">Need Help?</a>
           </p>
         </div>
@@ -61,11 +61,10 @@
       }
     },
     computed: {
-      isDisabled:function() {
-        pwned(this.$data.password).then(isPwned => {
-          this.$data.isPwned = isPwned
-        })
-        return (this.$data.username && this.$data.password && !this.$data.isPwned) ? false : true
+      async isDisabled() {
+        const { username, password } = this.$data
+        const isPwned = await pwned(password)
+        return !(username && password && !isPwned)
       }
     },
     methods: {

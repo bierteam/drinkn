@@ -19,7 +19,7 @@ new Vue({
   template: '<App/>'
 })
 
-var Vue2FiltersConfig = {
+const Vue2FiltersConfig = {
   capitalize: {
     onlyFirstLetter: true
   },

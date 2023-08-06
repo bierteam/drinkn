@@ -1,13 +1,13 @@
 # ---- Build with node ----
 FROM node:20 AS build  
 WORKDIR /app
+COPY package*.json ./
+RUN npm install --force
 COPY public ./public
 COPY index.html ./
 COPY build ./build
 COPY config ./config
 COPY src ./src
-COPY package*.json ./
-RUN npm install --force
 RUN npm run build
 
 # --- Release with Alpine nginx----

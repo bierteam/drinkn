@@ -5,6 +5,7 @@
       {{message}}
     </div>
     <table class='table container'>
+      <caption>Table of logs</caption>
       <thead>
         <tr> <!-- first row -->
           <th><a class="button is-danger" @click='state.deleteMsg = !state.deleteMsg'>Delete all logs</a></th>
@@ -107,23 +108,36 @@ export default {
     }
   },
   methods: {
-    async getLogs () {
+  async getLogs() {
+    try {
       const response = await Api().get('/api/v1/logging')
       this.logs = response.data
-      for (let i = 0; i < response.data.length; i++){
-        if (this.contexts.indexOf(response.data[i].context) === -1) {
-          this.contexts.push(response.data[i].context)
+
+      // Create separate arrays for contexts and types if they don't exist already
+      this.contexts = this.contexts || []
+      this.types = this.types || []
+
+      for (const log of response.data) {
+        if (!this.contexts.includes(log.context)) {
+          this.contexts.push(log.context)
         }
-        if (this.types.indexOf(response.data[i].type) === -1) {
-          this.types.push(response.data[i].type)
+        if (!this.types.includes(log.type)) {
+          this.types.push(log.type)
         }
       }
-    },
-    async deleteLogs() {
-      const response = await Api().delete(`/api/v1/logging`)
+    } catch (error) {
+      console.error('Error fetching logs:', error)
+    }
+  },
+  async deleteLogs() {
+    try {
+      const response = await Api().delete('/api/v1/logging')
       this.message = response.data
       this.logs = []
+    } catch (error) {
+      console.error('Error deleting logs:', error)
     }
+  }
   }
 }
 </script>

@@ -1,5 +1,6 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
-[![Build Status](https://travis-ci.com/bierteam/drinkn.svg?branch=master)](https://travis-ci.com/bierteam/drinkn)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bierteam_drinkn&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bierteam_drinkn)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bierteam_drinkn&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=bierteam_drinkn)
 [![codecov](https://codecov.io/gh/bierteam/drinkn/branch/master/graph/badge.svg)](https://codecov.io/gh/bierteam/drinkn)
 [![codebeat badge](https://codebeat.co/badges/27be54a6-bf6d-4297-9dc7-447d514bc476)](https://codebeat.co/projects/github-com-bierteam-drinkn-master)
 [![App Status](https://argocd.lab.oscarr.nl/api/badge?name=drinkn&revision=true)](https://argocd.lab.oscarr.nl/applications/drinkn)

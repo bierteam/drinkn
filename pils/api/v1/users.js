@@ -12,11 +12,11 @@ router.post('/login', function (req, res) {
       if (error || !user) {
         writeLog(`Failed login attempt for user: ${req.body.username}`, 'Warning', context, req.realIp)
         res.status(401).send('Incorrect username or password')
-      } else if (user.otp && user.otp.status && !req.body.token) {
+      } else if (user.otp?.status && !req.body.token) {
         writeLog(`User ${user.username}: ${user._id} requires a 2fa token.`, 'Info', context, req.realIp)
         return res.json({ otp: true })
       } else {
-        if (user.otp && user.otp.status && !otp.check(req.body.token, user.otp.secret)) {
+        if (user.otp?.status && !otp.check(req.body.token, user.otp.secret)) {
           return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
         }
         writeLog(`User ${user.username}: ${user._id} has logged in.`, 'Info', context, req.realIp)

@@ -76,11 +76,9 @@
       this.User()
     },
     computed: {
-      isDisabled:function() {
-        pwned(this.newUser.password).then(isPwned => {
-          this.state.pwned = isPwned
-        })
-        return (!this.state.pwned) ? false : true
+      isDisabled: async function() {
+        const isPwned = await pwned(this.newUser.password)
+        return !!isPwned
       }
     },
     methods: {

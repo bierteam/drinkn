@@ -9,6 +9,7 @@
         type="button" :disabled="isEmpty">Save</span>
     </div>
     <table class='container table'>
+      <caption>Table of store names</caption>
       <thead>
         <th>Old</th>
         <th>New</th>
@@ -17,7 +18,6 @@
         <tr v-for='(newName, oldName) in stores'>
           <th><input class="input" type="text" v-model="oldName" disabled></th>
           <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]"></th>
-          <!-- <span class="delete" @click='Delete(oldName)'></span> -->
         </tr>
         <tr>
           <th></th>

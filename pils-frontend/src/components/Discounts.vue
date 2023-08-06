@@ -28,6 +28,7 @@
     </nav>
     <progress v-if="discounts.length === 0" class="progress is-small"></progress>
     <table class='table container'>
+      <caption>Table of beer discounts</caption>
       <thead>
         <tr><!-- first row -->
           <th><input class='input' v-model='search' type='text' placeholder='Search' autofocus></th>
@@ -97,20 +98,8 @@ export default {
   mixins: [Vue2Filters.mixin],
   data () {
     return {
-      discounts: [],
       discountAverage: [],
-      literAverage: [],
-      percentageAverage: [],
-      onlineCounter: 0,
-      search: '',
-      online: false,
-      zero: true,
-      store: '',
-      stores: [],
-      volume: '',
-      volumes: [],
-      sort:'literPrice',
-      sortDir: 1,
+      discounts: [],
       headers: {
         brand: 'Brand',
         alcoholPercentage: '%',
@@ -121,7 +110,19 @@ export default {
         discount: 'Discount',
         discountPercentage: '%',
         volume: 'Volume'
-      }
+      },
+      literAverage: [],
+      online: false,
+      onlineCounter: 0,
+      percentageAverage: [],
+      search: '',
+      sort:'literPrice',
+      sortDir: 1,
+      store: '',
+      stores: [],
+      volume: '',
+      volumes: [],
+      zero: true
     }
   },
   created () {
@@ -130,22 +131,28 @@ export default {
   methods: {
     async getPils () {
       const response = await Api().get('/api/v1/discounts')
-      for (let i = 0; i < response.data.length; i++) {
+      for (const item of response.data) {
         // take data to main object for sorting
-        response.data[i].discount = ((response.data[i].pricing.oldPrice - response.data[i].pricing.newPrice) / 100).toFixed(2)
-        response.data[i].discountPercentage = (100 - (response.data[i].pricing.newPrice * 100 / response.data[i].pricing.oldPrice)).toPrecision(2)
-        // response.data[i].literPrice = response.data[i].pricing.literPrice
-        response.data[i].literPrice = response.data[i].pricing.newPrice / response.data[i].liter * 10 // Temporary
-        response.data[i].newPrice = response.data[i].pricing.newPrice
-        response.data[i].oldPrice = response.data[i].pricing.oldPrice
+        item.discount = ((item.pricing.oldPrice - item.pricing.newPrice) / 100).toFixed(2)
+        item.discountPercentage = (100 - (item.pricing.newPrice * 100 / item.pricing.oldPrice)).toPrecision(2)
+        item.literPrice = item.pricing.newPrice / item.liter * 10
+        item.newPrice = item.pricing.newPrice
+        item.oldPrice = item.pricing.oldPrice
 
-        this.discountAverage.push(response.data[i].discount)
-        this.percentageAverage.push(response.data[i].discountPercentage)
-        this.literAverage.push(response.data[i].literPrice)
-        if (response.data[i].uri){ this.onlineCounter++ }
-        if(this.stores.indexOf(response.data[i].store) === -1) {this.stores.push(response.data[i].store)}
-        if(this.volumes.indexOf(response.data[i].volume) === -1) {this.volumes.push(response.data[i].volume)}
+        this.discountAverage.push(item.discount)
+        this.percentageAverage.push(item.discountPercentage)
+        this.literAverage.push(item.literPrice)
+        if (item.uri) {
+          this.onlineCounter++
+        }
+        if (this.stores.indexOf(item.store) === -1) {
+          this.stores.push(item.store)
+        }
+        if (this.volumes.indexOf(item.volume) === -1) {
+          this.volumes.push(item.volume)
+        }
       }
+
       this.discounts = response.data
       this.volumes.sort()
     },
@@ -157,16 +164,15 @@ export default {
     },
     average:function(inputArray){
       let result = 0
-      for (let i = 0; i < inputArray.length; i++) {
-        result += Number(inputArray[i]) // x += y same as x = x + y
+      for (const item of inputArray) {
+        result += Number(item)
       }
       return result / inputArray.length
     }
   },
   computed:{
     processed:function() {
-      let data = this.discounts
-      data = this.orderBy(this.discounts, this.sort, this.sortDir)
+      let data = this.orderBy(this.discounts, this.sort, this.sortDir)
       if (this.online) { data = data.filter(obj => obj.uri) }
       if (!this.zero) { data = data.filter(obj => obj.alcoholPercentage > 100) }
       data = this.filterBy(data, this.search)

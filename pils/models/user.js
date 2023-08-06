@@ -59,7 +59,7 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema.statics.authenticate = function (username, password, callback) {
-  User.findOne({ username: username })
+  User.findOne({ username })
     .exec(function (err, user) {
       if (err) {
         return callback(err)

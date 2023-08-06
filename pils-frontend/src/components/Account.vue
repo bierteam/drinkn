@@ -70,7 +70,7 @@
             <h3 class="title has-text-grey">Scan this QR code</h3>
             <a :href='otp.uri'>
               <div class="container" id="qrcode">
-                <img id="preview" src="/favicon.ico">
+                <img id="preview" src="/favicon.ico" alt="Beer emoji">
                 <img :src='otp.QRdata' :alt='otp.uri'>
               </div>
             </a>
@@ -113,20 +113,18 @@
       this.Account()
     },
     computed: {
-      isDisabled:function() {
-        pwned(this.newUser.password).then(isPwned => {
-          this.state.pwned = isPwned
-        })
+      async isDisabled() {
+        // Check if the password is pwned
+        this.state.pwned = await pwned(this.newUser.password);
 
-        if (this.newUser.password !== this.verifyPassword) {
-          this.state.notEqual = true
-        } else {
-          this.state.notEqual = false
-        }
-        
-        const stuffToEdit = (this.newUser.password || this.newUser.username || this.newUser.otp) ? true : false
-        
-        return (this.newUser.oldPassword && stuffToEdit && !this.state.pwned && !this.state.notEqual) ? false : true
+        // Check if the password is not equal to the verified password
+        this.state.notEqual = this.newUser.password !== this.verifyPassword;
+
+        // Check if there is anything to edit (password, username, or otp)
+        const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp;
+
+        // Determine if the form should be disabled
+        return !(this.newUser.oldPassword && stuffToEdit && !this.state.pwned && !this.state.notEqual);
       }
     },
     methods: {

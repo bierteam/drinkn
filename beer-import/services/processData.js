@@ -51,7 +51,7 @@ const processData = (data, stores) => {
     if (!newStores[data[obj].store]) {
       newStores[data[obj].store] = data[obj].store
     }
-    if (storeMap && storeMap.get(data[obj].store)) {
+    if (storeMap?.get(data[obj].store)) {
       data[obj].rawStore = data[obj].store
       data[obj].store = storeMap.get(data[obj].store)
     }
