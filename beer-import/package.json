@@ -18,10 +18,9 @@
     "test": "standard && jest --config test/unit/jest.conf.js"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "moment": "^2.23.0",
     "mongoose": "^7.0.0",
-    "request": "^2.88.0",
-    "request-promise": "4.2.2",
     "rev-hash": "3.0.0"
   },
   "devDependencies": {
