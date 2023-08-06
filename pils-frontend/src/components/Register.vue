@@ -32,7 +32,7 @@
                 <input type="checkbox" v-model="admin">
                 Make this user an administrator
             </div>
-            <button type="submit" class="button is-block is-light is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Register new account</button>
+            <button type="submit" class="button is-block is-light is-large is-fullwidth" @click.prevent='Post'>Register new account</button>
             </form>
           </div>
           <p class="has-text-grey">
