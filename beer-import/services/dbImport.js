@@ -15,7 +15,7 @@ const dbImport = async () => {
   let stores
   const data = await getData()
   const result = await store.findOne({}, { _id: false }).exec()
-  if (result && result._doc) {
+  if (result?.result._doc) {
     stores = result._doc
   }
   writeLog('Attemping to process data...', 'Info', context)
