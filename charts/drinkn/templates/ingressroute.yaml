@@ -3,10 +3,13 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: drinkn
+  annotations:
+    link.argocd.argoproj.io/external-link: 'https://{{ .Values.fqdn }}'
 spec:
   entryPoints:
     - websecure
   routes:
+    {{- if not .Values.pr.enabled }}
     - match: Host(`drinkn.oscarr.nl`, `xn--xj8haa.tk`)
       kind: Rule
       services:
@@ -32,12 +35,13 @@ spec:
       services:
         - name: drinkn-auth
           port: 80
-    - match: Host(`pils.oscarr.nl`)
+    {{- end }}
+    - match: Host(`{{ .Values.fqdn }}`)
       kind: Rule
       services:
         - name: pils-frontend
           port: 80
-    - match: Host(`pils.oscarr.nl`) && PathPrefix(`/api`)
+    - match: Host(`{{ .Values.fqdn }}`) && PathPrefix(`/api`)
       kind: Rule
       services:
         - name: pils

@@ -1,0 +1,8 @@
+{{- if .Values.pr.enabled }}
+# https://github.com/argoproj/argo-cd/issues/7875#issuecomment-1178931205
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: drinkn-pr-{{.Values.pr.number}}
+{{- end }}

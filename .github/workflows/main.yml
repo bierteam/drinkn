@@ -75,6 +75,8 @@ jobs:
     needs:
       - test-node
       # - test-go
+    permissions:
+      packages: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -98,8 +100,6 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha
-          flavor: |
-            latest=auto
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -115,10 +115,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ${{ matrix.folder }}
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
@@ -146,12 +146,12 @@ jobs:
           # Trim the first few characters to match the desired format (e.g., sha-c27d339)
           SHORT_SHA="sha-${COMMIT_SHA:0:7}"
           
-          # Change appVersion in charts/drinkn/Chart.yaml
-          sed -i "s|appVersion:.*|appVersion: \"$SHORT_SHA\"|" charts/drinkn/Chart.yaml
+          # Change image.tag in charts/drinkn/values.yaml
+          sed -i "s|tag:.*|tag: \"$SHORT_SHA\"|" charts/drinkn/values.yaml
 
           # Commit and push the changes to the deploy branch
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add charts/drinkn/Chart.yaml
-          git commit -m "Update appVersion to $SHORT_SHA"
+          git add charts/drinkn/values.yaml
+          git commit -m "Update image.tag to $SHORT_SHA"
           git push origin main

@@ -1,3 +1,4 @@
+{{- if not .Values.pr.enabled }} # maybe mock a fake api to run against?
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -11,7 +12,7 @@ spec:
           restartPolicy: Never
           terminationGracePeriodSeconds: 30
           containers:
-            - image: "ghcr.io/bierteam/drinkn/beer-import:{{ .Chart.AppVersion }}"
+            - image: "ghcr.io/bierteam/drinkn/beer-import:{{ .Values.image.tag }}"
               imagePullPolicy: Always
               name: beer-import
               envFrom:
@@ -21,3 +22,4 @@ spec:
   schedule: 0 9,22 * * *
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 3
+{{- end }}

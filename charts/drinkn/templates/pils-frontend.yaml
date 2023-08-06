@@ -6,7 +6,7 @@ metadata:
     app: pils-frontend
   name: pils-frontend
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicas }}
   revisionHistoryLimit: 0
   selector:
     matchLabels:
@@ -19,7 +19,7 @@ spec:
         app: pils-frontend
     spec:
       containers:
-        - image: "ghcr.io/bierteam/drinkn/pils-frontend:{{ .Chart.AppVersion }}"
+        - image: ghcr.io/bierteam/drinkn/pils-frontend:{{ .Values.image.tag }}
           imagePullPolicy: Always
           name: pils-frontend
 ---
