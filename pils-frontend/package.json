@@ -16,7 +16,7 @@
     "axios": "^0.19.0",
     "body-parser": "^1.18.3",
     "connect-history-api-fallback": "^1.6.0",
-    "helmet": "^3.21.2",
+    "helmet": "^7.0.0",
     "moment": "^2.23.0",
     "otplib": "^11.0.1",
     "request": "^2.88.0",
