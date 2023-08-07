@@ -24,13 +24,17 @@ jobs:
           echo "::set-output name=DEPLOYMENT_ID::$DEPLOYMENT_ID"
 
       - name: Check if deployment ID was found
+        id: check-deployment
         run: |
           if [ -z "${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}" ]; then
             echo "No deployment found for ref: ${{ github.event.client_payload.ref }}"
-            exit 0
+            echo "::set-output name=DEPLOYMENT_FOUND::false"
+          else
+            echo "::set-output name=DEPLOYMENT_FOUND::true"
           fi
 
       - name: Update deployment status
+        if: ${{ steps.check-deployment.outputs.DEPLOYMENT_FOUND == 'true' }}
         run: |
           DEPLOYMENT_ID=${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}
           
