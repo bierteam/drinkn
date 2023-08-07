@@ -17,14 +17,18 @@ jobs:
       - name: Find deployment ID
         id: find-deployment
         run: |
-          # Get the ref from the client_payload
-          REF="${{ github.event.client_payload.ref }}"
-
           # Use GitHub API to find the deployment ID
-          DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/deployments?ref=$REF" | jq -r '.[0].id')
+          DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/deployments" | jq -r '.[] | select(.ref == ${{ github.event.client_payload.ref }}) | .id' | head -n 1)
           
           # Output the deployment ID as an output variable
           echo "::set-output name=DEPLOYMENT_ID::$DEPLOYMENT_ID"
+
+      - name: Check if deployment ID was found
+        run: |
+          if [ -z "${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}" ]; then
+            echo "No deployment found for ref: ${{ github.event.client_payload.ref }}"
+            exit 0
+          fi
 
       - name: Update deployment status
         run: |
