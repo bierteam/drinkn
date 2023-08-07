@@ -129,8 +129,6 @@ jobs:
           # https://docs.docker.com/build/building/cache/backends/#cache-mode
 
   deploy:
-    if: ${{ github.event_name != 'pull_request' }}
-    # TODO label the PR with preview while doing this
     needs:
       - docker
     runs-on: ubuntu-latest
@@ -138,11 +136,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Branch deploy info
+        if: ${{ github.event_name == 'pull_request' }}
+        run: echo "ArgoCD might already be at it if the 'preview' label is set."
 
-        # TODO only commit while on main, branches deploy dynamically
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/checkout@v3
+        
       - name: Deploy using Argo CD
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           # Access the commit SHA from GitHub context
           COMMIT_SHA="${{ github.sha }}"
