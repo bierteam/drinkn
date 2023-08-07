@@ -1,4 +1,3 @@
-{{- if .Values.pr.enabled }}
 ---
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
@@ -61,5 +60,4 @@ spec:
                 "$API_URL"
       restartPolicy: Never
   backoffLimit: 0
-{{- end }}
 {{- end }}
