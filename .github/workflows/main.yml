@@ -137,8 +137,8 @@ jobs:
       contents: write
     steps:
       - name: Branch deploy info
-        if: ${{ github.event_name == 'pull_request' }}
-        run: echo "ArgoCD might already be at it if the 'preview' label is set."
+        if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'preview') }}
+        run: echo "ArgoCD will try to update this deployment shortly."
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' }}
