@@ -1,0 +1,17 @@
+
+name: Repository Dispatch
+on:
+  repository_dispatch:
+    types: [argocd]
+
+# permissions:
+#   pull-requests: write
+#   deployments: write
+#   contents: write
+#   checks: read
+
+jobs:
+  deployment-started:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event.client_payload }}
