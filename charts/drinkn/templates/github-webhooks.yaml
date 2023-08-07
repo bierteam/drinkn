@@ -44,7 +44,7 @@ spec:
             - |
               API_URL="https://api.github.com/repos/bierteam/drinkn/dispatches"
               PAYLOAD='{
-                "event_type": "PreSync",
+                "event_type": "{{ . }}",
                 "client_payload": {
                   "ref": "{{ $ref }}",
                   "log_url": "https://argocd.lab.oscarr.nl/applications/argocd/drinkn-pr-{{ $number }}",
