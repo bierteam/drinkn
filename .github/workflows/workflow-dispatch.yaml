@@ -2,16 +2,62 @@
 name: Repository Dispatch
 on:
   repository_dispatch:
-    types: [argocd]
+    types:
+      - PreSync
+      - PostSync
+      - SyncFail
 
-# permissions:
-#   pull-requests: write
-#   deployments: write
-#   contents: write
-#   checks: read
+permissions:
+  deployments: write
 
 jobs:
-  deployment-started:
+  update-status:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.event.client_payload.sync }}
+      - name: Find deployment ID
+        id: find-deployment
+        run: |
+          # Get the ref from the client_payload
+          REF="${{ github.event.client_payload.ref }}"
+
+          # Use GitHub API to find the deployment ID
+          DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/deployments?ref=$REF" | jq -r '.[0].id')
+          
+          # Output the deployment ID as an output variable
+          echo "::set-output name=DEPLOYMENT_ID::$DEPLOYMENT_ID"
+
+      - name: Update deployment status
+        run: |
+          DEPLOYMENT_ID=${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}
+          
+          case "${{ github.event.action }}" in
+            PreSync)
+              STATUS="in_progress"
+              DESCRIPTION="Deployment is in progress (PreSync)"
+              ;;
+            PostSync)
+              STATUS="success"
+              DESCRIPTION="Deployment succeeded (PostSync)"
+              ;;
+            SyncFail)
+              STATUS="failure"
+              DESCRIPTION="Deployment failed (SyncFail)"
+              ;;
+            *)
+              echo "Unsupported event type: ${{ github.event.action }}"
+              exit 1
+              ;;
+          esac
+
+          # Use the DEPLOYMENT_ID to update the deployment status
+            curl -X POST "https://api.github.com/repos/${{ github.repository }}/deployments/$DEPLOYMENT_ID/statuses" \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d '{
+              "state": "'"$STATUS"'",
+              "description": "'"$DESCRIPTION"'",
+              "log_url": "${{ github.event.client_payload.log_url }}",
+              "environment_url": "${{ github.event.client_payload.environment_url }}"
+              }'
+              

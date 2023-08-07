@@ -9,3 +9,8 @@ fqdn: pils.oscarr.nl
 pr:
   enabled: false
   number: 9999
+  ref: main
+  status:
+    - PreSync
+    - PostSync
+    - SyncFail

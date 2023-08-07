@@ -130,6 +130,7 @@ jobs:
 
   deploy:
     if: ${{ github.event_name != 'pull_request' }}
+    # TODO label the PR with preview while doing this
     needs:
       - docker
     runs-on: ubuntu-latest
@@ -140,6 +141,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+        # TODO only commit while on main, branches deploy dynamically
       - name: Deploy using Argo CD
         run: |
           # Access the commit SHA from GitHub context
