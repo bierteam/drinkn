@@ -18,7 +18,7 @@ jobs:
         id: find-deployment
         run: |
           # Use GitHub API to find the deployment ID
-          DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/deployments" | jq -r '.[] | select(.ref == ${{ github.event.client_payload.ref }}) | .id' | head -n 1)
+          DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/deployments" | jq -r '.[] | select(.ref == "${{ github.event.client_payload.ref }}") | .id' | head -n 1)
           
           # Output the deployment ID as an output variable
           echo "::set-output name=DEPLOYMENT_ID::$DEPLOYMENT_ID"
@@ -28,10 +28,12 @@ jobs:
         run: |
           if [ -z "${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}" ]; then
             echo "No deployment found for ref: ${{ github.event.client_payload.ref }}"
+            # TODO exit(1) when there should always be a deployment is argo is doing stuff, eg the preview label is set (and removed) automatically
             echo "::set-output name=DEPLOYMENT_FOUND::false"
           else
             echo "::set-output name=DEPLOYMENT_FOUND::true"
           fi
+          
 
       - name: Update deployment status
         if: ${{ steps.check-deployment.outputs.DEPLOYMENT_FOUND == 'true' }}
