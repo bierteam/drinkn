@@ -94,6 +94,8 @@ jobs:
         name: Generate Docker metadata
         id: meta
         uses: docker/metadata-action@v4
+        env:
+          DOCKER_METADATA_PR_HEAD_SHA: ${{ github.event_name == 'pull_request' }}
         with:
           images: |
             ghcr.io/${{ github.repository }}/${{ matrix.folder }}

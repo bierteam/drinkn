@@ -5,4 +5,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: drinkn-pr-{{.Values.pr.number}}
+  labels:
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/enforce: baseline
 {{- end }}
