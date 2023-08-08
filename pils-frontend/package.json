@@ -47,6 +47,6 @@
     "vue2-filters": "0.9.1",
     "webpack": "3.12.0",
     "webpack-bundle-analyzer": "3.6.0",
-    "webpack-merge": "4.2.2"
+    "webpack-merge": "5.9.0"
   }
 }
