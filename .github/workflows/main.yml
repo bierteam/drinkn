@@ -30,16 +30,16 @@ jobs:
           path: ~/.npm
           key: ${{ runner.OS }}-${{ matrix.folder }}-${{ hashFiles('${{ matrix.folder }}/package-lock.json') }}
       -
-        run: npm ci --force
+        run: npm ci --legacy-peer-deps
+        working-directory: ${{ matrix.folder }}
+      -
+        run: npm run lint --if-present
         working-directory: ${{ matrix.folder }}
       -
         run: npm run build --if-present
         working-directory: ${{ matrix.folder }}
       -
         run: npm run test --if-present
-        working-directory: ${{ matrix.folder }}
-      -
-        run: npm run lint --if-present
         working-directory: ${{ matrix.folder }}
       -
         uses: codecov/codecov-action@v3

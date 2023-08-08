@@ -11,6 +11,9 @@ spec:
   encryptedData:
     token: AgASRow85Bv/IGZTftJ5BdtnqMejgyJMNiU7z5fwJkVYZFQoc5RTYchVK5a5y4tLpT256waDcOncWavGgTsXybNo5uPUukUNE21NsCiq/Po9RtG/NYmVmJ0VeNJSVES5JYB0MPU9SsKBli1mAUWQW7gP+cVeTZCyu5Ii9SGoKOxPRMNl+8U58WAy1pYfWNimU6WA2S83VXV9IUYOqGwKfiI4Jx7na0BihiZBbMnDWXIXM+aJQ4YJoZBJ0/TtsKABJK/ictxRSdzxjzDKNTgvTBX4Vh5Nx6lTkB2++5MHqjKF+/LnuL/KawVTZhJOVw7GRxr7AW6Wuyph3l2RENwBx27IKbrPZsdKWnmS4CswpwYh0jp0pnIrs8fgPGMu+/EPP+B+Xnvd3EkLsllXQBpXKFTswF5lzQPifj+oTwi6/6m91RgsnL9hCTHlt6tEuuwB6ge9CpiRpkc0Pqki/m0JhRjR+SNbv2XhlHaXRCMnzlnbc0cyVLwM73f6/UQ7A7eyIQ3EqFwuE1x76982gi9vFAMwqUWlgIlKBe9rt+mpvBXaawvkveCTnoaJ7VgncDnl/FlmDwFGmpX6locIBNvBL3xHSC5eKZ8t6ZyfhhkEXgDPw8GA8RHX9Sute6DAXrVux+lbQ4WphEcYWwPASx0KSLz2J2pxck6OdfQERQ0zekLWF/z1lBy6aMCgMMi24bEpIE2YKCuSHk33/oRQn32LRTIsiqnPsrQk071EMOVrcgPybFsjScFpOpx9YAN9ba58glBwuohXktAbdZ24ro3wZa1K1aqWZZ2/NqwSszg8PmZxX7mSRXFkqwHV3IRZpB4=
 
+# Maybe the start deployment and (still missing) stop deployment api calls are better handled with a sleep container woth lifecycle hooks
+# https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+
 {{- $ref := .Values.pr.ref }}
 {{- $number := .Values.pr.number }}
 {{- $fqdn := .Values.fqdn }}
