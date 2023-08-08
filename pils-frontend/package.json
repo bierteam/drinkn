@@ -31,7 +31,7 @@
     "havetheybeenpwned": "1.0.1",
     "html-webpack-plugin": "3.2.0",
     "node-notifier": "6.0.0",
-    "optimize-css-assets-webpack-plugin": "3.2.1",
+    "optimize-css-assets-webpack-plugin": "6.0.1",
     "ora": "4.0.3",
     "portfinder": "^1.0.32",
     "qrcode": "1.4.4",
