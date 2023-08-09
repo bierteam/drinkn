@@ -13,19 +13,8 @@
       <div class="navbar-start">
         <router-link class="navbar-item" to="/home">Home</router-link>
         <router-link class="navbar-item" to="/discounts">Discounts</router-link>
-
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link">More</a>
-          <div class="navbar-dropdown">
-            <router-link class="navbar-item" to="/">Contact</router-link>
-            <hr class="navbar-divider">
-            <a class="navbar-item" href="https://github.com/bierteam/Pils/tree/master/docs">
-              Documentation
-            </a>
-          </div>
-        </div>
         <div class="navbar-item has-dropdown is-hoverable" v-if="isAdmin">
-          <a class="navbar-link">Admin stuff</a>
+          <a class="navbar-link">Admin</a>
           <div class="navbar-dropdown">
             <router-link class="navbar-item" to="/register">Register users</router-link>
             <router-link class="navbar-item" to="/users">Users</router-link>
@@ -65,14 +54,14 @@
 </template>
 
 <script>
-import Api from '@/services/Api'
+import Api from '/src/services/Api'
 
 export default {
   name: 'App',
   data() {
     const isAuthenticated = !!localStorage.getItem('isAuthenticated')
     const isAdmin = !!localStorage.getItem('isAdmin')
-    const userId = isAuthenticated ? localStorage.getItem('userId') : null
+    const userId = isAuthenticated ? localStorage.getItem('isAuthenticated') : null
 
     return {
       burger: false,
@@ -111,7 +100,6 @@ export default {
     Check() {
       Api().get(`/api/v1/users/check`)
         .then(response => {
-          console.log(response)
           if (!response.data) {
             this.$data.isAuthenticated = false
             this.$data.isAdmin = false
@@ -133,3 +121,7 @@ export default {
   }
 }
 </script>
+
+<style>
+@import 'bulma/css/bulma.css'
+</style>

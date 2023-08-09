@@ -15,7 +15,7 @@
     </thead>
     <tbody>
       <tr v-for='(newName, oldName) in stores'>
-        <th><input class="input" type="text" v-model="oldName" disabled></th>
+        <th><input class="input" type="text" v-model="stores[oldName]" readonly></th>
         <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]"></th>
       </tr>
       <tr>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import Api from '@/services/Api'
+import Api from '/src/services/Api'
 
 export default {
   data() {

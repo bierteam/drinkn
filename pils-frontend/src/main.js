@@ -1,58 +1,23 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import { Router } from './router'
 import App from './App'
-import router from './router'
-import Vue2Filters from 'vue2-filters'
-import VueBrowserUpdate from 'vue-browserupdate'
-import './../node_modules/bulma/css/bulma.css'
-import './../node_modules/bulma-tooltip/dist/css/bulma-tooltip.min.css'
+import browserUpdate from 'browser-update'
 
-// Vue.config.productionTip = false
+const app = createApp(App)
+app.use(Router)
+app.mount('#app')
 
-/* eslint-disable no-new */
-// new Vue({
-//   el: '#app',
-//   router,
-//   components: { App },
-//   template: '<App/>'
-// })
-
-new Vue({
-  render: (h) => h(App),
-  router
-}).$mount('#app')
-
-const Vue2FiltersConfig = {
-  capitalize: {
-    onlyFirstLetter: true
-  },
-  currency: {
-    symbol: '€',
-    decimalDigits: 2,
-    thousandsSeparator: '.',
-    decimalSeparator: ',',
-    symbolOnLeft: true,
-    spaceBetweenAmountAndSymbol: false
-  },
-  pluralize: {
-    includeNumber: false
-  },
-  ordinal: {
-    includeNumber: false
-  }
-}
-
-Vue.use(Vue2Filters, Vue2FiltersConfig)
-Vue.use(VueBrowserUpdate, {
+// https://browser-update.org/customize.html
+browserUpdate({
   required: {
-    e: -2,
-    f: -2,
-    o: -2,
-    s: -2,
-    c: -2
+    e: -1,
+    f: -1,
+    o: -1,
+    s: -1,
+    c: -1
   },
-  options: {
-    insecure: true,
-    unsupported: true
-  }
-  // test: true
+  // test: true,
+  insecure: true,
+  no_permanent_hide: true,
+  unsupported: true
 })

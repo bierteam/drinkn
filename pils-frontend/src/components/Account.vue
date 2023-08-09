@@ -3,7 +3,7 @@
   <div class="hero-body">
     <div class="container">
       <div class="column is-4 is-offset-4">
-        <div v-if="state.pwned" class="notification is-warning">
+        <div v-if="state.isPwned" class="notification is-warning">
           This password has been pwned.
         </div>
         <div v-if="state.notEqual" class="notification is-warning">
@@ -82,8 +82,8 @@
 </template>
 
 <script>
-import Api from '@/services/Api'
-import pwned from "@/services/pwned"
+import Api from '/src/services/Api'
+import pwned from "/src/services/pwned"
 import QRCode from "qrcode"
 
 export default {
@@ -102,7 +102,7 @@ export default {
         error: false,
         saving: false,
         saved: false,
-        pwned: false,
+        isPwned: false,
         notEqual: false,
         deleteMsg: false
       }
@@ -114,7 +114,7 @@ export default {
   computed: {
     async isDisabled() {
       // Check if the password is pwned
-      this.state.pwned = await pwned(this.newUser.password);
+      this.state.isPwned = await pwned(this.newUser.password);
 
       // Check if the password is not equal to the verified password
       this.state.notEqual = this.newUser.password !== this.verifyPassword;
@@ -123,7 +123,7 @@ export default {
       const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp;
 
       // Determine if the form should be disabled
-      return !(this.newUser.oldPassword && stuffToEdit && !this.state.pwned && !this.state.notEqual);
+      return !(this.newUser.oldPassword && stuffToEdit && !this.state.isPwned && !this.state.notEqual);
     }
   },
   methods: {

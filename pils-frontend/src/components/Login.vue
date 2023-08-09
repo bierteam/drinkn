@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import Api from '@/services/Api'
+import Api from '/src/services/Api'
 
 export default {
   data() {
@@ -89,13 +89,13 @@ export default {
             localStorage.setItem('isAuthenticated', response.data._id)
             if (response.data.admin) {
               this.$parent.isAdmin = true
-              localStorage.setItem('isAdmin', 'You should not be here ಠ_ಠ')
+              localStorage.setItem('isAdmin', 'Hello pirate! 🏴‍☠️')
             }
             const query = this.$route.query
             this.$router.push((query.redirect) ? {
               path: query.redirect,
               query
-            } : '/home')
+            } : '/discounts')
           }
         })
         .catch(e => {
@@ -109,12 +109,12 @@ export default {
   },
   beforeMount() { // Refresh, fresh page load
     if (this.$parent.isAuthenticated) {
-      this.$router.push('/home')
+      this.$router.push('/discounts')
     }
   },
   beforeUpdate() { // Uri change, link, etc.
     if (this.$parent.isAuthenticated) {
-      this.$router.push('/home')
+      this.$router.push('/discounts')
     }
   }
 }
