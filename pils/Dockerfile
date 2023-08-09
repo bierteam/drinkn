@@ -12,7 +12,7 @@ COPY setup.js ./
 COPY server.js ./
 
 FROM base AS test
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run test
 
 FROM base AS build
