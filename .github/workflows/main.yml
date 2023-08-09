@@ -30,7 +30,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.OS }}-${{ matrix.folder }}-${{ hashFiles('${{ matrix.folder }}/package-lock.json') }}
       -
-        run: npm ci --legacy-peer-deps
+        run: npm ci
         working-directory: ${{ matrix.folder }}
       -
         run: npm run lint --if-present

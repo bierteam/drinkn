@@ -17,3 +17,4 @@ coverage
 config/backend.js
 config.js
 ecosystem.config.js
+dist

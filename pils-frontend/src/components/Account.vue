@@ -1,21 +1,21 @@
 <template>
-  <body>
-    <div class="hero-body">
-      <div class="container">
-        <div class="column is-4 is-offset-4">
-          <div v-if="state.pwned" class="notification is-warning">
-              This password has been pwned.
-          </div>
-          <div v-if="state.notEqual" class="notification is-warning">
-              The password is not the same.
-          </div>
-          <div v-if="error" class="notification is-danger">
-            <button class="delete" @click="error = ''"></button>
-              {{error}}
-          </div>
-          <h3 class="title has-text-grey">Edit your account</h3>
-          <div class="box">
-            <form>
+<body>
+  <div class="hero-body">
+    <div class="container">
+      <div class="column is-4 is-offset-4">
+        <div v-if="state.pwned" class="notification is-warning">
+          This password has been pwned.
+        </div>
+        <div v-if="state.notEqual" class="notification is-warning">
+          The password is not the same.
+        </div>
+        <div v-if="error" class="notification is-danger">
+          <button class="delete" @click="error = ''"></button>
+          {{error}}
+        </div>
+        <h3 class="title has-text-grey">Edit your account</h3>
+        <div class="box">
+          <form>
             <div class="field">
               <div class="control">
                 <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
@@ -46,91 +46,90 @@
                 <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
                 'is-loading': state.saving,
                 'is-success': state.saved,
-                'is-danger': state.error }"
-                type="submit" :disabled="isDisabled">Save</Button>
+                'is-danger': state.error }" type="submit" :disabled="isDisabled">Save</Button>
               </div>
               <div class="column">
                 <div class="field">
                   <div class="control">
-                  <Button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button" >Setup 2FA</Button>
+                    <Button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button">Setup 2FA</Button>
                   </div>
                 </div>
-                <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button" >Delete account</Button>
+                <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button">Delete account</Button>
               </div>
             </div>
             <div v-if="state.deleteMsg" class="notification is-light">
               <button class="delete" @click="state.deleteMsg = false"></button>
               Are you sure? This is permanent.
               <br><br>
-              <Button class="button is-danger is-large" @click='Delete' type="button" >I am sure!</Button>
+              <Button class="button is-danger is-large" @click='Delete' type="button">I am sure!</Button>
             </div>
-            </form>
-          </div>
-          <div  v-if="otp.secret" class="box">
-            <h3 class="title has-text-grey">Scan this QR code</h3>
-            <a :href='otp.uri'>
-              <div class="container" id="qrcode">
-                <img id="preview" src="/favicon.ico" alt="Beer emoji">
-                <img :src='otp.QRdata' :alt='otp.uri'>
-              </div>
-            </a>
-            <h4 class="has-text-grey">{{otp.secret}}</h4>
-          </div>
+          </form>
+        </div>
+        <div v-if="otp.secret" class="box">
+          <h3 class="title has-text-grey">Scan this QR code</h3>
+          <a :href='otp.uri'>
+            <div class="container" id="qrcode">
+              <img id="preview" src="/favicon.ico" alt="Beer emoji">
+              <img :src='otp.QRdata' :alt='otp.uri'>
+            </div>
+          </a>
+          <h4 class="has-text-grey">{{otp.secret}}</h4>
         </div>
       </div>
     </div>
-  </body>
+  </div>
+</body>
 </template>
 
 <script>
-  import Api from '@/services/Api'
-  import pwned from "havetheybeenpwned"
-  import QRCode from "qrcode"
+import Api from '@/services/Api'
+import pwned from "@/services/pwned"
+import QRCode from "qrcode"
 
-  export default {
-    data() {
-      return {
-        user: {},
-        otp: {
-          secret: '',
-          uri: '',
-          QRdata: ''
-        },
-        newUser: {},
-        verifyPassword: undefined,
-        error: '',
-        state: {
-          error: false,
-          saving: false,
-          saved: false,
-          pwned: false,
-          notEqual: false,
-          deleteMsg: false
-        }
+export default {
+  data() {
+    return {
+      user: {},
+      otp: {
+        secret: '',
+        uri: '',
+        QRdata: ''
+      },
+      newUser: {},
+      verifyPassword: undefined,
+      error: '',
+      state: {
+        error: false,
+        saving: false,
+        saved: false,
+        pwned: false,
+        notEqual: false,
+        deleteMsg: false
       }
-    },
-    created () {
-      this.Account()
-    },
-    computed: {
-      async isDisabled() {
-        // Check if the password is pwned
-        this.state.pwned = await pwned(this.newUser.password);
+    }
+  },
+  created() {
+    this.Account()
+  },
+  computed: {
+    async isDisabled() {
+      // Check if the password is pwned
+      this.state.pwned = await pwned(this.newUser.password);
 
-        // Check if the password is not equal to the verified password
-        this.state.notEqual = this.newUser.password !== this.verifyPassword;
+      // Check if the password is not equal to the verified password
+      this.state.notEqual = this.newUser.password !== this.verifyPassword;
 
-        // Check if there is anything to edit (password, username, or otp)
-        const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp;
+      // Check if there is anything to edit (password, username, or otp)
+      const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp;
 
-        // Determine if the form should be disabled
-        return !(this.newUser.oldPassword && stuffToEdit && !this.state.pwned && !this.state.notEqual);
-      }
-    },
-    methods: {
-      Account() {
-        Api().get(`/api/v1/account`, {})
-        .then( response => {
+      // Determine if the form should be disabled
+      return !(this.newUser.oldPassword && stuffToEdit && !this.state.pwned && !this.state.notEqual);
+    }
+  },
+  methods: {
+    Account() {
+      Api().get(`/api/v1/account`, {})
+        .then(response => {
           if (response.status === 200) {
             // get correct user from array
             this.user = response.data
@@ -140,12 +139,14 @@
           this.error = e.response.data || e
           console.error(e)
         })
-      },
-      Otp() {
-        Api().get(`/api/v1/account/otp`, {})
-        .then( response => {
+    },
+    Otp() {
+      Api().get(`/api/v1/account/otp`, {})
+        .then(response => {
           if (response.status === 200) {
-             QRCode.toDataURL(response.data.uri, { errorCorrectionLevel: 'H' }, function (err, result) {
+            QRCode.toDataURL(response.data.uri, {
+              errorCorrectionLevel: 'H'
+            }, function (err, result) {
               if (err) console.error(err)
               response.data.QRdata = result
               return response.data
@@ -157,12 +158,12 @@
           this.error = e.response.data || e
           console.error()
         })
-      },
-      Update() {
-        this.state.saved = false
-        this.state.saving = true
-        const user = this.newUser
-        Api().post(`/api/v1/account`, {
+    },
+    Update() {
+      this.state.saved = false
+      this.state.saving = true
+      const user = this.newUser
+      Api().post(`/api/v1/account`, {
           user
         })
         .then(response => {
@@ -180,9 +181,9 @@
           this.state.error = true
           this.state.saving = false
         })
-      },
-      Delete() {
-        Api().delete(`/api/v1/account/delete`)
+    },
+    Delete() {
+      Api().delete(`/api/v1/account/delete`)
         .then(response => {
           if (response.status === 200) {
             localStorage.clear()
@@ -192,12 +193,12 @@
           }
         })
         .catch(e => {
-        this.error = e.response.data || e
-        console.error(e)
+          this.error = e.response.data || e
+          console.error(e)
         })
-      }
     }
   }
+}
 </script>
 
 <style>
@@ -206,11 +207,12 @@
   max-width: 256px;
   display: block;
 }
+
 #preview {
-    position: absolute;
-    height: calc(100% / 3);
-    width: calc(100% / 3);
-    left: calc(100% / 3);
-    top: calc(100% / 3);
+  position: absolute;
+  height: calc(100% / 3);
+  width: calc(100% / 3);
+  left: calc(100% / 3);
+  top: calc(100% / 3);
 }
 </style>

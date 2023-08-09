@@ -2,11 +2,10 @@
 FROM node:20 AS build  
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 COPY public ./public
 COPY index.html ./
-COPY build ./build
-COPY config ./config
+COPY vite.config.js ./
 COPY src ./src
 RUN npm run build
 
@@ -14,5 +13,5 @@ RUN npm run build
 FROM nginx:alpine
 RUN rm -rf /etc/nginx/conf.d /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /app/public /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80

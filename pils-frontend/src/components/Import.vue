@@ -1,18 +1,18 @@
 <template>
-  <div>
-    <a class="button is-warning" @click.once="Import()">Import</a>
-    <ul v-if="status">
-      {{status.data}}
-    </ul>
+<div>
+  <a class="button is-warning" @click.once="Import()">Import</a>
+  <ul v-if="status">
+    {{status.data}}
+  </ul>
 
-    <ul v-if="errors && errors.length">
-      <li v-for="error of errors">
-        {{error.message}}
-      </li>
-    </ul>
-    <br>
-    <br>
-  </div>
+  <ul v-if="errors && errors.length">
+    <li v-for="error of errors">
+      {{error.message}}
+    </li>
+  </ul>
+  <br>
+  <br>
+</div>
 </template>
 
 <script>
@@ -29,14 +29,13 @@ export default {
   // Pushes posts to the server when called.
   methods: {
     Import() {
-      Api().post(`/api/v1/import`, {
-      })
-      .then(response => {
-        this.status = response
-      })
-      .catch(e => {
-        this.errors.push(e)
-      })
+      Api().post(`/api/v1/import`, {})
+        .then(response => {
+          this.status = response
+        })
+        .catch(e => {
+          this.errors.push(e)
+        })
     }
   }
 }
