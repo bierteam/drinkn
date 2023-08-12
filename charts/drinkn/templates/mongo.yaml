@@ -31,9 +31,26 @@ spec:
                 secretKeyRef: 
                   name: drinkn-env
                   key: DB_PASSWORD
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: drinkn-env
+                  key: DB_NAME
           volumeMounts:
             - name: mongo-storage
               mountPath: /data/db
+          readinessProbe:
+            exec:
+              command: ["mongo", "--eval", "db.adminCommand('ping')"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          volumeMounts:
+            - name: import-volume
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: import-volume
+          configMap:
+            name: import-volume
   volumeClaimTemplates:
     - metadata:
         name: mongo-storage
@@ -43,6 +60,1796 @@ spec:
         resources:
           requests:
             storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: import-volume
+data:
+  import.sh: |
+    #!/bin/bash
+    mongoimport --host localhost --collection beers --file /docker-entrypoint-initdb.d/beers.json --jsonArray
+    mongoimport --host localhost --collection stores --file /docker-entrypoint-initdb.d/stores.json --jsonArray
+  stores.json: |
+    [{
+      "_id": {
+        "$oid": "5c27bf4b190f66d270772aa2"
+      },
+      "Agrimarkt": "Agrimarkt",
+      "albert heijn": "Albert Heijn",
+      "Boni supermarkt": "Boni",
+      "Boon's Markt": "Boon's markt",
+      "Coop supermarkt": "Coop",
+      "coop compact": "Coop compact",
+      "Deen supermark": "Deen",
+      "dekamarkt": "DekaMarkt",
+      "Dirckiii slijterij": "DirckIII",
+      "Dirk supermarkt": "Dirk",
+      "Drankdozijn": "DrankDozijn",
+      "EkoPlaza logo": "EkoPlaza",
+      "gall en gall": "Gall&Gall",
+      "Hoogvliet": "Hoogvliet",
+      "Jan Linders": "Jan Linders",
+      "Attent": "Attent",
+      "Deen supermarkt": "Deen",
+      "EMTE": "Emté",
+      "Hanos": "Hanos",
+      "JUMBO": "Jumbo",
+      "MCD": "MCD",
+      "Nettorama ": "Nettorama ",
+      "Plus Logo": "Plus",
+      "Poiesz": "Poiesz",
+      "Sligro": "Sligro",
+      "Spar": "Spar",
+      "Vomar supermarkt": "Vomar",
+      "dekamarkt ": "DekaMarkt",
+      "makro": "Makro",
+      "Mitra slijterij": "Mitra",
+      "troefmarkt": "troefmarkt",
+      "undefined": null,
+      "Albert Heijn": "Albert Heijn",
+      "Aldi": "Aldi",
+      "Beerwulf": "Beerwulf",
+      "Boni": "Boni",
+      "Coop": "Coop",
+      "CoopCompact": "CoopCompact",
+      "Deen": "Deen",
+      "DekaMarkt": "DekaMarkt",
+      "Dirck III": "Dirck III",
+      "Dirk": "Dirk",
+      "Gall & Gall": "Gall & Gall",
+      "Lidl": "Lidl",
+      "Makro": "Makro",
+      "Mitra": "Mitra",
+      "Nettorama": "Nettorama",
+      "Plus": "Plus",
+      "Spar Buurt": "Spar Buurt",
+      "Troefmarkt": "Troefmarkt",
+      "Vomar": "Vomar",
+      "EkoPlaza": "EkoPlaza",
+      "Biervaneigenbodem": "Biervaneigenbodem",
+      "Butlon": "Butlon",
+      "DrankUwel": "DrankUwel",
+      "Hopt": "Hopt",
+      "Intervisser": "Intervisser"
+    }]
+  beers.json: |
+    [{
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a59f5"
+      },
+      "id": "74cc090046",
+      "brand": "Weihenstephaner Hefe Weisse",
+      "store": "Makro",
+      "pricing": {
+        "rawOldPrice": "15.11",
+        "rawNewPrice": "10.88",
+        "oldPrice": 1511,
+        "newPrice": 1088,
+        "literPrice": 2.72
+      },
+      "volume": "set 8x0,50",
+      "rawUri": "",
+      "rawValidity": "dinsdag 15 augustus",
+      "validity": {
+        "$date": "2023-08-15T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.025Z"
+      },
+      "color": "Licht Amber",
+      "alcoholPercentage": 540,
+      "liter": 4000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a59f8"
+      },
+      "id": "e25e779507",
+      "brand": "Grolsch Premium Pilsner",
+      "store": "JUMBO",
+      "pricing": {
+        "rawOldPrice": "9.28",
+        "rawNewPrice": "6.98",
+        "oldPrice": 927.9999999999999,
+        "newPrice": 698,
+        "literPrice": 3.8777777777777778
+      },
+      "volume": "set 4x0,45",
+      "rawUri": "https://tc.tradetracker.net/?c=28068&m=12&a=126790&r=REFERENTIEHIER&u=%2Fproducten%2Fgrolsch-pils-beugels-fles-4-x-450ml-168537DS",
+      "uri": "https://jumbo.com/producten/grolsch-pils-beugels-fles-4-x-450ml-168537DS",
+      "rawValidity": "dinsdag 22 augustus",
+      "validity": {
+        "$date": "2023-08-22T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.024Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 500,
+      "liter": 1800,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a59fb"
+      },
+      "id": "823c53c00a",
+      "brand": "Grolsch Frisbittere IPA",
+      "store": "JUMBO",
+      "pricing": {
+        "rawOldPrice": "11.18",
+        "rawNewPrice": "8.39",
+        "oldPrice": 1118,
+        "newPrice": 839,
+        "literPrice": 6.991666666666667
+      },
+      "volume": "set 4x0,30",
+      "rawUri": "https://tc.tradetracker.net/?c=28068&m=12&a=126790&r=&u=%2Fproducten%2Fgrolsch-frisbittere-ipa-4-pack-fles-300ml-420822PAK%3Fchannable%3D03f5b669640034323038323250414bc3",
+      "uri": "https://jumbo.com/producten/grolsch-frisbittere-ipa-4-pack-fles-300ml-420822PAK",
+      "rawValidity": "dinsdag 22 augustus",
+      "validity": {
+        "$date": "2023-08-22T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.024Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 550,
+      "liter": 1200,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a59fe"
+      },
+      "id": "09a46d6bbd",
+      "brand": "Grolsch Frisbittere IPA",
+      "store": "Plus",
+      "pricing": {
+        "rawOldPrice": "5.59",
+        "rawNewPrice": "4.19",
+        "oldPrice": 559,
+        "newPrice": 419.00000000000006,
+        "literPrice": 3.491666666666667
+      },
+      "volume": "set 4x0,30",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https:%2F%2Fwww.plus.nl%2Fproduct%2Fgrolsch-ipa-set-120-cl-289086",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-ipa-set-120-cl-289086",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.023Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 550,
+      "liter": 1200,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a5a19"
+      },
+      "id": "8eb435128f",
+      "brand": "Corona",
+      "store": "Sligro",
+      "pricing": {
+        "rawOldPrice": "38.71",
+        "rawNewPrice": "29.03",
+        "oldPrice": 3871,
+        "newPrice": 2903,
+        "literPrice": 3.6654040404040407
+      },
+      "volume": "doos 24x0,33",
+      "rawUri": "",
+      "rawValidity": "maandag 21 augustus",
+      "validity": {
+        "$date": "2023-08-21T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.021Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 459.99999999999994,
+      "liter": 7920,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a5a1f"
+      },
+      "id": "d5df43412f",
+      "brand": "Grolsch Kruidige Tripel",
+      "store": "Plus",
+      "pricing": {
+        "rawOldPrice": "2.75",
+        "rawNewPrice": "2.06",
+        "oldPrice": 275,
+        "newPrice": 206,
+        "literPrice": 4.5777777777777775
+      },
+      "volume": "beugelfles",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https:%2F%2Fwww.plus.nl%2Fproduct%2Fgrolsch-tripel-beugelfles-fles-45-cl-316087",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-tripel-beugelfles-fles-45-cl-316087",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 830.0000000000001,
+      "liter": 450,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a5a22"
+      },
+      "id": "b0ca76e774",
+      "brand": "Grolsch Klassieke Blond",
+      "store": "Plus",
+      "pricing": {
+        "rawOldPrice": "2.60",
+        "rawNewPrice": "1.95",
+        "oldPrice": 260,
+        "newPrice": 195,
+        "literPrice": 4.333333333333334
+      },
+      "volume": "beugelfles",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https:%2F%2Fwww.plus.nl%2Fproduct%2Fgrolsch-blond-beugelfles-fles-45-cl-338887",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-blond-beugelfles-fles-45-cl-338887",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 670,
+      "liter": 450,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a5a25"
+      },
+      "id": "bbcdcc2f50",
+      "brand": "Grolsch Puur Weizen",
+      "store": "Plus",
+      "pricing": {
+        "rawOldPrice": "2.00",
+        "rawNewPrice": "1.50",
+        "oldPrice": 200,
+        "newPrice": 150,
+        "literPrice": 3.333333333333333
+      },
+      "volume": "beugelfles",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https:%2F%2Fwww.plus.nl%2Fproduct%2Fgrolsch-weizen-beugel-fles-fles-45-cl-657943",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-weizen-beugel-fles-fles-45-cl-657943",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 509.99999999999994,
+      "liter": 450,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a5a28"
+      },
+      "id": "2950e297a3",
+      "brand": "Erdinger Dunkel",
+      "store": "Dirck III",
+      "pricing": {
+        "rawOldPrice": "2.98",
+        "rawNewPrice": "2.50",
+        "oldPrice": 298,
+        "newPrice": 250,
+        "literPrice": 5
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "donker",
+      "alcoholPercentage": 530,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a5a2b"
+      },
+      "id": "a46d63bc5b",
+      "brand": "König Ludwig Weissbier",
+      "store": "Makro",
+      "pricing": {
+        "rawOldPrice": "13.30",
+        "rawNewPrice": "10.88",
+        "oldPrice": 1330,
+        "newPrice": 1088,
+        "literPrice": 21.76
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 15 augustus",
+      "validity": {
+        "$date": "2023-08-15T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 550,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f1b710e8bb2a6a5a2e"
+      },
+      "id": "217c9a278f",
+      "brand": "Erdinger Alkoholfrei",
+      "store": "Jan Linders",
+      "pricing": {
+        "rawOldPrice": "3.38",
+        "rawNewPrice": "3.00",
+        "oldPrice": 338,
+        "newPrice": 300,
+        "literPrice": 6
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 50,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a31"
+      },
+      "id": "4a58743d40",
+      "brand": "Erdinger Alkoholfrei",
+      "store": "Dirck III",
+      "pricing": {
+        "rawOldPrice": "2.78",
+        "rawNewPrice": "2.50",
+        "oldPrice": 278,
+        "newPrice": 250,
+        "literPrice": 5
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 50,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a34"
+      },
+      "id": "5139788052",
+      "brand": "Paulaner Hefe Weisse",
+      "store": "Coop",
+      "pricing": {
+        "rawOldPrice": "2.29",
+        "rawNewPrice": "1.72",
+        "oldPrice": 229,
+        "newPrice": 172,
+        "literPrice": 3.4399999999999995
+      },
+      "volume": "fles 50cl",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https%3A%2F%2Fwww.coop.nl%2Fproduct%2F4066600641964%2FPaulaner-Hefe-weissbier",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4066600641964/Paulaner-Hefe-weissbier",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.019Z"
+      },
+      "color": "Geelbruin",
+      "alcoholPercentage": 550,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a37"
+      },
+      "id": "ce3f646744",
+      "brand": "Paulaner Hefe Weisse",
+      "store": "Makro",
+      "pricing": {
+        "rawOldPrice": "17.05",
+        "rawNewPrice": "10.88",
+        "oldPrice": 1705,
+        "newPrice": 1088,
+        "literPrice": 21.76
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 15 augustus",
+      "validity": {
+        "$date": "2023-08-15T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.018Z"
+      },
+      "color": "Geelbruin",
+      "alcoholPercentage": 550,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a3a"
+      },
+      "id": "af762480f9",
+      "brand": "Hertog Jan Grand Prestige",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "7.19",
+        "rawNewPrice": "5.39",
+        "oldPrice": 719,
+        "newPrice": 539,
+        "literPrice": 10.780000000000001
+      },
+      "volume": "fles 50cl",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi234170%2Fhertog-jan-grand-prestige-bier",
+      "uri": "https://www.ah.nl/producten/product/wi234170/hertog-jan-grand-prestige-bier",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.018Z"
+      },
+      "color": "Donkerbruin",
+      "alcoholPercentage": 1000,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a3d"
+      },
+      "id": "eb7b7416d9",
+      "brand": "Franziskaner Weissbier Dunkel",
+      "store": "Makro",
+      "pricing": {
+        "rawOldPrice": "13.54",
+        "rawNewPrice": "10.88",
+        "oldPrice": 1354,
+        "newPrice": 1088,
+        "literPrice": 21.76
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 15 augustus",
+      "validity": {
+        "$date": "2023-08-15T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.018Z"
+      },
+      "color": "donker",
+      "alcoholPercentage": 500,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a40"
+      },
+      "id": "157439bdaa",
+      "brand": "Benediktiner Weissbier Alkoholfrei",
+      "store": "Hoogvliet",
+      "pricing": {
+        "rawOldPrice": "3.66",
+        "rawNewPrice": "2.75",
+        "oldPrice": 366,
+        "newPrice": 275,
+        "literPrice": 5.5
+      },
+      "volume": "fles 50cl",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/benediktiner-weissbier-alcoholvrij",
+      "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/benediktiner-weissbier-alcoholvrij",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.018Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 0,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a43"
+      },
+      "id": "4c8cedbcf9",
+      "brand": "Benediktiner Weissbier Dunkel",
+      "store": "Coop",
+      "pricing": {
+        "rawOldPrice": "1.69",
+        "rawNewPrice": "1.27",
+        "oldPrice": 169,
+        "newPrice": 127,
+        "literPrice": 2.54
+      },
+      "volume": "fles 50cl",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https%3A%2F%2Fwww.coop.nl%2Fproduct%2F4052197001236%2FBenediktiner-Weissbier-Dunkel",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4052197001236/Benediktiner-Weissbier-Dunkel",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.018Z"
+      },
+      "color": "Donker",
+      "alcoholPercentage": 540,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a46"
+      },
+      "id": "fa84317ba0",
+      "brand": "Benediktiner Weissbier",
+      "store": "Coop",
+      "pricing": {
+        "rawOldPrice": "1.79",
+        "rawNewPrice": "1.34",
+        "oldPrice": 179,
+        "newPrice": 134,
+        "literPrice": 2.68
+      },
+      "volume": "fles 50cl",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https%3A%2F%2Fwww.coop.nl%2Fproduct%2F4052197000291%2FBenediktiner-Weissbier-fles",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4052197000291/Benediktiner-Weissbier-fles",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.018Z"
+      },
+      "color": "geel-goud",
+      "alcoholPercentage": 540,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a49"
+      },
+      "id": "aad44e0568",
+      "brand": "Benediktiner Weissbier",
+      "store": "Hoogvliet",
+      "pricing": {
+        "rawOldPrice": "3.50",
+        "rawNewPrice": "2.62",
+        "oldPrice": 350,
+        "newPrice": 262,
+        "literPrice": 5.24
+      },
+      "volume": "fles 50cl",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/benediktiner-weissbier1",
+      "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/benediktiner-weissbier1",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.017Z"
+      },
+      "color": "geel-goud",
+      "alcoholPercentage": 540,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a4c"
+      },
+      "id": "0db24a5588",
+      "brand": "Erdinger Hefe Weisse",
+      "store": "Jan Linders",
+      "pricing": {
+        "rawOldPrice": "3.58",
+        "rawNewPrice": "3.00",
+        "oldPrice": 358,
+        "newPrice": 300,
+        "literPrice": 6
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.017Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 530,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a4f"
+      },
+      "id": "b3b1496cbf",
+      "brand": "Erdinger Hefe Weisse",
+      "store": "Coop",
+      "pricing": {
+        "rawOldPrice": "1.88",
+        "rawNewPrice": "1.41",
+        "oldPrice": 188,
+        "newPrice": 141,
+        "literPrice": 2.82
+      },
+      "volume": "fles 50cl",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https%3A%2F%2Fwww.coop.nl%2Fproduct%2F4002103000013%2FErdinger-Weissbier",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4002103000013/Erdinger-Weissbier",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.017Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 530,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a52"
+      },
+      "id": "f29cfcc87c",
+      "brand": "Erdinger Hefe Weisse",
+      "store": "Dirck III",
+      "pricing": {
+        "rawOldPrice": "2.98",
+        "rawNewPrice": "2.50",
+        "oldPrice": 298,
+        "newPrice": 250,
+        "literPrice": 5
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.017Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 530,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a55"
+      },
+      "id": "53c41c34de",
+      "brand": "Erdinger Hefe Weisse",
+      "store": "Makro",
+      "pricing": {
+        "rawOldPrice": "14.39",
+        "rawNewPrice": "10.88",
+        "oldPrice": 1439,
+        "newPrice": 1088,
+        "literPrice": 21.76
+      },
+      "volume": "fles 50cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 15 augustus",
+      "validity": {
+        "$date": "2023-08-15T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.017Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 530,
+      "liter": 500,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a58"
+      },
+      "id": "f71a783d4e",
+      "brand": "Tripel Karmeliet",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "5.39",
+        "rawNewPrice": "4.04",
+        "oldPrice": 539,
+        "newPrice": 404,
+        "literPrice": 5.386666666666667
+      },
+      "volume": "fles 75cl",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi222828%2Ftripel-karmeliet-bier",
+      "uri": "https://www.ah.nl/producten/product/wi222828/tripel-karmeliet-bier",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.017Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 840,
+      "liter": 750,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a5e"
+      },
+      "id": "29e5c709f5",
+      "brand": "Duvel",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "5.65",
+        "rawNewPrice": "4.24",
+        "oldPrice": 565,
+        "newPrice": 424,
+        "literPrice": 5.653333333333333
+      },
+      "volume": "fles 75cl",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi215088%2Fduvel-blond",
+      "uri": "https://www.ah.nl/producten/product/wi215088/duvel-blond",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.016Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 850,
+      "liter": 750,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a61"
+      },
+      "id": "8c42ec78f3",
+      "brand": "Jupiler Pils",
+      "store": "Jan Linders",
+      "pricing": {
+        "rawOldPrice": "16.80",
+        "rawNewPrice": "12.99",
+        "oldPrice": 1680,
+        "newPrice": 1299,
+        "literPrice": 51.959999999999994
+      },
+      "volume": "flesje 25cl",
+      "rawUri": "",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.016Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 520,
+      "liter": 250,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a64"
+      },
+      "id": "d6c3646473",
+      "brand": "Cuvée des Trolls",
+      "store": "Dirck III",
+      "pricing": {
+        "rawOldPrice": "1.33",
+        "rawNewPrice": "1.00",
+        "oldPrice": 133,
+        "newPrice": 100,
+        "literPrice": 4
+      },
+      "volume": "flesje 25cl",
+      "rawUri": "",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.016Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 700,
+      "liter": 250,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a67"
+      },
+      "id": "1d43651d7e",
+      "brand": "Grisette Blond",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "4.18",
+        "rawNewPrice": "3.14",
+        "oldPrice": 418,
+        "newPrice": 314,
+        "literPrice": 12.56
+      },
+      "volume": "flesje 25cl",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi494083%2Fgrisette-bio-blond",
+      "uri": "https://www.ah.nl/producten/product/wi494083/grisette-bio-blond",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.016Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 550,
+      "liter": 250,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a6a"
+      },
+      "id": "f13463a82e",
+      "brand": "Jupiler Pils",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "18.25",
+        "rawNewPrice": "13.69",
+        "oldPrice": 1825,
+        "newPrice": 1369,
+        "literPrice": 2.2816666666666667
+      },
+      "volume": "krat 24x0,25",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi113050%2Fjupiler-belgisch-pils-krat",
+      "uri": "https://www.ah.nl/producten/product/wi113050/jupiler-belgisch-pils-krat",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.016Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 520,
+      "liter": 6000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a6d"
+      },
+      "id": "e1d08683cc",
+      "brand": "Jupiler Pils",
+      "store": "Jan Linders",
+      "pricing": {
+        "rawOldPrice": "17.32",
+        "rawNewPrice": "12.99",
+        "oldPrice": 1732,
+        "newPrice": 1299,
+        "literPrice": 2.165
+      },
+      "volume": "krat 24x0,25",
+      "rawUri": "",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.016Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 520,
+      "liter": 6000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a70"
+      },
+      "id": "ee4ba1a1de",
+      "brand": "Jupiler Pils",
+      "store": "Dirck III",
+      "pricing": {
+        "rawOldPrice": "34.30",
+        "rawNewPrice": "27.15",
+        "oldPrice": 3429.9999999999995,
+        "newPrice": 2715,
+        "literPrice": 4.525
+      },
+      "volume": "krat 24x0,25",
+      "rawUri": "",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.016Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 520,
+      "liter": 6000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f2b710e8bb2a6a5a73"
+      },
+      "id": "322133675c",
+      "brand": "Jupiler Pils",
+      "store": "Hoogvliet",
+      "pricing": {
+        "rawOldPrice": "17.15",
+        "rawNewPrice": "12.86",
+        "oldPrice": 1714.9999999999998,
+        "newPrice": 1286,
+        "literPrice": 2.143333333333333
+      },
+      "volume": "krat 24x0,25",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/jupiler-bier-fles-krat",
+      "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/jupiler-bier-fles-krat",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.015Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 520,
+      "liter": 6000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a76"
+      },
+      "id": "2b9e7716d9",
+      "brand": "Jupiler Pils",
+      "store": "Makro",
+      "pricing": {
+        "rawOldPrice": "18.14",
+        "rawNewPrice": "13.30",
+        "oldPrice": 1814,
+        "newPrice": 1330,
+        "literPrice": 2.216666666666667
+      },
+      "volume": "krat 24x0,25",
+      "rawUri": "",
+      "rawValidity": "dinsdag 15 augustus",
+      "validity": {
+        "$date": "2023-08-15T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.015Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 520,
+      "liter": 6000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a79"
+      },
+      "id": "328c2ab83a",
+      "brand": "Leffe Blond",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "21.32",
+        "rawNewPrice": "15.99",
+        "oldPrice": 2132,
+        "newPrice": 1599,
+        "literPrice": 2.665
+      },
+      "volume": "krat 24x0,25",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi492095%2Fleffe-blond-abdijbier-krat",
+      "uri": "https://www.ah.nl/producten/product/wi492095/leffe-blond-abdijbier-krat",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.015Z"
+      },
+      "color": "Goudblond",
+      "alcoholPercentage": 660,
+      "liter": 6000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a7c"
+      },
+      "id": "7375935365",
+      "brand": "Leffe Blond",
+      "store": "Makro",
+      "pricing": {
+        "rawOldPrice": "21.40",
+        "rawNewPrice": "18.14",
+        "oldPrice": 2140,
+        "newPrice": 1814,
+        "literPrice": 3.0233333333333334
+      },
+      "volume": "krat 24x0,25",
+      "rawUri": "",
+      "rawValidity": "dinsdag 15 augustus",
+      "validity": {
+        "$date": "2023-08-15T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.015Z"
+      },
+      "color": "Goudblond",
+      "alcoholPercentage": 660,
+      "liter": 6000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a7f"
+      },
+      "id": "92d36ccef8",
+      "brand": "Grolsch Kruidige Tripel",
+      "store": "JUMBO",
+      "pricing": {
+        "rawOldPrice": "10.88",
+        "rawNewPrice": "8.16",
+        "oldPrice": 1088,
+        "newPrice": 816,
+        "literPrice": 9.066666666666666
+      },
+      "volume": "Duopack (2x0,45)",
+      "rawUri": "https://tc.tradetracker.net/?c=28068&m=12&a=126790&r=&u=%2Fproducten%2Fgrolsch-kruidige-tripel-2-x-450ml-bruine-beugel-348742PAK%3Fchannable%3D03f5b669640033343837343250414b1a",
+      "uri": "https://jumbo.com/producten/grolsch-kruidige-tripel-2-x-450ml-bruine-beugel-348742PAK",
+      "rawValidity": "dinsdag 22 augustus",
+      "validity": {
+        "$date": "2023-08-22T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.015Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 830.0000000000001,
+      "liter": 900,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a82"
+      },
+      "id": "4c90c718a5",
+      "brand": "Grolsch Kruidige Tripel",
+      "store": "Plus",
+      "pricing": {
+        "rawOldPrice": "5.49",
+        "rawNewPrice": "4.12",
+        "oldPrice": 549,
+        "newPrice": 412,
+        "literPrice": 4.5777777777777775
+      },
+      "volume": "Duopack (2x0,45)",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https:%2F%2Fwww.plus.nl%2Fproduct%2Fgrolsch-tripel-beugelfles-set-90-cl-289092",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-tripel-beugelfles-set-90-cl-289092",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.014Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 830.0000000000001,
+      "liter": 900,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a85"
+      },
+      "id": "22c3ee34b7",
+      "brand": "Grolsch Klassieke Blond",
+      "store": "JUMBO",
+      "pricing": {
+        "rawOldPrice": "10.26",
+        "rawNewPrice": "7.71",
+        "oldPrice": 1026,
+        "newPrice": 771,
+        "literPrice": 8.566666666666666
+      },
+      "volume": "Duopack (2x0,45)",
+      "rawUri": "https://tc.tradetracker.net/?c=28068&m=12&a=126790&r=&u=%2Fproducten%2Fgrolsch-klassieke-blond-2-x-450ml-bruine-beugel-348740DS%3Fchannable%3D03f5b669640033343837343044532a",
+      "uri": "https://jumbo.com/producten/grolsch-klassieke-blond-2-x-450ml-bruine-beugel-348740DS",
+      "rawValidity": "dinsdag 22 augustus",
+      "validity": {
+        "$date": "2023-08-22T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.014Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 670,
+      "liter": 900,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a88"
+      },
+      "id": "b9b17c6abc",
+      "brand": "Grolsch Klassieke Blond",
+      "store": "Plus",
+      "pricing": {
+        "rawOldPrice": "5.19",
+        "rawNewPrice": "3.89",
+        "oldPrice": 519,
+        "newPrice": 389,
+        "literPrice": 4.322222222222222
+      },
+      "volume": "Duopack (2x0,45)",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https:%2F%2Fwww.plus.nl%2Fproduct%2Fgrolsch-blond-beugelfles-set-90-cl-289087",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-blond-beugelfles-set-90-cl-289087",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.014Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 670,
+      "liter": 900,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a8b"
+      },
+      "id": "504998eb57",
+      "brand": "Grolsch Zomerbok",
+      "store": "Plus",
+      "pricing": {
+        "rawOldPrice": "3.68",
+        "rawNewPrice": "2.76",
+        "oldPrice": 368,
+        "newPrice": 276,
+        "literPrice": 3.0666666666666664
+      },
+      "volume": "set 3x0,30",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https:%2F%2Fwww.plus.nl%2Fproduct%2Fgrolsch-zomerbok-fles-90-cl-933698",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-zomerbok-fles-90-cl-933698",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.013Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 640,
+      "liter": 900,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a8e"
+      },
+      "id": "2ec2bafbd8",
+      "brand": "Liefmans fruitesse",
+      "store": "DekaMarkt",
+      "pricing": {
+        "rawOldPrice": "5.99",
+        "rawNewPrice": "4.49",
+        "oldPrice": 599,
+        "newPrice": 449,
+        "literPrice": 4.49
+      },
+      "volume": "set fles 4x0,25",
+      "rawUri": "",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.013Z"
+      },
+      "color": "Rood",
+      "alcoholPercentage": 380,
+      "liter": 1000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a91"
+      },
+      "id": "6d097b93cc",
+      "brand": "Liefmans Fruitesse Alcoholvrij",
+      "store": "DekaMarkt",
+      "pricing": {
+        "rawOldPrice": "4.99",
+        "rawNewPrice": "3.74",
+        "oldPrice": 499,
+        "newPrice": 374,
+        "literPrice": 3.74
+      },
+      "volume": "set fles 4x0,25",
+      "rawUri": "",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.013Z"
+      },
+      "color": "Rood",
+      "alcoholPercentage": 50,
+      "liter": 1000,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a94"
+      },
+      "id": "f363ae36b6",
+      "brand": "Cornet Oaked",
+      "store": "JUMBO",
+      "pricing": {
+        "rawOldPrice": "14.84",
+        "rawNewPrice": "11.13",
+        "oldPrice": 1484,
+        "newPrice": 1113,
+        "literPrice": 8.431818181818182
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://tc.tradetracker.net/?c=28068&m=12&a=126790&r=&u=%2Fproducten%2Fcornet-oaked-sterk-blond-speciaal-bier-fles-174917DS%3Fchannable%3D03f5b6696400313734393137445384",
+      "uri": "https://jumbo.com/producten/cornet-oaked-sterk-blond-speciaal-bier-fles-174917DS",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.013Z"
+      },
+      "color": "goudblond",
+      "alcoholPercentage": 850,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a97"
+      },
+      "id": "11a854ec83",
+      "brand": "Duvel",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "7.39",
+        "rawNewPrice": "5.54",
+        "oldPrice": 739,
+        "newPrice": 554,
+        "literPrice": 4.196969696969697
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi445543%2Fduvel-blond-4-pack",
+      "uri": "https://www.ah.nl/producten/product/wi445543/duvel-blond-4-pack",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 850,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a9a"
+      },
+      "id": "f60a1687c8",
+      "brand": "Duvel",
+      "store": "DekaMarkt",
+      "pricing": {
+        "rawOldPrice": "7.19",
+        "rawNewPrice": "5.39",
+        "oldPrice": 719,
+        "newPrice": 539,
+        "literPrice": 4.083333333333333
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 850,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5a9d"
+      },
+      "id": "60c14f4dc6",
+      "brand": "Tripel Karmeliet",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "7.99",
+        "rawNewPrice": "5.99",
+        "oldPrice": 799,
+        "newPrice": 599,
+        "literPrice": 4.537878787878788
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi438908%2Ftripel-karmeliet-speciaalbier-4-pack",
+      "uri": "https://www.ah.nl/producten/product/wi438908/tripel-karmeliet-speciaalbier-4-pack",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 840,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5aa0"
+      },
+      "id": "e17bba6a54",
+      "brand": "Tripel Karmeliet",
+      "store": "Spar Buurt",
+      "pricing": {
+        "rawOldPrice": "16.58",
+        "rawNewPrice": "12.44",
+        "oldPrice": 1657.9999999999998,
+        "newPrice": 1244,
+        "literPrice": 9.424242424242424
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "",
+      "rawValidity": "woensdag 16 augustus",
+      "validity": {
+        "$date": "2023-08-16T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 840,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5aa3"
+      },
+      "id": "3b6e95bc75",
+      "brand": "Duvel Tripel Hop Citra",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "8.99",
+        "rawNewPrice": "6.74",
+        "oldPrice": 899,
+        "newPrice": 674,
+        "literPrice": 5.106060606060606
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi346185%2Fduvel-tripel-hop-citra-4-pack",
+      "uri": "https://www.ah.nl/producten/product/wi346185/duvel-tripel-hop-citra-4-pack",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Goud Helder",
+      "alcoholPercentage": 950,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5aa6"
+      },
+      "id": "ce960db222",
+      "brand": "Jopen Mooie Nel",
+      "store": "Hoogvliet",
+      "pricing": {
+        "rawOldPrice": "18.40",
+        "rawNewPrice": "13.80",
+        "oldPrice": 1839.9999999999998,
+        "newPrice": 1380,
+        "literPrice": 10.454545454545453
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/jopen-mooie-nel1",
+      "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/jopen-mooie-nel1",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 650,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5aa9"
+      },
+      "id": "b1252486f1",
+      "brand": "Lowlander Tropical Ale",
+      "store": "Hoogvliet",
+      "pricing": {
+        "rawOldPrice": "8.96",
+        "rawNewPrice": "6.72",
+        "oldPrice": 896.0000000000001,
+        "newPrice": 672,
+        "literPrice": 5.09090909090909
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/lowlander-tropical-ale1",
+      "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/lowlander-tropical-ale1",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 380,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5aac"
+      },
+      "id": "765a2ad6b1",
+      "brand": "Cornet Alcohol-free",
+      "store": "JUMBO",
+      "pricing": {
+        "rawOldPrice": "11.86",
+        "rawNewPrice": "8.90",
+        "oldPrice": 1186,
+        "newPrice": 890,
+        "literPrice": 6.742424242424242
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://tc.tradetracker.net/?c=28068&m=12&a=126790&r=&u=%2Fproducten%2Fcornet-belgisch-blond-alcoholvrij-0%2C3-fles-4-x-330ml-441260PAK%3Fchannable%3D03f5b669640034343132363050414b7b",
+      "uri": "https://jumbo.com/producten/cornet-belgisch-blond-alcoholvrij-0%2C3-fles-4-x-330ml-441260PAK",
+      "rawValidity": "dinsdag 8 augustus",
+      "validity": {
+        "$date": "2023-08-08T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.012Z"
+      },
+      "color": "Goudgeel",
+      "alcoholPercentage": 30,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5aaf"
+      },
+      "id": "1e7fdd8f4c",
+      "brand": "Duvel 666",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "7.69",
+        "rawNewPrice": "5.77",
+        "oldPrice": 769,
+        "newPrice": 577,
+        "literPrice": 4.371212121212121
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi500334%2Fduvel-666-4-pack",
+      "uri": "https://www.ah.nl/producten/product/wi500334/duvel-666-4-pack",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.011Z"
+      },
+      "color": "Goudblond",
+      "alcoholPercentage": 666,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f3b710e8bb2a6a5ab2"
+      },
+      "id": "ce9ab846f5",
+      "brand": "Duvel 666",
+      "store": "DekaMarkt",
+      "pricing": {
+        "rawOldPrice": "7.59",
+        "rawNewPrice": "5.69",
+        "oldPrice": 759,
+        "newPrice": 569,
+        "literPrice": 4.3106060606060606
+      },
+      "volume": "4pack fles 4x0,33",
+      "rawUri": "",
+      "rawValidity": "zaterdag 12 augustus",
+      "validity": {
+        "$date": "2023-08-12T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.011Z"
+      },
+      "color": "Goudblond",
+      "alcoholPercentage": 666,
+      "liter": 1320,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f4b710e8bb2a6a5ab5"
+      },
+      "id": "a918f1f4e1",
+      "brand": "Lagunitas IPA",
+      "store": "Albert Heijn",
+      "pricing": {
+        "rawOldPrice": "53.94",
+        "rawNewPrice": "44.95",
+        "oldPrice": 5394,
+        "newPrice": 4495,
+        "literPrice": 31.65492957746479
+      },
+      "volume": "set fles (4 x 35,5cl)",
+      "rawUri": "https://prf.hn/click/camref:1100lrUH/pubref:REFERENTIEHIER/destination:https%3A%2F%2Fwww.ah.nl%2Fproducten%2Fproduct%2Fwi460891%2Flagunitas-ipa-4-pack",
+      "uri": "https://www.ah.nl/producten/product/wi460891/lagunitas-ipa-4-pack",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.010Z"
+      },
+      "color": "Geel, bruin",
+      "alcoholPercentage": 620,
+      "liter": 1420,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f4b710e8bb2a6a5ab8"
+      },
+      "id": "a469c58c9f",
+      "brand": "Lagunitas IPA",
+      "store": "JUMBO",
+      "pricing": {
+        "rawOldPrice": "17.80",
+        "rawNewPrice": "13.35",
+        "oldPrice": 1780,
+        "newPrice": 1335,
+        "literPrice": 9.401408450704224
+      },
+      "volume": "set fles (4 x 35,5cl)",
+      "rawUri": "https://tc.tradetracker.net/?c=28068&m=12&a=126790&r=&u=%2Fproducten%2Flagunitas-ipa-bier-fles-4-x-35-5cl-345079PAK%3Fchannable%3D03f5b669640033343530373950414baf",
+      "uri": "https://jumbo.com/producten/lagunitas-ipa-bier-fles-4-x-35-5cl-345079PAK",
+      "rawValidity": "dinsdag 22 augustus",
+      "validity": {
+        "$date": "2023-08-22T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.010Z"
+      },
+      "color": "Geel, bruin",
+      "alcoholPercentage": 620,
+      "liter": 1420,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f4b710e8bb2a6a5abb"
+      },
+      "id": "989911f4f1",
+      "brand": "Tsingtao",
+      "store": "Lidl",
+      "pricing": {
+        "rawOldPrice": "6.59",
+        "rawNewPrice": "4.99",
+        "oldPrice": 659,
+        "newPrice": 499,
+        "literPrice": 2.5202020202020203
+      },
+      "volume": "sixpack fles 6x0,33",
+      "rawUri": "",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.010Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 470,
+      "liter": 1980,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f4b710e8bb2a6a5abe"
+      },
+      "id": "bbc3a02658",
+      "brand": "Warsteiner Radler",
+      "store": "Poiesz",
+      "pricing": {
+        "rawOldPrice": "4.99",
+        "rawNewPrice": "3.99",
+        "oldPrice": 499,
+        "newPrice": 399,
+        "literPrice": 2.015151515151515
+      },
+      "volume": "sixpack fles 6x0,33",
+      "rawUri": "",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.010Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 250,
+      "liter": 1980,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f4b710e8bb2a6a5ac1"
+      },
+      "id": "3bd774708b",
+      "brand": "Warsteiner Radler",
+      "store": "Coop",
+      "pricing": {
+        "rawOldPrice": "10.48",
+        "rawNewPrice": "5.24",
+        "oldPrice": 1048,
+        "newPrice": 524,
+        "literPrice": 2.646464646464646
+      },
+      "volume": "sixpack fles 6x0,33",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https%3A%2F%2Fwww.coop.nl%2Fproduct%2F4000856107133%2FWarsteiner-Radler-00-citroen-bier-fles-6-x-33-cl",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4000856107133/Warsteiner-Radler-00-citroen-bier-fles-6-x-33-cl",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.010Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 250,
+      "liter": 1980,
+      "__v": 0
+    },
+    {
+      "_id": {
+        "$oid": "64d001f4b710e8bb2a6a5ac4"
+      },
+      "id": "df4331cb07",
+      "brand": "Warsteiner Premium Alkoholfrei",
+      "store": "Coop",
+      "pricing": {
+        "rawOldPrice": "9.46",
+        "rawNewPrice": "4.73",
+        "oldPrice": 946.0000000000001,
+        "newPrice": 473.00000000000006,
+        "literPrice": 2.3888888888888893
+      },
+      "volume": "sixpack fles 6x0,33",
+      "rawUri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https%3A%2F%2Fwww.coop.nl%2Fproduct%2F4000856154991%2FWarsteiner-Alkoholfrei-pils-fles-6-x-33-cl",
+      "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4000856154991/Warsteiner-Alkoholfrei-pils-fles-6-x-33-cl",
+      "rawValidity": "zondag 6 augustus",
+      "validity": {
+        "$date": "2023-08-06T22:00:00.000Z"
+      },
+      "importDate": {
+        "$date": "2023-08-06T20:26:25.009Z"
+      },
+      "color": "Blond",
+      "alcoholPercentage": 50,
+      "liter": 1980,
+      "__v": 0
+    }]
 ---
 apiVersion: v1
 kind: Service
