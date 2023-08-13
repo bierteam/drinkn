@@ -58,18 +58,19 @@ router.post('/', isAuthenticated, async function (req, res) {
   }
 })
 
-router.delete('/delete', isAuthenticated, function (req, res, next) {
-  const _id = req.session.userId
-  user.deleteOne({ _id }, function (err) {
-    if (err) {
-      console.err(err)
-      writeLog(err, 'Error', context)
-      res.sendStatus(500)
-    } else {
-      res.clearCookie('connect.sid', { path: '/' }).status(200).send('Account deleted, removing cookie...')
-      writeLog(`User ${req.session.username}: ${req.session.userId} deleted their account.`, 'Info', context, req.realIp)
-    }
-  })
+router.delete('/delete', isAuthenticated, async function (req, res, next) {
+  try {
+    const _id = req.session.userId
+
+    await user.deleteOne({ _id })
+
+    res.clearCookie('connect.sid', { path: '/' }).status(200).send('Account deleted, removing cookie...')
+    writeLog(`User ${req.session.username}: ${req.session.userId} deleted their account.`, 'Info', context, req.realIp)
+  } catch (err) {
+    console.error(err)
+    writeLog(err, 'Error', context)
+    res.sendStatus(500)
+  }
 })
 
 module.exports = router

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { store } from './store.js'
 
 export const Router = createRouter({
   history: createWebHistory(),
@@ -17,4 +18,10 @@ export const Router = createRouter({
     { path: '/logging', component: () => import('./components/Logging.vue') },
     { path: '/:pathMatch(.*)*', component: () => import('./components/NotFound.vue') }
   ]
+})
+
+Router.beforeEach(async (to, from) => {
+  if (!store.isAuthenticated && to.path !== '/login') {
+    return { path: '/login' }
+  }
 })

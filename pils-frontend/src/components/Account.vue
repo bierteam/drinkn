@@ -1,90 +1,8 @@
-<template>
-<body>
-  <div class="hero-body">
-    <div class="container">
-      <div class="column is-4 is-offset-4">
-        <div v-if="state.isPwned" class="notification is-warning">
-          This password has been pwned.
-        </div>
-        <div v-if="state.notEqual" class="notification is-warning">
-          The password is not the same.
-        </div>
-        <div v-if="error" class="notification is-danger">
-          <button class="delete" @click="error = ''"></button>
-          {{error}}
-        </div>
-        <h3 class="title has-text-grey">Edit your account</h3>
-        <div class="box">
-          <form>
-            <div class="field">
-              <div class="control">
-                <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <input class="input is-large" v-model="newUser.oldPassword" type="password" placeholder="Your password *">
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <input class="input is-large" v-model="newUser.password" type="password" placeholder="Your new password">
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <input class="input is-large" v-model="verifyPassword" type="password" placeholder="Verify new password">
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column">
-                <div class="field">
-                  <div class="control">
-                    <input class="input is-large" :disabled="user.otp && user.otp.status" v-model="newUser.otp" type="string" placeholder="2FA code">
-                  </div>
-                </div>
-                <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
-                'is-loading': state.saving,
-                'is-success': state.saved,
-                'is-danger': state.error }" type="submit" :disabled="isDisabled">Save</Button>
-              </div>
-              <div class="column">
-                <div class="field">
-                  <div class="control">
-                    <Button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button">Setup 2FA</Button>
-                  </div>
-                </div>
-                <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button">Delete account</Button>
-              </div>
-            </div>
-            <div v-if="state.deleteMsg" class="notification is-light">
-              <button class="delete" @click="state.deleteMsg = false"></button>
-              Are you sure? This is permanent.
-              <br><br>
-              <Button class="button is-danger is-large" @click='Delete' type="button">I am sure!</Button>
-            </div>
-          </form>
-        </div>
-        <div v-if="otp.secret" class="box">
-          <h3 class="title has-text-grey">Scan this QR code</h3>
-          <a :href='otp.uri'>
-            <div class="container" id="qrcode">
-              <img id="preview" src="/favicon.ico" alt="Beer emoji">
-              <img :src='otp.QRdata' :alt='otp.uri'>
-            </div>
-          </a>
-          <h4 class="has-text-grey">{{otp.secret}}</h4>
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
-</template>
-
 <script>
-import Api from '/src/services/Api'
-import pwned from "/src/services/pwned"
+import Api from '../services/Api'
+import pwned from "../services/pwned"
 import QRCode from "qrcode"
+import { store } from '../store.js'
 
 export default {
   data() {
@@ -186,9 +104,7 @@ export default {
       Api().delete(`/api/v1/account/delete`)
         .then(response => {
           if (response.status === 200) {
-            localStorage.clear()
-            this.$parent.isAuthenticated = false
-            this.$parent.isAdmin = false
+            store.logout()
             this.$router.push('/login')
           }
         })
@@ -200,6 +116,89 @@ export default {
   }
 }
 </script>
+
+<template>
+<body>
+  <div class="hero-body">
+    <div class="container">
+      <div class="column is-4 is-offset-4">
+        <div v-if="state.isPwned" class="notification is-warning">
+          This password has been pwned.
+        </div>
+        <div v-if="state.notEqual" class="notification is-warning">
+          The password is not the same.
+        </div>
+        <div v-if="error" class="notification is-danger">
+          <button class="delete" @click="error = ''"></button>
+          {{error}}
+        </div>
+        <h3 class="title has-text-grey">Edit your account</h3>
+        <div class="box">
+          <form>
+            <div class="field">
+              <div class="control">
+                <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input class="input is-large" v-model="newUser.oldPassword" type="password" placeholder="Your password *">
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input class="input is-large" v-model="newUser.password" type="password" placeholder="Your new password">
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input class="input is-large" v-model="verifyPassword" type="password" placeholder="Verify new password">
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <div class="control">
+                    <input class="input is-large" :disabled="user.otp && user.otp.status" v-model="newUser.otp" type="string" placeholder="2FA code">
+                  </div>
+                </div>
+                <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
+                'is-loading': state.saving,
+                'is-success': state.saved,
+                'is-danger': state.error }" type="submit" :disabled="isDisabled">Save</Button>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <div class="control">
+                    <Button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button">Setup 2FA</Button>
+                  </div>
+                </div>
+                <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button">Delete account</Button>
+              </div>
+            </div>
+            <div v-if="state.deleteMsg" class="notification is-light">
+              <button class="delete" @click="state.deleteMsg = false"></button>
+              Are you sure? This is permanent.
+              <br><br>
+              <Button class="button is-danger is-large" @click='Delete' type="button">I am sure!</Button>
+            </div>
+          </form>
+        </div>
+        <div v-if="otp.secret" class="box">
+          <h3 class="title has-text-grey">Scan this QR code</h3>
+          <a :href='otp.uri'>
+            <div class="container" id="qrcode">
+              <img id="preview" src="/favicon.ico" alt="Beer emoji">
+              <img :src='otp.QRdata' :alt='otp.uri'>
+            </div>
+          </a>
+          <h4 class="has-text-grey">{{otp.secret}}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</template>
 
 <style>
 #qrcode {

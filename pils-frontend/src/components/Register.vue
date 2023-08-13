@@ -1,3 +1,50 @@
+<script>
+import Api from '../services/Api'
+import pwned from "../services/pwned"
+
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+      admin: false,
+      isPwned: false,
+      message: '',
+      error: ''
+    }
+  },
+  computed: {
+    shouldDisableButton() {
+      return !this.username || !this.password || this.isPwned
+    }
+  },
+  methods: {
+    async checkPwned(password) {
+      this.isPwned = await pwned(password)
+    },
+    async registerAccount() {
+      if (this.username && this.password && !this.isPwned) {
+        try {
+          const response = await Api().post(`/api/v1/users/register`, {
+            username: this.username,
+            password: this.password,
+            admin: this.admin
+          })
+          if (response.status === 201) {
+            this.message = 'Created ' + this.username
+          } else if (response.status === 200) {
+            this.error = response.data
+          }
+        } catch (error) {
+          this.error = error.response?.data || error.message || error
+          console.error(error)
+        }
+      }
+    }
+  }
+}
+</script>
+
 <template>
 <div class="hero-body">
   <div class="container has-text-centered">
@@ -42,50 +89,3 @@
   </div>
 </div>
 </template>
-
-<script>
-import Api from '/src/services/Api'
-import pwned from "/src/services/pwned"
-
-export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-      admin: false,
-      isPwned: false,
-      message: '',
-      error: ''
-    }
-  },
-  computed: {
-    shouldDisableButton() {
-      return !this.username || !this.password || this.isPwned
-    }
-  },
-  methods: {
-    async checkPwned(password) {
-      this.isPwned = await pwned(password)
-    },
-    async registerAccount() {
-      if (this.username && this.password && !this.isPwned) {
-        try {
-          const response = await Api().post(`/api/v1/users/register`, {
-            username: this.username,
-            password: this.password,
-            admin: this.admin
-          })
-          if (response.status === 201) {
-            this.message = 'Created ' + this.username
-          } else if (response.status === 200) {
-            this.error = response.data
-          }
-        } catch (error) {
-          this.error = error.response?.data || error.message || error
-          console.error(error)
-        }
-      }
-    }
-  }
-}
-</script>

@@ -1,33 +1,5 @@
-<template>
-<div>
-  <div class="buttons is-centered">
-    <span class="button is-warning" @click='Cancel' type="button" :disabled="isEmpty">Cancel</span>
-    <span class="button is-info" @click='Update' v-bind:class="{
-        'is-loading': isSaving,
-        'is-success': isSaved,
-        'is-danger': isError }" type="button" :disabled="isEmpty">Save</span>
-  </div>
-  <table class='container table'>
-    <caption>Table of store names</caption>
-    <thead>
-      <th>Old</th>
-      <th>New</th>
-    </thead>
-    <tbody>
-      <tr v-for='(newName, oldName) in stores'>
-        <th><input class="input" type="text" v-model="stores[oldName]" readonly></th>
-        <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]"></th>
-      </tr>
-      <tr>
-        <th></th>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</template>
-
 <script>
-import Api from '/src/services/Api'
+import Api from '../services/Api'
 
 export default {
   data() {
@@ -98,3 +70,31 @@ export default {
   }
 }
 </script>
+
+<template>
+<div>
+  <div class="buttons is-centered">
+    <span class="button is-warning" @click='Cancel' type="button" :disabled="isEmpty">Cancel</span>
+    <span class="button is-info" @click='Update' v-bind:class="{
+        'is-loading': isSaving,
+        'is-success': isSaved,
+        'is-danger': isError }" type="button" :disabled="isEmpty">Save</span>
+  </div>
+  <table class='container table'>
+    <caption>Table of store names</caption>
+    <thead>
+      <th>Old</th>
+      <th>New</th>
+    </thead>
+    <tbody>
+      <tr v-for='(newName, oldName) in stores'>
+        <th><input class="input" type="text" v-model="stores[oldName]" readonly></th>
+        <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]"></th>
+      </tr>
+      <tr>
+        <th></th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</template>
