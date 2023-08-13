@@ -7,8 +7,13 @@ if (process.env.NO_SRV) {
 } else {
   mongoProtocol = 'mongodb+srv'
 }
-
-const connectionString = `${mongoProtocol}://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`
+let mongoAuth
+if (process.env.PR) {
+  mongoAuth = ''
+} else {
+  mongoAuth = `${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@`
+}
+const connectionString = `${mongoProtocol}://${mongoAuth}${process.env.DB_HOST}/${process.env.DB_NAME}`
 
 const express = require('express')
 const history = require('connect-history-api-fallback')

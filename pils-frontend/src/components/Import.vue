@@ -1,22 +1,5 @@
-<template>
-<div>
-  <a class="button is-warning" @click.once="Import()">Import</a>
-  <ul v-if="status">
-    {{status.data}}
-  </ul>
-
-  <ul v-if="errors && errors.length">
-    <li v-for="error of errors">
-      {{error.message}}
-    </li>
-  </ul>
-  <br>
-  <br>
-</div>
-</template>
-
 <script>
-import Api from '@/services/Api'
+import Api from '../services/Api'
 
 export default {
   data() {
@@ -40,3 +23,20 @@ export default {
   }
 }
 </script>
+
+<template>
+<div>
+  <a class="button is-warning" @click.once="Import()">Import</a>
+  <ul v-if="status">
+    {{status.data}}
+  </ul>
+
+  <ul v-if="errors && errors.length">
+    <li v-for="error of errors">
+      {{error.message}}
+    </li>
+  </ul>
+  <br>
+  <br>
+</div>
+</template>

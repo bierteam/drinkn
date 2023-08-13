@@ -5,47 +5,7 @@ on:
   pull_request:
     branches: [ main ]
 
-jobs:
-  test-node:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder:
-          - beer-import
-          - pils
-          - pils-frontend
-    steps:
-      -
-        uses: actions/checkout@v3
-      -
-        name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20.x
-      -
-        name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.OS }}-${{ matrix.folder }}-${{ hashFiles('${{ matrix.folder }}/package-lock.json') }}
-      -
-        run: npm ci
-        working-directory: ${{ matrix.folder }}
-      -
-        run: npm run lint --if-present
-        working-directory: ${{ matrix.folder }}
-      -
-        run: npm run build --if-present
-        working-directory: ${{ matrix.folder }}
-      -
-        run: npm run test --if-present
-        working-directory: ${{ matrix.folder }}
-      -
-        uses: codecov/codecov-action@v3
-        with:
-          directory: ${{ matrix.folder }}
-          
+jobs:     
   # test-go:
   #   runs-on: ubuntu-latest
   #   strategy:
@@ -72,9 +32,8 @@ jobs:
   #         directory: ${{ matrix.folder }}
 
   docker:
-    needs:
-      - test-node
-      # - test-go
+    # needs:
+    #   - test-go
     permissions:
       packages: write
     runs-on: ubuntu-latest
@@ -115,6 +74,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Build and test
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ matrix.folder }}
+          target: test
       -
         name: Build and push
         uses: docker/build-push-action@v4

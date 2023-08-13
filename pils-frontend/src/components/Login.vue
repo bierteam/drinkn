@@ -1,3 +1,60 @@
+<script>
+import Api from '../services/Api'
+import { store } from '../store.js'
+
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+      token: undefined,
+      otpRequired: false,
+      remember: true,
+      error: '',
+      message: ''
+    }
+  },
+  computed: {
+    isDisabled: function () {
+      if (!this.$data.username || !this.$data.password) {
+        return true
+      }
+    }
+  },
+  methods: {
+    Post() {
+      const data = {
+        username: this.$data.username,
+        password: this.$data.password,
+        remember: this.$data.remember,
+        token: this.$data.token
+      }
+      Api().post(`/api/v1/users/login`, data)
+        .then(response => {
+          if (response.data.otp) {
+            this.otpRequired = true
+            this.message = 'Two factor authentication required.'
+          } else if (response.status === 200) {
+            store.setAuthenticated(response.data._id)
+            if (response.data.admin) {
+              store.setAdmin(true)
+            }
+            const query = this.$route.query
+            this.$router.push((query.redirect) ? {path: query.redirect, query} : '/discounts')
+          }
+        })
+        .catch(e => {
+          this.error = e.response?.data || e
+          console.error(e)
+        })
+    }
+  },
+  updated() {
+    if (this.otpRequired) this.$refs.token.focus()
+  }
+}
+</script>
+
 <template>
 <body>
   <div class="hero-body">
@@ -48,74 +105,3 @@
   </div>
 </body>
 </template>
-
-<script>
-import Api from '@/services/Api'
-
-export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-      token: undefined,
-      otpRequired: false,
-      remember: true,
-      error: '',
-      message: ''
-    }
-  },
-  computed: {
-    isDisabled: function () {
-      if (!this.$data.username || !this.$data.password) {
-        return true
-      }
-    }
-  },
-  methods: {
-    Post() {
-      const data = {
-        username: this.$data.username,
-        password: this.$data.password,
-        remember: this.$data.remember,
-        token: this.$data.token
-      }
-      Api().post(`/api/v1/users/login`, data)
-        .then(response => {
-          if (response.data.otp) {
-            this.otpRequired = true
-            this.message = 'Two factor authentication required.'
-          } else if (response.status === 200) {
-            this.$parent.isAuthenticated = true
-            localStorage.setItem('isAuthenticated', response.data._id)
-            if (response.data.admin) {
-              this.$parent.isAdmin = true
-              localStorage.setItem('isAdmin', 'You should not be here ಠ_ಠ')
-            }
-            const query = this.$route.query
-            this.$router.push((query.redirect) ? {
-              path: query.redirect,
-              query
-            } : '/home')
-          }
-        })
-        .catch(e => {
-          this.error = e.response.data || e
-          console.error(e)
-        })
-    }
-  },
-  updated() {
-    if (this.otpRequired) this.$refs.token.focus()
-  },
-  beforeMount() { // Refresh, fresh page load
-    if (this.$parent.isAuthenticated) {
-      this.$router.push('/home')
-    }
-  },
-  beforeUpdate() { // Uri change, link, etc.
-    if (this.$parent.isAuthenticated) {
-      this.$router.push('/home')
-    }
-  }
-}
-</script>

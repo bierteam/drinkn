@@ -1,108 +1,12 @@
-<template>
-<div class='container'>
-  <nav class='level'>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Discounts</p>
-        <p class='title'>{{ discounts.length}}</p>
-      </div>
-    </div>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Average discount</p>
-        <p class='title'>{{ average(discountAverage) | currency }} & {{ Math.round(average(percentageAverage)) }}%</p>
-      </div>
-    </div>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Average liter price</p>
-        <p class='title'>{{ average(literAverage) | currency }}</p>
-      </div>
-    </div>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Online Discounts</p>
-        <p class='title'>{{ onlineCounter }}</p>
-      </div>
-    </div>
-  </nav>
-  <progress v-if="discounts.length === 0" class="progress is-small"></progress>
-  <table class='table container'>
-    <caption>Table of beer discounts</caption>
-    <thead>
-      <tr>
-        <!-- first row -->
-        <th><input class='input' v-model='search' type='text' placeholder='Search' autofocus></th>
-        <th><input type="checkbox" v-model="zero" @click='zero = !zero'></th>
-        <th>
-          <div class="select">
-            <select v-model="store">
-              <option value="">Select a store</option>
-              <option v-for="option in stores" :key='option'>
-                {{ option }}
-              </option>
-            </select>
-          </div>
-        </th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th>
-          <div class="select">
-            <select class='select' v-model="volume">
-              <option value="">Select a volume</option>
-              <option v-for="option in volumes" :key='option'>
-                {{ option }}
-              </option>
-            </select>
-          </div>
-        </th>
-        <th><input type="checkbox" v-model="online" @click='online = !online'></th>
-      </tr>
-      <tr>
-        <!-- second row -->
-        <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
-        <th @click='online = !online'>Link</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <!-- bottom row -->
-        <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
-        <th @click='online = !online'>Link</th>
-      </tr>
-    </tfoot>
-    <tbody>
-      <!-- table -->
-      <tr v-for='discount in processed' :key='discount.id'>
-        <td @click='search = discount.brand'>{{ discount.brand }}</td>
-        <td>{{ discount.alcoholPercentage / 100 }}%</td>
-        <td @click='store = discount.store'>{{ discount.store }} </td>
-        <td class='has-text-success'>{{ discount.newPrice / 100 | currency }}</td>
-        <td class='has-text-danger'>{{ discount.oldPrice / 100 | currency }}</td>
-        <td>{{ discount.literPrice | currency }}</td>
-        <td>{{ discount.discount | currency }}</td>
-        <td>{{ discount.discountPercentage }}%</td>
-        <td @click='volume = discount.volume'>{{ discount.volume }}</td>
-        <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
-        <a v-else></a>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</template>
-
 <script>
-import Api from '@/services/Api'
+import Api from '../services/Api'
 import Vue2Filters from 'vue2-filters'
 
 export default {
   mixins: [Vue2Filters.mixin],
   data() {
     return {
-      discountAverage: [],
+      discountAverage: [0],
       discounts: [],
       headers: {
         brand: 'Brand',
@@ -113,12 +17,13 @@ export default {
         literPrice: 'Liter',
         discount: 'Discount',
         discountPercentage: '%',
-        volume: 'Volume'
+        volume: 'Volume',
+        uri: 'Link'
       },
-      literAverage: [],
+      literAverage: [0],
       online: false,
       onlineCounter: 0,
-      percentageAverage: [],
+      percentageAverage: [0],
       search: '',
       sort: 'literPrice',
       sortDir: 1,
@@ -172,6 +77,16 @@ export default {
         result += Number(item)
       }
       return result / inputArray.length
+    },
+    formatPrice: function (value) {
+      if (typeof value !== "number") {
+          return value
+      }
+      const formatter = new Intl.NumberFormat('nl-NL', {
+          style: 'currency',
+          currency: 'EUR'
+      })
+      return formatter.format(value)
     }
   },
   computed: {
@@ -209,3 +124,116 @@ export default {
   },
 }
 </script>
+
+<template>
+<div class='container'>
+  <nav class='level'>
+    <div class='level-item has-text-centered'>
+      <div>
+        <p class='heading'>Discounts</p>
+        <p class='title'>{{ discounts.length}}</p>
+      </div>
+    </div>
+    <div class='level-item has-text-centered'>
+      <div>
+        <p class='heading'>Average discount</p>
+        <p class='title'>{{ formatPrice(average(discountAverage)) }} & {{ Math.round(average(percentageAverage)) }}%</p>
+      </div>
+    </div>
+    <div class='level-item has-text-centered'>
+      <div>
+        <p class='heading'>Average liter price</p>
+        <p class='title'>{{ formatPrice(average(literAverage)) }}</p>
+      </div>
+    </div>
+    <div class='level-item has-text-centered'>
+      <div>
+        <p class='heading'>Online Discounts</p>
+        <p class='title'>{{ onlineCounter }}</p>
+      </div>
+    </div>
+  </nav>
+  <progress v-if="discounts.length === 0" class="progress is-small"></progress>
+  <table class='table container'>
+    <caption class='is-hidden'>Table of beer discounts</caption>
+    <thead>
+      <tr>
+        <!-- first row -->
+        <th>
+          <div class="control has-icons-right">
+            <input class='input' type='text' placeholder='Search' v-model="search" autofocus>
+            <span class="icon is-small is-right">
+              <i class="delete" :class="{'is-hidden': !search }" @click='search = null'></i>
+            </span>
+          </div>
+        </th>
+        <th>
+          <button class="button" :class="{'is-primary': zero }" @click='zero = !zero'>0.0</button>
+        </th>
+        <th>
+          <div class="dropdown is-hoverable">
+            <div class="dropdown-trigger">
+              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                <div @click='store = null'>{{ store || "Select a store" }}</div>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+              <div class="dropdown-content" v-for="option in stores" :key='option'>
+                <a class="dropdown-item" @click='store = option'>{{ option }}</a>
+              </div>
+            </div>
+          </div>
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>
+          <div class="dropdown is-hoverable">
+            <div class="dropdown-trigger">
+              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                <div @click='volume = null'>{{ volume || "Select a Volume" }}</div>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+              <div class="dropdown-content" v-for="option in volumes" :key='option'>
+                <a class="dropdown-item" @click='volume = option'>{{ option }}</a>
+              </div>
+            </div>
+          </div>
+        </th>
+        <th>
+          <button class="button" :class="{'is-primary': online }" @click='online = !online'>Online</button>
+        </th>
+      </tr>
+      <tr>
+        <!-- second row -->
+        <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <!-- bottom row -->
+        <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
+      </tr>
+    </tfoot>
+    <tbody>
+      <!-- table -->
+      <tr v-for='discount in processed' :key='discount.id'>
+        <td @click='search = discount.brand'>{{ discount.brand }}</td>
+        <td>{{ discount.alcoholPercentage / 100 }}%</td>
+        <td @click='store = discount.store'>{{ discount.store }} </td>
+        <td class='has-text-success'>{{ formatPrice(discount.newPrice / 100) }}</td>
+        <td class='has-text-danger'>{{ formatPrice(discount.oldPrice / 100) }}</td>
+        <td>{{ formatPrice(discount.literPrice) }}</td>
+        <td>{{ formatPrice(discount.discount) }}</td>
+        <td>{{ discount.discountPercentage }}%</td>
+        <td @click='volume = discount.volume'>{{ discount.volume }}</td>
+        <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
+        <a v-else></a>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</template>

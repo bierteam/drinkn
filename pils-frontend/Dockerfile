@@ -1,15 +1,23 @@
-# ---- Build with node ----
-FROM node:20 AS build  
+FROM node:20-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+COPY vite.config.js ./
 COPY public ./public
 COPY index.html ./
-COPY vite.config.js ./
 COPY src ./src
-RUN npm run build
 
-# --- Release with Alpine nginx----
+FROM base AS test
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm run test
+
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm run build
+
 FROM nginx:alpine
 RUN rm -rf /etc/nginx/conf.d /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/nginx.conf

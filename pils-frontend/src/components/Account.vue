@@ -1,9 +1,128 @@
+<script>
+import Api from '../services/Api'
+import pwned from "../services/pwned"
+import QRCode from "qrcode"
+import { store } from '../store.js'
+
+export default {
+  data() {
+    return {
+      user: {},
+      otp: {
+        secret: '',
+        uri: '',
+        QRdata: ''
+      },
+      newUser: {},
+      verifyPassword: undefined,
+      error: '',
+      state: {
+        error: false,
+        saving: false,
+        saved: false,
+        isPwned: false,
+        notEqual: false,
+        deleteMsg: false
+      }
+    }
+  },
+  created() {
+    this.Account()
+  },
+  computed: {
+    async isDisabled() {
+      // Check if the password is pwned
+      this.state.isPwned = await pwned(this.newUser.password);
+
+      // Check if the password is not equal to the verified password
+      this.state.notEqual = this.newUser.password !== this.verifyPassword;
+
+      // Check if there is anything to edit (password, username, or otp)
+      const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp;
+
+      // Determine if the form should be disabled
+      return !(this.newUser.oldPassword && stuffToEdit && !this.state.isPwned && !this.state.notEqual);
+    }
+  },
+  methods: {
+    Account() {
+      Api().get(`/api/v1/account`, {})
+        .then(response => {
+          if (response.status === 200) {
+            // get correct user from array
+            this.user = response.data
+          }
+        })
+        .catch(e => {
+          this.error = e.response.data || e
+          console.error(e)
+        })
+    },
+    Otp() {
+      Api().get(`/api/v1/account/otp`, {})
+        .then(response => {
+          if (response.status === 200) {
+            QRCode.toDataURL(response.data.uri, {
+              errorCorrectionLevel: 'H'
+            }, function (err, result) {
+              if (err) console.error(err)
+              response.data.QRdata = result
+              return response.data
+            })
+            this.otp = response.data
+          }
+        })
+        .catch(e => {
+          this.error = e.response.data || e
+          console.error()
+        })
+    },
+    Update() {
+      this.state.saved = false
+      this.state.saving = true
+      const user = this.newUser
+      Api().post(`/api/v1/account`, {
+          user
+        })
+        .then(response => {
+          this.user = response.data
+          this.state.saved = true
+          this.state.saving = false
+          this.state.error = false
+          this.newUser = {}
+          this.otp = {}
+          this.verifyPassword = undefined
+        })
+        .catch(e => {
+          this.error = e.response.data || e
+          console.error(e)
+          this.state.error = true
+          this.state.saving = false
+        })
+    },
+    Delete() {
+      Api().delete(`/api/v1/account/delete`)
+        .then(response => {
+          if (response.status === 200) {
+            store.logout()
+            this.$router.push('/login')
+          }
+        })
+        .catch(e => {
+          this.error = e.response.data || e
+          console.error(e)
+        })
+    }
+  }
+}
+</script>
+
 <template>
 <body>
   <div class="hero-body">
     <div class="container">
       <div class="column is-4 is-offset-4">
-        <div v-if="state.pwned" class="notification is-warning">
+        <div v-if="state.isPwned" class="notification is-warning">
           This password has been pwned.
         </div>
         <div v-if="state.notEqual" class="notification is-warning">
@@ -80,126 +199,6 @@
   </div>
 </body>
 </template>
-
-<script>
-import Api from '@/services/Api'
-import pwned from "@/services/pwned"
-import QRCode from "qrcode"
-
-export default {
-  data() {
-    return {
-      user: {},
-      otp: {
-        secret: '',
-        uri: '',
-        QRdata: ''
-      },
-      newUser: {},
-      verifyPassword: undefined,
-      error: '',
-      state: {
-        error: false,
-        saving: false,
-        saved: false,
-        pwned: false,
-        notEqual: false,
-        deleteMsg: false
-      }
-    }
-  },
-  created() {
-    this.Account()
-  },
-  computed: {
-    async isDisabled() {
-      // Check if the password is pwned
-      this.state.pwned = await pwned(this.newUser.password);
-
-      // Check if the password is not equal to the verified password
-      this.state.notEqual = this.newUser.password !== this.verifyPassword;
-
-      // Check if there is anything to edit (password, username, or otp)
-      const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp;
-
-      // Determine if the form should be disabled
-      return !(this.newUser.oldPassword && stuffToEdit && !this.state.pwned && !this.state.notEqual);
-    }
-  },
-  methods: {
-    Account() {
-      Api().get(`/api/v1/account`, {})
-        .then(response => {
-          if (response.status === 200) {
-            // get correct user from array
-            this.user = response.data
-          }
-        })
-        .catch(e => {
-          this.error = e.response.data || e
-          console.error(e)
-        })
-    },
-    Otp() {
-      Api().get(`/api/v1/account/otp`, {})
-        .then(response => {
-          if (response.status === 200) {
-            QRCode.toDataURL(response.data.uri, {
-              errorCorrectionLevel: 'H'
-            }, function (err, result) {
-              if (err) console.error(err)
-              response.data.QRdata = result
-              return response.data
-            })
-            this.otp = response.data
-          }
-        })
-        .catch(e => {
-          this.error = e.response.data || e
-          console.error()
-        })
-    },
-    Update() {
-      this.state.saved = false
-      this.state.saving = true
-      const user = this.newUser
-      Api().post(`/api/v1/account`, {
-          user
-        })
-        .then(response => {
-          this.user = response.data
-          this.state.saved = true
-          this.state.saving = false
-          this.state.error = false
-          this.newUser = {}
-          this.otp = {}
-          this.verifyPassword = undefined
-        })
-        .catch(e => {
-          this.error = e.response.data || e
-          console.error(e)
-          this.state.error = true
-          this.state.saving = false
-        })
-    },
-    Delete() {
-      Api().delete(`/api/v1/account/delete`)
-        .then(response => {
-          if (response.status === 200) {
-            localStorage.clear()
-            this.$parent.isAuthenticated = false
-            this.$parent.isAdmin = false
-            this.$router.push('/login')
-          }
-        })
-        .catch(e => {
-          this.error = e.response.data || e
-          console.error(e)
-        })
-    }
-  }
-}
-</script>
 
 <style>
 #qrcode {

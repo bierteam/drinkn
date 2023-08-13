@@ -19,14 +19,14 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
-    "moment": "^2.23.0",
-    "mongoose": "^7.0.0",
-    "rev-hash": "3.0.0"
+    "moment": "^2.29.4",
+    "mongoose": "^7.4.2",
+    "rev-hash": "^4.0.0"
   },
   "devDependencies": {
-    "dotenv": "16.3.1",
-    "jest": "29.6.2",
-    "rimraf": "5.0.1",
-    "standard": "17.1.0"
+    "dotenv": "^16.3.1",
+    "jest": "^29.6.2",
+    "rimraf": "^5.0.1",
+    "standard": "^17.1.0"
   }
 }

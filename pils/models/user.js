@@ -70,7 +70,6 @@ UserSchema.statics.authenticate = async function (username, password, callback) 
     }
 
     const result = await bcrypt.compare(password, user.password)
-
     if (result === true) {
       return callback(null, user)
     } else {
@@ -78,7 +77,7 @@ UserSchema.statics.authenticate = async function (username, password, callback) 
     }
   } catch (err) {
     console.error(err)
-    throw err
+    return callback()
   }
 }
 
