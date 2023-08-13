@@ -1,4 +1,5 @@
 {{- if .Values.pr.enabled }}
+# https://github.com/bitnami/containers/tree/main/bitnami/mongodb
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -17,28 +18,22 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: mongo:4.4.18
+          image: bitnami/mongodb:4.4.15 # https://github.com/docker-library/mongo/issues/583#issuecomment-1317935949
           ports:
             - containerPort: 27017
           env:
-            - name: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGODB_ENABLE_IPV6
+              value: "true"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "true"
+            - name: MONGODB_DATABASE
               valueFrom:
                 secretKeyRef: 
-                  name: drinkn-env
-                  key: DB_USERNAME
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef: 
-                  name: drinkn-env
-                  key: DB_PASSWORD
-            - name: MONGO_INITDB_DATABASE
-              valueFrom:
-                secretKeyRef:
                   name: drinkn-env
                   key: DB_NAME
           volumeMounts:
             - name: mongo-storage
-              mountPath: /data/db
+              mountPath: /bitnami/mongodb
           readinessProbe:
             exec:
               command: ["mongo", "--eval", "db.adminCommand('ping')"]
@@ -68,8 +63,8 @@ metadata:
 data:
   import.sh: |
     #!/bin/bash
-    mongoimport --host localhost --collection beers --file /docker-entrypoint-initdb.d/beers.json --jsonArray
-    mongoimport --host localhost --collection stores --file /docker-entrypoint-initdb.d/stores.json --jsonArray
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection beers --file /docker-entrypoint-initdb.d/beers.json --jsonArray
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection stores --file /docker-entrypoint-initdb.d/stores.json --jsonArray
   stores.json: |
     [{
       "_id": {
