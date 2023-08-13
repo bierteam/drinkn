@@ -8,10 +8,10 @@ const context = 'Logging'
 router.get('/', isAdmin, async function (req, res) {
   try {
     const result = await logging.find({})
-                            .select('message date context type ip')
-                            .limit(10000)
-                            .sort({ date: 'descending' })
-                            .exec()
+      .select('message date context type ip')
+      .limit(10000)
+      .sort({ date: 'descending' })
+      .exec()
     writeLog(`${req.session.username}: ${req.session.userId} requested log data`, 'Info', context, req.realIp)
     res.json(result)
   } catch (err) {
