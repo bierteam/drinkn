@@ -1,6 +1,6 @@
+import revisionHash from 'rev-hash'
 const uriPrettifier = require('./uriPrettifier')
 const updateStores = require('./updateStores')
-const revHash = require('rev-hash')
 const moment = require('moment')
 moment.locale('nl')
 const validateKeys = require('./validateKeys')
@@ -26,7 +26,7 @@ const processData = (data, stores) => {
     data[obj].volume = data[obj].korte_name
     data[obj].rawUri = data[obj].aanbieding_link
     data[obj].rawValidity = data[obj].einddatum
-    data[obj].id = revHash(data[obj].uid)
+    data[obj].id = revisionHash(data[obj].uid)
     delete data[obj].merken_soort_omschrijving
     delete data[obj].brouwerij_omschrijving
     delete data[obj].gisting_omschrijving

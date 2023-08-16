@@ -20,7 +20,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "moment": "^2.29.4",
-    "mongoose": "^7.4.2",
+    "mongoose": "^7.4.3",
     "rev-hash": "^4.0.0"
   },
   "devDependencies": {
