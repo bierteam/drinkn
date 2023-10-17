@@ -14,9 +14,6 @@ dependencies:
   mongoose:
     specifier: ^7.4.3
     version: 7.5.0
-  rev-hash:
-    specifier: ^4.0.0
-    version: 4.0.0
 
 devDependencies:
   dotenv:
@@ -3505,11 +3502,6 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
-
-  /rev-hash@4.0.0:
-    resolution: {integrity: sha512-5w/auZRs65pf1AkZIbfICeorQfOCb6XVWaHmDEbkMyjmyRMxck+W0Erdj9zffuBRXxn5cbKfgmWQ9GpgR8dFZQ==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dev: false
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
