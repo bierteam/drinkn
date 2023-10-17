@@ -1,10 +1,10 @@
-import revisionHash from 'rev-hash'
 const uriPrettifier = require('./uriPrettifier')
 const updateStores = require('./updateStores')
 const moment = require('moment')
 moment.locale('nl')
 const validateKeys = require('./validateKeys')
 const mandatoryKeys = ['id', 'brand', 'store', 'pricing', 'volume', 'rawValidity']
+const crypto = require('crypto')
 // TODO: Fix this
 // const beer = require('../models/beer')
 // const mandatoryKeys = beer.schema._requiredpaths
@@ -26,7 +26,7 @@ const processData = (data, stores) => {
     data[obj].volume = data[obj].korte_name
     data[obj].rawUri = data[obj].aanbieding_link
     data[obj].rawValidity = data[obj].einddatum
-    data[obj].id = revisionHash(data[obj].uid)
+    data[obj].id = crypto.createHash('md5').update(data[obj].uid).digest('hex').slice(0, 10)
     delete data[obj].merken_soort_omschrijving
     delete data[obj].brouwerij_omschrijving
     delete data[obj].gisting_omschrijving
