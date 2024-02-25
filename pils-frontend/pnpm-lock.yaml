@@ -10,7 +10,7 @@ dependencies:
     version: 4.4.0(vite@4.5.2)(vue@3.3.7)
   axios:
     specifier: ^1.4.0
-    version: 1.6.0
+    version: 1.6.7
   browser-update:
     specifier: ^3.3.44
     version: 3.3.44
@@ -614,8 +614,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: false
 
-  /axios@1.6.0:
-    resolution: {integrity: sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==}
+  /axios@1.6.7:
+    resolution: {integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==}
     dependencies:
       follow-redirects: 1.15.5
       form-data: 4.0.0
