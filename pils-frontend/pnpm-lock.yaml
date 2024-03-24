@@ -7,7 +7,7 @@ settings:
 dependencies:
   '@vitejs/plugin-vue':
     specifier: ^4.2.3
-    version: 4.6.2(vite@4.5.2)(vue@3.4.21)
+    version: 4.6.2(vite@4.5.3)(vue@3.4.21)
   axios:
     specifier: ^1.4.0
     version: 1.6.8
@@ -28,7 +28,7 @@ dependencies:
     version: 17.1.0
   vite:
     specifier: ^4.5.2
-    version: 4.5.2
+    version: 4.5.3
   vue:
     specifier: ^3.3.4
     version: 3.4.21
@@ -380,14 +380,14 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: false
 
-  /@vitejs/plugin-vue@4.6.2(vite@4.5.2)(vue@3.4.21):
+  /@vitejs/plugin-vue@4.6.2(vite@4.5.3)(vue@3.4.21):
     resolution: {integrity: sha512-kqf7SGFoG+80aZG6Pf+gsZIVvGSCKE98JbiWqcCV9cThtg91Jav0yvYFC9Zb+jKetNGF6ZKeoaxgZfND21fWKw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0 || ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.5.2
+      vite: 4.5.3
       vue: 3.4.21
     dev: false
 
@@ -418,7 +418,7 @@ packages:
       '@vue/shared': 3.4.21
       estree-walker: 2.0.2
       magic-string: 0.30.7
-      postcss: 8.4.35
+      postcss: 8.4.38
       source-map-js: 1.0.2
     dev: false
 
@@ -2106,13 +2106,13 @@ packages:
     engines: {node: '>= 0.4'}
     dev: false
 
-  /postcss@8.4.35:
-    resolution: {integrity: sha512-u5U8qYpBCpN13BsiEB0CbR1Hhh4Gc0zLFuedrHJKMctHCHAGrMdG0PRM/KErzAL3CU6/eckEtmHNB3x6e3c0vA==}
+  /postcss@8.4.38:
+    resolution: {integrity: sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.0
-      source-map-js: 1.0.2
+      source-map-js: 1.2.0
     dev: false
 
   /prelude-ls@1.2.1:
@@ -2340,6 +2340,11 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
+  /source-map-js@1.2.0:
+    resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
   /standard-engine@15.1.0:
     resolution: {integrity: sha512-VHysfoyxFu/ukT+9v49d4BRXIokFRZuH3z1VRxzFArZdjSCFpro6rEIU3ji7e4AoAtuSfKBkiOmsrDqKW5ZSRw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -2563,8 +2568,8 @@ packages:
     engines: {node: '>=0.10.48'}
     dev: false
 
-  /vite@4.5.2:
-    resolution: {integrity: sha512-tBCZBNSBbHQkaGyhGCDUGqeo2ph8Fstyp6FMSvTtsXeZSPpSMGlviAOav2hxVTqFcx8Hj/twtWKsMJXNY0xI8w==}
+  /vite@4.5.3:
+    resolution: {integrity: sha512-kQL23kMeX92v3ph7IauVkXkikdDRsYMGTVl5KY2E9OY4ONLvkHf04MDTbnfo6NKxZiDLWzVpP5oTa8hQD8U3dg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -2592,7 +2597,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.18.20
-      postcss: 8.4.35
+      postcss: 8.4.38
       rollup: 3.29.4
     optionalDependencies:
       fsevents: 2.3.3
