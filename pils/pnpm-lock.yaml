@@ -16,7 +16,7 @@ dependencies:
     version: 2.0.0
   connect-mongo:
     specifier: ^5.0.0
-    version: 5.1.0(express-session@1.18.0)(mongodb@6.6.1)
+    version: 5.1.0(express-session@1.18.0)(mongodb@6.6.2)
   cors:
     specifier: ^2.8.5
     version: 2.8.5
@@ -34,7 +34,7 @@ dependencies:
     version: 2.30.1
   mongoose:
     specifier: ^7.4.3
-    version: 7.6.11
+    version: 7.6.12
   otplib:
     specifier: ^12.0.1
     version: 12.0.1
@@ -203,8 +203,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/node@20.12.7:
-    resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
+  /@types/node@20.12.12:
+    resolution: {integrity: sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw==}
     dependencies:
       undici-types: 5.26.5
     dev: false
@@ -213,8 +213,8 @@ packages:
     resolution: {integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==}
     dev: false
 
-  /@types/whatwg-url@11.0.4:
-    resolution: {integrity: sha512-lXCmTWSHJvf0TRSO58nm978b8HJ/EdsSsEKLd3ODHFjo+3VGAyyTp4v50nWvwtzBxSMQrVOK7tcuN0zGPLICMw==}
+  /@types/whatwg-url@11.0.5:
+    resolution: {integrity: sha512-coYR071JRaHa+xoEvvYqvnIHaVqaYrLPbsufM9BF63HkwI5Lgmy2QR8Q5K/lYDYo5AK82wOvSOS0UsLTpTG7uQ==}
     dependencies:
       '@types/webidl-conversions': 7.0.3
     dev: false
@@ -222,7 +222,7 @@ packages:
   /@types/whatwg-url@8.2.2:
     resolution: {integrity: sha512-FtQu10RWgn3D9U4aazdwIE2yzphmTJREDqNdODHrbrZmmMqI0vMheC/6NE/J1Yveaj8H+ela+YwWTjq5PGmuhA==}
     dependencies:
-      '@types/node': 20.12.7
+      '@types/node': 20.12.12
       '@types/webidl-conversions': 7.0.3
     dev: false
 
@@ -546,7 +546,7 @@ packages:
     engines: {node: '>=0.8'}
     dev: false
 
-  /connect-mongo@5.1.0(express-session@1.18.0)(mongodb@6.6.1):
+  /connect-mongo@5.1.0(express-session@1.18.0)(mongodb@6.6.2):
     resolution: {integrity: sha512-xT0vxQLqyqoUTxPLzlP9a/u+vir0zNkhiy9uAdHjSCcUUf7TS5b55Icw8lVyYFxfemP3Mf9gdwUOgeF3cxCAhw==}
     engines: {node: '>=12.9.0'}
     peerDependencies:
@@ -556,7 +556,7 @@ packages:
       debug: 4.3.4(supports-color@5.5.0)
       express-session: 1.18.0
       kruptein: 3.0.6
-      mongodb: 6.6.1
+      mongodb: 6.6.2
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -1898,12 +1898,12 @@ packages:
   /mongodb-connection-string-url@3.0.1:
     resolution: {integrity: sha512-XqMGwRX0Lgn05TDB4PyG2h2kKO/FfWJyCzYQbIhXUxz7ETt0I/FqHjUeqj37irJ+Dl1ZtU82uYyj14u2XsZKfg==}
     dependencies:
-      '@types/whatwg-url': 11.0.4
+      '@types/whatwg-url': 11.0.5
       whatwg-url: 13.0.0
     dev: false
 
-  /mongodb@5.9.1:
-    resolution: {integrity: sha512-NBGA8AfJxGPeB12F73xXwozt8ZpeIPmCUeWRwl9xejozTXFes/3zaep9zhzs1B/nKKsw4P3I4iPfXl3K7s6g+Q==}
+  /mongodb@5.9.2:
+    resolution: {integrity: sha512-H60HecKO4Bc+7dhOv4sJlgvenK4fQNqqUIlXxZYQNbfEWSALGAwGoyJd/0Qwk4TttFXUOHJ2ZJQe/52ScaUwtQ==}
     engines: {node: '>=14.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -1930,8 +1930,8 @@ packages:
       '@mongodb-js/saslprep': 1.1.7
     dev: false
 
-  /mongodb@6.6.1:
-    resolution: {integrity: sha512-FvA9ocQzRzzvhin1HHLrZDEm0gWvnksbiciYrU/0GmET/t/DdDiMJroA7rfDrHM3AInwGVYw2fwAU2oNYUyUEw==}
+  /mongodb@6.6.2:
+    resolution: {integrity: sha512-ZF9Ugo2JCG/GfR7DEb4ypfyJJyiKbg5qBYKRintebj8+DNS33CyGMkWbrS9lara+u+h+yEOGSRiLhFO/g1s1aw==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -1962,13 +1962,13 @@ packages:
       mongodb-connection-string-url: 3.0.1
     dev: false
 
-  /mongoose@7.6.11:
-    resolution: {integrity: sha512-/MBaeXqGxNaOgtlzhXgsV2TwpH2nU7ipqI1bGx/Q6IMo5OYh5CTBX2H8fpYD2BHKVMvIvIxfJIzeidqr6ieVhw==}
+  /mongoose@7.6.12:
+    resolution: {integrity: sha512-bjnOELGT2wWV3qjPZC4hol+O/QP4i7LrWenrtaN76A0X69T+Y19lmAhp74kLTNY13Djp1Agz1hoOq3bthmGLTg==}
     engines: {node: '>=14.20.1'}
     dependencies:
       bson: 5.5.1
       kareem: 2.5.1
-      mongodb: 5.9.1
+      mongodb: 5.9.2
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
