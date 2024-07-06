@@ -16,7 +16,7 @@ dependencies:
     version: 2.0.0
   connect-mongo:
     specifier: ^5.0.0
-    version: 5.1.0(express-session@1.18.0)(mongodb@6.7.0)
+    version: 5.1.0(express-session@1.18.0)(mongodb@6.8.0)
   cors:
     specifier: ^2.8.5
     version: 2.8.5
@@ -51,7 +51,7 @@ devDependencies:
     version: 3.1.4
   rimraf:
     specifier: ^5.0.1
-    version: 5.0.7
+    version: 5.0.8
   standard:
     specifier: ^17.1.0
     version: 17.1.0
@@ -469,8 +469,8 @@ packages:
     engines: {node: '>=14.20.1'}
     dev: false
 
-  /bson@6.7.0:
-    resolution: {integrity: sha512-w2IquM5mYzYZv6rs3uN2DZTOBe2a0zXLj53TGDqwF4l6Sz/XsISrisXOJihArF9+BZ6Cq/GjVht7Sjfmri7ytQ==}
+  /bson@6.8.0:
+    resolution: {integrity: sha512-iOJg8pr7wq2tg/zSlCCHMi3hMm5JTOxLTagf3zxhcenHsFp+c6uOs6K7W5UE7A4QIJGtqh/ZovFNMP4mOPJynQ==}
     engines: {node: '>=16.20.1'}
     dev: false
 
@@ -543,7 +543,7 @@ packages:
     engines: {node: '>=0.8'}
     dev: false
 
-  /connect-mongo@5.1.0(express-session@1.18.0)(mongodb@6.7.0):
+  /connect-mongo@5.1.0(express-session@1.18.0)(mongodb@6.8.0):
     resolution: {integrity: sha512-xT0vxQLqyqoUTxPLzlP9a/u+vir0zNkhiy9uAdHjSCcUUf7TS5b55Icw8lVyYFxfemP3Mf9gdwUOgeF3cxCAhw==}
     engines: {node: '>=12.9.0'}
     peerDependencies:
@@ -553,7 +553,7 @@ packages:
       debug: 4.3.5(supports-color@5.5.0)
       express-session: 1.18.0
       kruptein: 3.0.6
-      mongodb: 6.7.0
+      mongodb: 6.8.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -1282,8 +1282,8 @@ packages:
       is-callable: 1.2.7
     dev: true
 
-  /foreground-child@3.1.1:
-    resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
+  /foreground-child@3.2.1:
+    resolution: {integrity: sha512-PXUUyLqrR2XCWICfv6ukppP96sdFwWbNEnfEMt7jNsISjMsvaLNinAHNDYyvkyU+SZG2BTSbT5NjG+vZslfGTA==}
     engines: {node: '>=14'}
     dependencies:
       cross-spawn: 7.0.3
@@ -1367,15 +1367,16 @@ packages:
       is-glob: 4.0.3
     dev: true
 
-  /glob@10.4.1:
-    resolution: {integrity: sha512-2jelhlq3E4ho74ZyVLN03oKdAZVUa6UDZzFLVH1H7dnoax+y9qyaq8zBkfDIggjniU19z0wU18y16jMB2eyVIw==}
-    engines: {node: '>=16 || 14 >=14.18'}
+  /glob@10.4.3:
+    resolution: {integrity: sha512-Q38SGlYRpVtDBPSWEylRyctn7uDeTp4NQERTLiCT1FqA9JXPYWqAVmQU6qh4r/zMM5ehxTcbaO8EjhWnvEhmyg==}
+    engines: {node: '>=18'}
     hasBin: true
     dependencies:
-      foreground-child: 3.1.1
-      jackspeak: 3.1.2
-      minimatch: 9.0.4
+      foreground-child: 3.2.1
+      jackspeak: 3.4.1
+      minimatch: 9.0.5
       minipass: 7.1.2
+      package-json-from-dist: 1.0.0
       path-scurry: 1.11.1
     dev: true
 
@@ -1736,9 +1737,9 @@ packages:
       set-function-name: 2.0.2
     dev: true
 
-  /jackspeak@3.1.2:
-    resolution: {integrity: sha512-kWmLKn2tRtfYMF/BakihVVRzBKOxz4gJMiL2Rj91WnAB5TPZumSH99R/Yf1qE1u4uRimvCSJfm6hnxohXeEXjQ==}
-    engines: {node: '>=14'}
+  /jackspeak@3.4.1:
+    resolution: {integrity: sha512-U23pQPDnmYybVkYjObcuYMk43VRlMLLqLI+RdZy8s8WV8WsxO9SnqSroKaluuvcNOdCAlauKszDwd+umbot5Mg==}
+    engines: {node: '>=18'}
     dependencies:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
@@ -1856,9 +1857,9 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /lru-cache@10.2.2:
-    resolution: {integrity: sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==}
-    engines: {node: 14 || >=16.14}
+  /lru-cache@10.3.1:
+    resolution: {integrity: sha512-9/8QXrtbGeMB6LxwQd4x1tIMnsmUxMvIH/qWGsccz6bt9Uln3S+sgAaqfQNhbGA8ufzs2fHuP/yqapGgP9Hh2g==}
+    engines: {node: '>=18'}
     dev: true
 
   /media-typer@0.3.0:
@@ -1908,8 +1909,8 @@ packages:
       brace-expansion: 1.1.11
     dev: true
 
-  /minimatch@9.0.4:
-    resolution: {integrity: sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==}
+  /minimatch@9.0.5:
+    resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
@@ -1970,8 +1971,8 @@ packages:
       '@mongodb-js/saslprep': 1.1.7
     dev: false
 
-  /mongodb@6.7.0:
-    resolution: {integrity: sha512-TMKyHdtMcO0fYBNORiYdmM25ijsHs+Njs963r4Tro4OQZzqYigAzYQouwWRg4OIaiLRUEGUh/1UAcH5lxdSLIA==}
+  /mongodb@6.8.0:
+    resolution: {integrity: sha512-HGQ9NWDle5WvwMnrvUxsFYPd3JEbqD3RgABHBQRuoCEND0qzhsd0iH5ypHsf1eJ+sXmvmyKpP+FLOKY8Il7jMw==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -1998,7 +1999,7 @@ packages:
         optional: true
     dependencies:
       '@mongodb-js/saslprep': 1.1.7
-      bson: 6.7.0
+      bson: 6.8.0
       mongodb-connection-string-url: 3.0.1
     dev: false
 
@@ -2216,6 +2217,10 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
+  /package-json-from-dist@1.0.0:
+    resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
+    dev: true
+
   /parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -2264,7 +2269,7 @@ packages:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
     dependencies:
-      lru-cache: 10.2.2
+      lru-cache: 10.3.1
       minipass: 7.1.2
     dev: true
 
@@ -2430,12 +2435,12 @@ packages:
       glob: 7.2.3
     dev: true
 
-  /rimraf@5.0.7:
-    resolution: {integrity: sha512-nV6YcJo5wbLW77m+8KjH8aB/7/rxQy9SZ0HY5shnwULfS+9nmTtVXAJET5NdZmCzA4fPI/Hm1wo/Po/4mopOdg==}
-    engines: {node: '>=14.18'}
+  /rimraf@5.0.8:
+    resolution: {integrity: sha512-XSh0V2/yNhDEi8HwdIefD8MLgs4LQXPag/nEJWs3YUc3Upn+UHa1GyIkEg9xSSNt7HnkO5FjTvmcRzgf+8UZuw==}
+    engines: {node: '>=18'}
     hasBin: true
     dependencies:
-      glob: 10.4.1
+      glob: 10.4.3
     dev: true
 
   /run-parallel@1.2.0:
