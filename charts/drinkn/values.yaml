@@ -1,6 +1,6 @@
 # Default values for drinkn.
 image:
-  tag: "sha-36b0bbe"
+  tag: "sha-00a445c"
 
 replicas: "2"
 
