@@ -13,7 +13,7 @@ dependencies:
     version: 2.30.1
   mongoose:
     specifier: ^7.4.3
-    version: 7.8.0
+    version: 7.8.1
 
 devDependencies:
   dotenv:
@@ -785,6 +785,13 @@ packages:
     resolution: {integrity: sha512-yPL6DyFwY5PiMVEwymNeqUTKsDczQBJ/5T7W/46RwLU/VH+AA8aT5TZkvBviLKLbbm0hlfftEkGrNzfRk/fofQ==}
     dependencies:
       undici-types: 6.11.1
+    dev: true
+
+  /@types/node@22.4.1:
+    resolution: {integrity: sha512-1tbpb9325+gPnKK0dMm+/LMriX0vKxf6RnB0SZUqfyVkQ4fMgUSySqhxE/y8Jvs4NyF1yHzTfG9KlnkIODxPKg==}
+    dependencies:
+      undici-types: 6.19.8
+    dev: false
 
   /@types/stack-utils@2.0.3:
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -797,7 +804,7 @@ packages:
   /@types/whatwg-url@8.2.2:
     resolution: {integrity: sha512-FtQu10RWgn3D9U4aazdwIE2yzphmTJREDqNdODHrbrZmmMqI0vMheC/6NE/J1Yveaj8H+ela+YwWTjq5PGmuhA==}
     dependencies:
-      '@types/node': 22.0.2
+      '@types/node': 22.4.1
       '@types/webidl-conversions': 7.0.3
     dev: false
 
@@ -3182,8 +3189,8 @@ packages:
       '@mongodb-js/saslprep': 1.1.8
     dev: false
 
-  /mongoose@7.8.0:
-    resolution: {integrity: sha512-wLAP7xYz+tEnzy4VsZyMJ1mfaSIwfaeoSQ55ZVovFkdh1FVta6VNSVFCpJMzEinMJsRzTbZTcD4pND9J5aDiyA==}
+  /mongoose@7.8.1:
+    resolution: {integrity: sha512-c3MY8P1mGUGO+0H8rqxMNmAmhP0xb2EPNItfr7tHAHkh52uB0owH4Gu6q1GTUYj8yoHEDG5MN2V1aBBR6aJPuA==}
     engines: {node: '>=14.20.1'}
     dependencies:
       bson: 5.5.1
@@ -4066,6 +4073,11 @@ packages:
 
   /undici-types@6.11.1:
     resolution: {integrity: sha512-mIDEX2ek50x0OlRgxryxsenE5XaQD4on5U2inY7RApK3SOJpofyw7uW2AyfMKkhAxXIceo2DeWGVGwyvng1GNQ==}
+    dev: true
+
+  /undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+    dev: false
 
   /update-browserslist-db@1.1.0(browserslist@4.23.2):
     resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==}
