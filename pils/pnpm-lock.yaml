@@ -48,7 +48,7 @@ devDependencies:
     version: 16.4.5
   nodemon:
     specifier: ^3.0.1
-    version: 3.1.6
+    version: 3.1.7
   rimraf:
     specifier: ^5.0.1
     version: 5.0.10
@@ -2071,8 +2071,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /nodemon@3.1.6:
-    resolution: {integrity: sha512-C8ymJbXpTTinxjWuMfMxw0rZhTn/r7ypSGldQyqPEgDEaVwAthqC0aodsMwontnAInN9TuPwRLeBoyhmfv+iSA==}
+  /nodemon@3.1.7:
+    resolution: {integrity: sha512-hLj7fuMow6f0lbB0cD14Lz2xNjwsyruH251Pk4t/yIitCFJbmY1myuLlHm/q06aST4jg6EgAh74PIBBrRqpVAQ==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
