@@ -39,8 +39,8 @@ dependencies:
     specifier: ^12.0.1
     version: 12.0.1
   uuid:
-    specifier: ^9.0.0
-    version: 9.0.1
+    specifier: ^10.0.0
+    version: 10.0.0
 
 devDependencies:
   dotenv:
@@ -2907,8 +2907,8 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: false
 
-  /uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+  /uuid@10.0.0:
+    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
     hasBin: true
     dev: false
 
