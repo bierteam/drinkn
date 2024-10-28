@@ -16,7 +16,7 @@ importers:
         version: 1.7.7
       browser-update:
         specifier: ^3.3.44
-        version: 3.3.54
+        version: 3.3.55
       bulma:
         specifier: ^0.9.4
         version: 0.9.4
@@ -378,8 +378,8 @@ packages:
   brace-expansion@2.0.1:
     resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
 
-  browser-update@3.3.54:
-    resolution: {integrity: sha512-xk0rZq0ONynUMt8zDB4/SzmMl7iHjkt6i2kOXzukomCCCj8jYssKrXL1eTml4Wb89dn5BxmQT3k6Umxjz5u1Pg==}
+  browser-update@3.3.55:
+    resolution: {integrity: sha512-HMIkrOK21xCY/hw39eQTFN7wtGNRuk7I6VSm2U6mYkhOT/eP9g2uUcYy/tBZY3lo1nvjIrmyY+oeK98a8YRbkA==}
 
   builtins@5.1.0:
     resolution: {integrity: sha512-SW9lzGTLvWTP1AY8xeAMZimqDrIaSdLQUcVr9DMef51niJ022Ri87SwRRKYm4A6iHfkPaiVUu/Duw2Wc4J7kKg==}
@@ -1831,7 +1831,7 @@ snapshots:
     dependencies:
       balanced-match: 1.0.2
 
-  browser-update@3.3.54: {}
+  browser-update@3.3.55: {}
 
   builtins@5.1.0:
     dependencies:
