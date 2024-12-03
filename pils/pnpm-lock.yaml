@@ -45,7 +45,7 @@ dependencies:
 devDependencies:
   dotenv:
     specifier: ^16.3.1
-    version: 16.4.6
+    version: 16.4.7
   nodemon:
     specifier: ^3.0.1
     version: 3.1.7
@@ -709,8 +709,8 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /dotenv@16.4.6:
-    resolution: {integrity: sha512-JhcR/+KIjkkjiU8yEpaB/USlzVi3i5whwOjpIRNGi9svKEXZSe+Qp6IWAjFjv+2GViAoDRCUv/QLNziQxsLqDg==}
+  /dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
     dev: true
 
