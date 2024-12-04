@@ -18,8 +18,8 @@ importers:
         specifier: ^3.3.44
         version: 3.3.55
       bulma:
-        specifier: ^0.9.4
-        version: 0.9.4
+        specifier: ^1.0.0
+        version: 1.0.2
       qrcode:
         specifier: ^1.5.3
         version: 1.5.4
@@ -384,8 +384,8 @@ packages:
   builtins@5.1.0:
     resolution: {integrity: sha512-SW9lzGTLvWTP1AY8xeAMZimqDrIaSdLQUcVr9DMef51niJ022Ri87SwRRKYm4A6iHfkPaiVUu/Duw2Wc4J7kKg==}
 
-  bulma@0.9.4:
-    resolution: {integrity: sha512-86FlT5+1GrsgKbPLRRY7cGDg8fsJiP/jzTqXXVqiUZZ2aZT8uemEOHlU1CDU+TxklPEZ11HZNNWclRBBecP4CQ==}
+  bulma@1.0.2:
+    resolution: {integrity: sha512-D7GnDuF6seb6HkcnRMM9E739QpEY9chDzzeFrHMyEns/EXyDJuQ0XA0KxbBl/B2NTsKSoDomW61jFGFaAxhK5A==}
 
   call-bind@1.0.7:
     resolution: {integrity: sha512-GHTSNSYICQ7scH7sZ+M2rFopRoLh8t2bLSW6BbgrtLsahOIB5iyAVJf9GjWK3cYTDaMj4XdBpM1cA6pIS0Kv2w==}
@@ -1835,7 +1835,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
 
-  bulma@0.9.4: {}
+  bulma@1.0.2: {}
 
   call-bind@1.0.7:
     dependencies:
