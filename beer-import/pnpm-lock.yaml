@@ -13,7 +13,7 @@ dependencies:
     version: 2.30.1
   mongoose:
     specifier: ^7.4.3
-    version: 7.8.4
+    version: 7.8.6
 
 devDependencies:
   dotenv:
@@ -3191,8 +3191,8 @@ packages:
       '@mongodb-js/saslprep': 1.1.9
     dev: false
 
-  /mongoose@7.8.4:
-    resolution: {integrity: sha512-qqQ7imsb9lyrW1jmYj6/wDiSewRtd/gpOU2Vdy1AMRBT7jrghKnoDMbC3keFUzZ0iyo3ZcYumisPKFnap5R4zQ==}
+  /mongoose@7.8.6:
+    resolution: {integrity: sha512-1oVPRHvcmPVwk/zeSTEzayzQEVeYQM1D5zrkLsttfNNB7pPRUmkKeFu6gpbvyEswOuZLrWJjqB8kSTY+k2AZOA==}
     engines: {node: '>=14.20.1'}
     dependencies:
       bson: 5.5.1
