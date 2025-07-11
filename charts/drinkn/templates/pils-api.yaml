@@ -13,16 +13,16 @@ spec:
       app: pils
   strategy:
     type: RollingUpdate
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
   template:
     metadata:
       labels:
         app: pils
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - image: ghcr.io/bierteam/drinkn/pils:{{ .Values.image.tag }}
           securityContext:

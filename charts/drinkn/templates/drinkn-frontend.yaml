@@ -12,10 +12,6 @@ spec:
   selector:
     matchLabels:
       app: drinkn-frontend
-  securityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
   strategy:
     type: RollingUpdate
   template:
@@ -23,6 +19,10 @@ spec:
       labels:
         app: drinkn-frontend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - image: bierteam/frontend
           imagePullPolicy: Always
