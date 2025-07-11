@@ -18,7 +18,7 @@
     "@vitejs/plugin-vue": "^4.2.3",
     "axios": "^1.4.0",
     "browser-update": "^3.3.44",
-    "bulma": "^0.9.4",
+    "bulma": "^1.0.0",
     "pnpm": "^10.13.1",
     "qrcode": "^1.5.3",
     "rimraf": "^5.0.1",
