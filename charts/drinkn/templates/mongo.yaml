@@ -50,7 +50,6 @@ spec:
     - metadata:
         name: mongo-storage
       spec:
-        storageClassName: ceph-filesystem
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
