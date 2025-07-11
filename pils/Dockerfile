@@ -1,7 +1,8 @@
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
+USER node
 WORKDIR /app
 COPY package.json ./
 COPY pnpm-lock.yaml ./
@@ -23,5 +24,4 @@ COPY --from=build /app/node_modules /app/node_modules
 ENV NODE_ENV=production
 ENV PORT=3000
 EXPOSE 3000
-USER node
-CMD [ "pnpm", "start" ]
+CMD [ "node", "server.js" ]

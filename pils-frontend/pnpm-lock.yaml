@@ -7,7 +7,7 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^4.2.3
         version: 4.6.2(vite@4.5.9)(vue@3.5.13)
@@ -20,6 +20,9 @@ importers:
       bulma:
         specifier: ^0.9.4
         version: 0.9.4
+      pnpm:
+        specifier: ^10.13.1
+        version: 10.13.1
       qrcode:
         specifier: ^1.5.3
         version: 1.5.4
@@ -1163,6 +1166,11 @@ packages:
   pngjs@5.0.0:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
+
+  pnpm@10.13.1:
+    resolution: {integrity: sha512-N+vxpcejDV+r4MXfRO6NpMllygxa89urKMOhaBtwolYhjQXIHJwNz3Z+9rhVHrW5YAQrntQwDFkkIzY3fgHPrQ==}
+    engines: {node: '>=18.12'}
+    hasBin: true
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
@@ -2735,6 +2743,8 @@ snapshots:
       load-json-file: 5.3.0
 
   pngjs@5.0.0: {}
+
+  pnpm@10.13.1: {}
 
   possible-typed-array-names@1.0.0: {}
 

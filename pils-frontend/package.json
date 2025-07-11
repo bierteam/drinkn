@@ -14,11 +14,12 @@
     "serve": "vite",
     "build": "vite build"
   },
-  "dependencies": {
+  "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
     "axios": "^1.4.0",
     "browser-update": "^3.3.44",
     "bulma": "^0.9.4",
+    "pnpm": "^10.13.1",
     "qrcode": "^1.5.3",
     "rimraf": "^5.0.1",
     "standard": "^17.1.0",
