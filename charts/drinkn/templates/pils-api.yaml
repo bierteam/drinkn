@@ -13,6 +13,11 @@ spec:
       app: pils
   strategy:
     type: RollingUpdate
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   template:
     metadata:
       labels:
@@ -20,6 +25,11 @@ spec:
     spec:
       containers:
         - image: ghcr.io/bierteam/drinkn/pils:{{ .Values.image.tag }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
           envFrom:
             - secretRef:
                 name: drinkn-env

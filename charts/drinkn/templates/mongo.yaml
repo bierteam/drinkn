@@ -16,6 +16,10 @@ spec:
       labels:
         app: mongodb
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: mongodb
           image: bitnami/mongodb:4.4.15 # https://github.com/docker-library/mongo/issues/583#issuecomment-1317935949
@@ -42,6 +46,11 @@ spec:
           volumeMounts:
             - name: import-volume
               mountPath: /docker-entrypoint-initdb.d
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
       volumes:
         - name: import-volume
           configMap:

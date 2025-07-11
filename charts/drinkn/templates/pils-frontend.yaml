@@ -11,6 +11,10 @@ spec:
   selector:
     matchLabels:
       app: pils-frontend
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   strategy:
     type: RollingUpdate
   template:
@@ -22,6 +26,11 @@ spec:
         - image: ghcr.io/bierteam/drinkn/pils-frontend:{{ .Values.image.tag }}
           imagePullPolicy: Always
           name: pils-frontend
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
 ---
 apiVersion: v1
 kind: Service

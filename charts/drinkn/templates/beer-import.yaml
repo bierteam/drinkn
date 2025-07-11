@@ -11,6 +11,10 @@ spec:
         spec:
           restartPolicy: Never
           terminationGracePeriodSeconds: 30
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           containers:
             - image: "ghcr.io/bierteam/drinkn/beer-import:{{ .Values.image.tag }}"
               imagePullPolicy: Always
@@ -19,6 +23,11 @@ spec:
                 - secretRef:
                     name: drinkn-env
                     optional: false
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - "ALL"
   schedule: 0 9,22 * * *
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 3

@@ -12,6 +12,10 @@ spec:
   selector:
     matchLabels:
       app: drinkn-frontend
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   strategy:
     type: RollingUpdate
   template:
@@ -43,6 +47,11 @@ spec:
             periodSeconds: 2
             successThreshold: 2
             timeoutSeconds: 2
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
 ---
 apiVersion: v1
 kind: Service

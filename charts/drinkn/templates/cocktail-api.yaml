@@ -12,6 +12,10 @@ spec:
   selector:
     matchLabels:
       app: drinkn-cocktail-api
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   strategy:
     type: RollingUpdate
   template:
@@ -27,6 +31,11 @@ spec:
                 optional: false
           imagePullPolicy: Always
           name: drinkn-cocktail-api
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
 ---
 apiVersion: v1
 kind: Service
