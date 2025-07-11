@@ -9,10 +9,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: {{ . | lower }}-hook
+  name: {{ . | lower }}-hook-{{ $number }}
   namespace: drinkn-hooks
   annotations:
     argocd.argoproj.io/hook: {{ . }}
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   template:
     spec:
