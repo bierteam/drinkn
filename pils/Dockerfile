@@ -20,8 +20,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 FROM base
 COPY --from=build /app/node_modules /app/node_modules
-ENV NODE_ENV production
-ENV PORT 3000
+ENV NODE_ENV=production
+ENV PORT=3000
 EXPOSE 3000
 USER node
 CMD [ "pnpm", "start" ]

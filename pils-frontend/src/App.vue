@@ -13,13 +13,13 @@ export default {
     Logout() {
       Api().delete(`/api/v1/users/logout`)
         .then(response => {
-          if (response.status === 200) {
-            store.logout()
-            this.$router.push('/login')
-          }
+          store.logout()
+          this.$router.push('/login')
         })
         .catch(e => {
           console.error(e)
+          store.logout()
+          this.$router.push('/login')
         })
     },
     Check() {
