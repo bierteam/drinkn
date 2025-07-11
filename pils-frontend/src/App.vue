@@ -77,7 +77,7 @@ export default {
     <div class="columns">
       <div class="column">
         <a href="https://github.com/bierteam">
-          &copy; BierTeam 2023
+            &copy; BierTeam {{ new Date().getFullYear() }}
         </a>
         <p>The source code is licensed
           <a href="https://opensource.org/licenses/mit-license.php">MIT</a>.
