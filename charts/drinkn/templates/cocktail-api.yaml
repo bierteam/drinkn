@@ -20,7 +20,7 @@ spec:
         app: drinkn-cocktail-api
     spec:
       securityContext:
-        runAsNonRoot: true
+        # runAsNonRoot: true #TODO
         seccompProfile:
           type: RuntimeDefault
       containers:

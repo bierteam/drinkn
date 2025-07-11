@@ -19,7 +19,7 @@ spec:
         app: pils-frontend
     spec:
       securityContext:
-        runAsNonRoot: true
+        # runAsNonRoot: true #TODO
         seccompProfile:
           type: RuntimeDefault
       containers:
