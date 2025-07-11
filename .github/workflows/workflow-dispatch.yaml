@@ -6,6 +6,7 @@ on:
       - PreSync
       - PostSync
       - SyncFail
+      - PostDelete
 
 permissions:
   deployments: write
@@ -52,6 +53,10 @@ jobs:
             SyncFail)
               STATUS="failure"
               DESCRIPTION="Deployment failed (SyncFail)"
+              ;;
+            PostDelete)
+              STATUS="inactive"
+              DESCRIPTION="Deployment is inactive (PostDelete)"
               ;;
             *)
               echo "Unsupported event type: ${{ github.event.action }}"
