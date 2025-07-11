@@ -28,9 +28,9 @@ spec:
           name: pils-frontend
           securityContext:
             allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - "ALL"
+            # capabilities: #TODO
+            #   drop:
+            #     - "ALL"
 ---
 apiVersion: v1
 kind: Service

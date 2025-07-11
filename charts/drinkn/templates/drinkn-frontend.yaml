@@ -49,9 +49,9 @@ spec:
             timeoutSeconds: 2
           securityContext:
             allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - "ALL"
+            # capabilities: #TODO
+            #   drop:
+            #     - "ALL"
 ---
 apiVersion: v1
 kind: Service
