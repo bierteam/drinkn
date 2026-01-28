@@ -26,7 +26,7 @@
     "cors": "^2.8.5",
     "express-session": "^1.17.3",
     "express": "^4.18.2",
-    "helmet": "^7.0.0",
+    "helmet": "^8.0.0",
     "moment": "^2.29.4",
     "mongoose": "^7.4.3",
     "otplib": "^12.0.1",
