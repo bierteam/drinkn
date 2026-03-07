@@ -15,7 +15,7 @@
     "build": "vite build"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^6.0.0",
     "axios": "^1.4.0",
     "browser-update": "^3.3.44",
     "bulma": "^1.0.0",
