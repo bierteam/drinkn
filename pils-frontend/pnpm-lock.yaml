@@ -22,7 +22,7 @@ importers:
         version: 1.0.4
       pnpm:
         specifier: ^10.13.1
-        version: 10.30.3
+        version: 10.33.0
       qrcode:
         specifier: ^1.5.3
         version: 1.5.4
@@ -1177,8 +1177,8 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
-  pnpm@10.30.3:
-    resolution: {integrity: sha512-yWHR4KLY41TsqlFmuCJRZmi39Ey1vZUSLVkN2Bki9gb1RzttI+xKW+Bef80Y6EiNR9l4u+mBhy8RRdBumnQAFw==}
+  pnpm@10.33.0:
+    resolution: {integrity: sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -2800,7 +2800,7 @@ snapshots:
 
   pngjs@5.0.0: {}
 
-  pnpm@10.30.3: {}
+  pnpm@10.33.0: {}
 
   possible-typed-array-names@1.1.0: {}
 
