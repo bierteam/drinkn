@@ -48,7 +48,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - 
         name: Generate Docker metadata
         id: meta
@@ -107,7 +107,7 @@ jobs:
 
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         
       - name: Deploy using Argo CD
         if: ${{ github.event_name != 'pull_request' }}

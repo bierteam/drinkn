@@ -24,7 +24,7 @@ jobs:
         uses: github/branch-deploy@v9.10.0
         
         # If the branch-deploy Action was triggered, checkout our branch
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ steps.branch-deploy.outputs.ref }}
 
