@@ -52,8 +52,8 @@ importers:
         specifier: ^3.0.1
         version: 3.1.14
       pnpm:
-        specifier: ^10.13.1
-        version: 10.33.0
+        specifier: ^11.0.0
+        version: 11.16.0
       rimraf:
         specifier: ^6.0.0
         version: 6.1.3
@@ -1220,9 +1220,9 @@ packages:
     resolution: {integrity: sha512-m0OTbR/5VPNPqO1ph6Fqbj7Hv6QU7gR/tQW40ZqrL1rjgCU85W6C1bJn0BItuJqnR98PWzw7Z8hHeChD1WrgdQ==}
     engines: {node: '>=6'}
 
-  pnpm@10.33.0:
-    resolution: {integrity: sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==}
-    engines: {node: '>=18.12'}
+  pnpm@11.16.0:
+    resolution: {integrity: sha512-t2fpqY/IeuwPQtrvzQ6ElBws20XXPE4eaIYPsr39vgMqtZIQVHnl4Fwjf3QMil/9u7UjhXl93CKWdFobu4g+jQ==}
+    engines: {node: '>=22.13'}
     hasBin: true
 
   possible-typed-array-names@1.1.0:
@@ -2367,7 +2367,7 @@ snapshots:
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.2(supports-color@5.5.0)
-      serve-static: 1.16.3(supports-color@5.5.0)
+      serve-static: 1.16.3
       setprototypeof: 1.2.0
       statuses: 2.0.2
       type-is: 1.6.18
@@ -2998,7 +2998,7 @@ snapshots:
       find-up: 3.0.0
       load-json-file: 5.3.0
 
-  pnpm@10.33.0: {}
+  pnpm@11.16.0: {}
 
   possible-typed-array-names@1.1.0: {}
 
@@ -3145,7 +3145,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  serve-static@1.16.3(supports-color@5.5.0):
+  serve-static@1.16.3:
     dependencies:
       encodeurl: 2.0.0
       escape-html: 1.0.3
