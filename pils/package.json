@@ -35,7 +35,7 @@
   "devDependencies": {
     "dotenv": "^16.3.1",
     "nodemon": "^3.0.1",
-    "pnpm": "^10.13.1",
+    "pnpm": "^11.0.0",
     "rimraf": "^6.0.0",
     "standard": "^17.1.0"
   }

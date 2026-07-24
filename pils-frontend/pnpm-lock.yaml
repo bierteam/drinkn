@@ -13,7 +13,7 @@ importers:
         version: 4.6.2(vite@4.5.14)(vue@3.5.31)
       axios:
         specifier: ^1.4.0
-        version: 1.18.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+        version: 1.18.0(supports-color@7.2.0)
       browser-update:
         specifier: ^3.3.44
         version: 3.3.63
@@ -21,8 +21,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.4
       pnpm:
-        specifier: ^10.13.1
-        version: 10.33.0
+        specifier: ^11.0.0
+        version: 11.16.0
       qrcode:
         specifier: ^1.5.3
         version: 1.5.4
@@ -1207,9 +1207,9 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
-  pnpm@10.33.0:
-    resolution: {integrity: sha512-EFaLtKavtYyes2MNqQzJUWQXq+vT+rvmc58K55VyjaFJHp21pUTHatjrdXD1xLs9bGN7LLQb/c20f6gjyGSTGQ==}
-    engines: {node: '>=18.12'}
+  pnpm@11.16.0:
+    resolution: {integrity: sha512-t2fpqY/IeuwPQtrvzQ6ElBws20XXPE4eaIYPsr39vgMqtZIQVHnl4Fwjf3QMil/9u7UjhXl93CKWdFobu4g+jQ==}
+    engines: {node: '>=22.13'}
     hasBin: true
 
   possible-typed-array-names@1.1.0:
@@ -1866,9 +1866,9 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.18.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
+  axios@1.18.0(supports-color@7.2.0):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@7.2.0))
+      follow-redirects: 1.16.0
       form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@7.2.0)
       proxy-from-env: 2.1.0
@@ -2378,9 +2378,7 @@ snapshots:
 
   flatted@3.3.3: {}
 
-  follow-redirects@1.16.0(debug@4.4.3(supports-color@7.2.0)):
-    optionalDependencies:
-      debug: 4.4.3(supports-color@7.2.0)
+  follow-redirects@1.16.0: {}
 
   for-each@0.3.5:
     dependencies:
@@ -2870,7 +2868,7 @@ snapshots:
 
   pngjs@5.0.0: {}
 
-  pnpm@10.33.0: {}
+  pnpm@11.16.0: {}
 
   possible-typed-array-names@1.1.0: {}
 
