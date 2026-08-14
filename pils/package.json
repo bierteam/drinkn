@@ -30,7 +30,7 @@
     "moment": "^2.29.4",
     "mongoose": "^7.4.3",
     "otplib": "^12.0.1",
-    "uuid": "^9.0.0"
+    "uuid": "^11.0.0"
   },
   "devDependencies": {
     "dotenv": "^16.3.1",
