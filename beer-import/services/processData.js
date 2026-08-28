@@ -26,7 +26,7 @@ const processData = (data, stores) => {
     data[obj].volume = data[obj].korte_name
     data[obj].rawUri = data[obj].aanbieding_link
     data[obj].rawValidity = data[obj].einddatum
-    data[obj].id = crypto.createHash('md5').update(data[obj].uid).digest('hex').slice(0, 10)
+    data[obj].id = crypto.createHash('md5').update(String(data[obj].uid)).digest('hex').slice(0, 10)
     delete data[obj].merken_soort_omschrijving
     delete data[obj].brouwerij_omschrijving
     delete data[obj].gisting_omschrijving
