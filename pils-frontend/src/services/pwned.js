@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const sha1Hash = async (input) => {
+const sha1Hash = async input => {
   const encoder = new TextEncoder()
   const data = encoder.encode(input)
   const hashBuffer = await window.crypto.subtle.digest('SHA-1', data)
@@ -8,7 +8,7 @@ const sha1Hash = async (input) => {
   return Array.from(hashArray, byte => byte.toString(16).padStart(2, '0')).join('')
 }
 
-const pwned = async (password) => {
+const pwned = async password => {
   try {
     const hash = (await sha1Hash(password)).toUpperCase()
     const suffix = hash.slice(5)

@@ -1,5 +1,4 @@
 import { reactive } from 'vue'
-/* global localStorage */
 
 export const store = reactive({
   isAuthenticated: !!localStorage.getItem('isAuthenticated'),
