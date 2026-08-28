@@ -81,6 +81,45 @@ jobs:
           context: ${{ matrix.folder }}
           target: test
       -
+        # reuses the cached test stage above, so the suite is not run again
+        name: Extract coverage report
+        if: matrix.folder == 'pils-frontend'
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.folder }}
+          target: coverage
+          outputs: type=local,dest=${{ matrix.folder }}/coverage
+      -
+        name: Coverage summary
+        if: matrix.folder == 'pils-frontend'
+        run: |
+          {
+            echo "### Coverage: ${{ matrix.folder }}"
+            echo
+            echo "| Metric | Covered | Total | % |"
+            echo "| --- | ---: | ---: | ---: |"
+            jq -r '.total | to_entries[] | select(.value.total > 0)
+                   | "| \(.key) | \(.value.covered) | \(.value.total) | \(.value.pct)% |"' \
+              "${{ matrix.folder }}/coverage/coverage-summary.json"
+          } >> "$GITHUB_STEP_SUMMARY"
+      -
+        name: Upload coverage report
+        if: matrix.folder == 'pils-frontend'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.folder }}
+          path: ${{ matrix.folder }}/coverage
+      -
+        name: Upload coverage to Codecov
+        if: matrix.folder == 'pils-frontend'
+        uses: codecov/codecov-action@v5
+        with:
+          files: ${{ matrix.folder }}/coverage/lcov.info
+          flags: ${{ matrix.folder }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # reporting only: a Codecov hiccup should not fail the build
+          fail_ci_if_error: false
+      -
         name: Build and push
         uses: docker/build-push-action@v5
         with:

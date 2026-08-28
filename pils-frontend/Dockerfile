@@ -6,13 +6,19 @@ WORKDIR /app
 COPY package.json ./
 COPY pnpm-lock.yaml ./
 COPY vite.config.js ./
+COPY eslint.config.js ./
 COPY public ./public
 COPY index.html ./
 COPY src ./src
 
 FROM base AS test
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
-RUN pnpm run test
+RUN pnpm run test:ci
+
+# lets CI pull the coverage report out of the cached test stage, so the suite
+# is not run a second time just to report on it
+FROM scratch AS coverage
+COPY --from=test /app/coverage /
 
 FROM base AS build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
