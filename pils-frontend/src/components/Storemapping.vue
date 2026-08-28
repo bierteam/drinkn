@@ -2,17 +2,17 @@
 import Api from '../services/Api'
 
 export default {
-  data() {
+  data () {
     return {
       stores: {},
       newStores: {},
       isSaving: false,
       isSaved: false,
-      isError: false,
+      isError: false
       // isEmpty: true,
     }
   },
-  mounted() {
+  mounted () {
     this.Get()
   },
   computed: {
@@ -21,7 +21,7 @@ export default {
     }
   },
   methods: {
-    Get() {
+    Get () {
       Api().get(`/api/v1/stores`, {})
         .then(response => {
           this.stores = response.data
@@ -32,16 +32,16 @@ export default {
           console.error(e)
         })
     },
-    Cancel() {
+    Cancel () {
       this.newStores = {}
     },
-    Update() {
+    Update () {
       this.isSaved = false
       this.isSaving = true
       const newStores = this.$data.newStores
       Api().post(`/api/v1/stores`, {
-          newStores
-        })
+        newStores
+      })
         .then(response => {
           this.stores = response.data
           delete this.stores._id
@@ -56,13 +56,13 @@ export default {
           this.isSaving = false
         })
     },
-    Delete(remove) { // WIP
+    Delete (remove) { // WIP
       Api().delete(`/api/v1/stores`, {
-          data: {
-            remove
-          }
-        })
-        .then(response => {})
+        data: {
+          remove
+        }
+      })
+        .then(() => {})
         .catch(e => {
           console.error(e)
         })
@@ -87,7 +87,7 @@ export default {
       <th>New</th>
     </thead>
     <tbody>
-      <tr v-for='(newName, oldName) in stores'>
+      <tr v-for='(newName, oldName) in stores' :key='oldName'>
         <th><input class="input" type="text" v-model="stores[oldName]" readonly></th>
         <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]"></th>
       </tr>

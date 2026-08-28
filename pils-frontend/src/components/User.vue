@@ -3,7 +3,7 @@ import Api from '../services/Api'
 import pwned from '../services/pwned'
 
 export default {
-  data() {
+  data () {
     return {
       user: {},
       newUser: {},
@@ -16,16 +16,16 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.fetchUser()
   },
   computed: {
-    shouldDisableButton() {
+    shouldDisableButton () {
       return this.state.isPwned
     }
   },
   methods: {
-    async fetchUser() {
+    async fetchUser () {
       try {
         const _id = this.$route.params.id
         const response = await Api().get(`/api/v1/users/${_id}`, {})
@@ -37,10 +37,10 @@ export default {
         this.handleApiError(error)
       }
     },
-    async checkPwned(password) {
+    async checkPwned (password) {
       this.state.isPwned = await pwned(password)
     },
-    async updateUser() {
+    async updateUser () {
       this.state.saved = false
       this.state.saving = true
       try {
@@ -60,7 +60,7 @@ export default {
         this.state.saving = false
       }
     },
-    async deleteUser() {
+    async deleteUser () {
       try {
         const _id = this.$route.params.id
         const response = await Api().delete(`/api/v1/users/${_id}`)
@@ -71,13 +71,13 @@ export default {
         this.handleApiError(error)
       }
     },
-    toggleDeleteMsg() {
+    toggleDeleteMsg () {
       this.state.deleteMsg = !this.state.deleteMsg
     },
-    clearError() {
+    clearError () {
       this.state.error = ''
     },
-    handleApiError(error) {
+    handleApiError (error) {
       this.state.error = error.response?.data || error.message || error
       console.error(error)
     }
@@ -136,4 +136,3 @@ export default {
   </div>
 </div>
 </template>
-

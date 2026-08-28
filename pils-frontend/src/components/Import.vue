@@ -2,7 +2,7 @@
 import Api from '../services/Api'
 
 export default {
-  data() {
+  data () {
     return {
       errors: [],
       status: null
@@ -11,7 +11,7 @@ export default {
 
   // Pushes posts to the server when called.
   methods: {
-    Import() {
+    Import () {
       Api().post(`/api/v1/import`, {})
         .then(response => {
           this.status = response
@@ -32,7 +32,7 @@ export default {
   </ul>
 
   <ul v-if="errors && errors.length">
-    <li v-for="error of errors">
+    <li v-for="(error, index) of errors" :key="index">
       {{error.message}}
     </li>
   </ul>

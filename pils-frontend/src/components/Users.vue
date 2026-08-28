@@ -3,23 +3,23 @@ import Api from '../services/Api'
 import { store } from '../store.js'
 
 export default {
-  data() {
+  data () {
     return {
       users: [],
       message: '',
       error: ''
     }
   },
-  setup() {
+  setup () {
     return {
       store
     }
   },
-  created() {
+  created () {
     this.Users()
   },
   methods: {
-    async Users() {
+    async Users () {
       Api().get(`/api/v1/users`, {})
         .then(response => {
           if (response.status === 200) {
@@ -49,7 +49,7 @@ export default {
       <th>Manage</th>
     </thead>
     <tbody>
-      <tr v-for='user in users'>
+      <tr v-for='user in users' :key='user._id'>
         <th>{{user.username}}</th>
         <th><input type="checkbox" disabled :checked="user.admin"></th>
         <th>

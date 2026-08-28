@@ -1,11 +1,11 @@
 <script>
 import Api from '../services/Api'
-import pwned from "../services/pwned"
-import QRCode from "qrcode"
+import pwned from '../services/pwned'
+import QRCode from 'qrcode'
 import { store } from '../store.js'
 
 export default {
-  data() {
+  data () {
     return {
       user: {},
       otp: {
@@ -26,26 +26,32 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.Account()
   },
   computed: {
-    async isDisabled() {
-      // Check if the password is pwned
-      this.state.isPwned = await pwned(this.newUser.password);
-
-      // Check if the password is not equal to the verified password
-      this.state.notEqual = this.newUser.password !== this.verifyPassword;
-
+    isDisabled () {
       // Check if there is anything to edit (password, username, or otp)
-      const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp;
+      const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp
 
       // Determine if the form should be disabled
-      return !(this.newUser.oldPassword && stuffToEdit && !this.state.isPwned && !this.state.notEqual);
+      return !(this.newUser.oldPassword && stuffToEdit && !this.state.isPwned && !this.state.notEqual)
+    }
+  },
+  watch: {
+    // the pwned lookup is async, so it cannot live in the computed above: an
+    // async getter returns a Promise, which is always truthy and left Save
+    // permanently disabled. run it here and keep the computed synchronous.
+    'newUser.password': async function (password) {
+      this.state.notEqual = password !== this.verifyPassword
+      this.state.isPwned = password ? await pwned(password) : false
+    },
+    verifyPassword (value) {
+      this.state.notEqual = this.newUser.password !== value
     }
   },
   methods: {
-    Account() {
+    Account () {
       Api().get(`/api/v1/account`, {})
         .then(response => {
           if (response.status === 200) {
@@ -58,7 +64,7 @@ export default {
           console.error(e)
         })
     },
-    Otp() {
+    Otp () {
       Api().get(`/api/v1/account/otp`, {})
         .then(response => {
           if (response.status === 200) {
@@ -77,13 +83,13 @@ export default {
           console.error()
         })
     },
-    Update() {
+    Update () {
       this.state.saved = false
       this.state.saving = true
       const user = this.newUser
       Api().post(`/api/v1/account`, {
-          user
-        })
+        user
+      })
         .then(response => {
           this.user = response.data
           this.state.saved = true
@@ -100,7 +106,7 @@ export default {
           this.state.saving = false
         })
     },
-    Delete() {
+    Delete () {
       Api().delete(`/api/v1/account/delete`)
         .then(response => {
           if (response.status === 200) {
@@ -162,25 +168,25 @@ export default {
                     <input class="input is-large" :disabled="user.otp && user.otp.status" v-model="newUser.otp" type="string" placeholder="2FA code">
                   </div>
                 </div>
-                <Button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
+                <button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
                 'is-loading': state.saving,
                 'is-success': state.saved,
-                'is-danger': state.error }" type="submit" :disabled="isDisabled">Save</Button>
+                'is-danger': state.error }" type="submit" :disabled="isDisabled">Save</button>
               </div>
               <div class="column">
                 <div class="field">
                   <div class="control">
-                    <Button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button">Setup 2FA</Button>
+                    <button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button">Setup 2FA</button>
                   </div>
                 </div>
-                <Button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button">Delete account</Button>
+                <button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button">Delete account</button>
               </div>
             </div>
             <div v-if="state.deleteMsg" class="notification is-light">
               <button class="delete" @click="state.deleteMsg = false"></button>
               Are you sure? This is permanent.
               <br><br>
-              <Button class="button is-danger is-large" @click='Delete' type="button">I am sure!</Button>
+              <button class="button is-danger is-large" @click='Delete' type="button">I am sure!</button>
             </div>
           </form>
         </div>

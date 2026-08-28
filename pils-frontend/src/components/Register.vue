@@ -1,9 +1,9 @@
 <script>
 import Api from '../services/Api'
-import pwned from "../services/pwned"
+import pwned from '../services/pwned'
 
 export default {
-  data() {
+  data () {
     return {
       username: '',
       password: '',
@@ -14,15 +14,15 @@ export default {
     }
   },
   computed: {
-    shouldDisableButton() {
+    shouldDisableButton () {
       return !this.username || !this.password || this.isPwned
     }
   },
   methods: {
-    async checkPwned(password) {
+    async checkPwned (password) {
       this.isPwned = await pwned(password)
     },
-    async registerAccount() {
+    async registerAccount () {
       if (this.username && this.password && !this.isPwned) {
         try {
           const response = await Api().post(`/api/v1/users/register`, {
@@ -82,7 +82,7 @@ export default {
         </form>
       </div>
       <p class="has-text-grey">
-        <a href="../">Login</a> &nbsp·&nbsp
+        <a href="../">Login</a> &nbsp;·&nbsp;
         <a href="../">Need Help?</a>
       </p>
     </div>
