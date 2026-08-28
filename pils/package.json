@@ -19,21 +19,21 @@
     "test": "standard"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.3",
     "body-parser": "^1.20.2",
     "connect-history-api-fallback": "^2.0.0",
-    "connect-mongo": "^5.0.0",
+    "connect-mongo": "^6.0.0",
     "cors": "^2.8.5",
+    "express": "^5.2.1",
     "express-session": "^1.17.3",
-    "express": "^4.18.2",
-    "helmet": "^7.0.0",
+    "helmet": "^8.3.0",
     "moment": "^2.29.4",
     "mongoose": "^7.4.3",
     "otplib": "^12.0.1",
-    "uuid": "^9.0.0"
+    "uuid": "^11.1.1"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1",
+    "dotenv": "^17.4.2",
     "nodemon": "^3.0.1",
     "pnpm": "^10.13.1",
     "rimraf": "^6.0.0",

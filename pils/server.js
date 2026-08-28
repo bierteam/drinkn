@@ -24,7 +24,9 @@ const app = express()
 const cors = require('cors')
 
 const mongoose = require('mongoose')
-const MongoStore = require('connect-mongo')
+// connect-mongo v6 is ESM-first; under require() the store is a named
+// export rather than the module itself
+const { MongoStore } = require('connect-mongo')
 const user = require('./models/user')
 const writeLog = require('./services/writeLog')
 
