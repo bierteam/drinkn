@@ -83,8 +83,10 @@ export default {
   <table class='container table'>
     <caption>Table of store names</caption>
     <thead>
-      <th>Old</th>
-      <th>New</th>
+      <tr>
+        <th>Old</th>
+        <th>New</th>
+      </tr>
     </thead>
     <tbody>
       <tr v-for='(newName, oldName) in stores' :key='oldName'>

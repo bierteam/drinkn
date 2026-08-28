@@ -44,9 +44,11 @@ export default {
   <table class='container table'>
     <caption>Table of users</caption>
     <thead>
-      <th>Username</th>
-      <th>Admin</th>
-      <th>Manage</th>
+      <tr>
+        <th>Username</th>
+        <th>Admin</th>
+        <th>Manage</th>
+      </tr>
     </thead>
     <tbody>
       <tr v-for='user in users' :key='user._id'>

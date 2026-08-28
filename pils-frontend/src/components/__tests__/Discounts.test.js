@@ -12,14 +12,6 @@ const beers = () => ([
 const store = new Map()
 let readFails = false
 
-// vue2-filters is CJS and arrives double-wrapped under vitest, so the mixin
-// reads as undefined. unwrap it here and keep using the real library, so the
-// filtering these tests exercise is the same code that runs in the browser.
-vi.mock('vue2-filters', async () => {
-  const actual = await vi.importActual('vue2-filters')
-  return { default: actual.default.default || actual.default }
-})
-
 vi.mock('../../services/db', () => ({
   getCachedData: async key => {
     if (readFails) throw new Error('IndexedDB unavailable')

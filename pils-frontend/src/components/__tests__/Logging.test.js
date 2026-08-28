@@ -5,12 +5,6 @@ import Logging from '../Logging.vue'
 const get = vi.hoisted(() => vi.fn())
 const del = vi.hoisted(() => vi.fn())
 
-// vue2-filters is CJS and arrives double-wrapped under vitest
-vi.mock('vue2-filters', async () => {
-  const actual = await vi.importActual('vue2-filters')
-  return { default: actual.default.default || actual.default }
-})
-
 vi.mock('../../services/Api', () => ({
   default: () => ({ get, delete: del })
 }))
