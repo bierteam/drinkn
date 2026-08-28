@@ -4,15 +4,15 @@ import { store } from './store.js'
 
 export default {
   name: 'App',
-  setup() {
+  setup () {
     return {
       store
     }
   },
   methods: {
-    Logout() {
+    Logout () {
       Api().delete(`/api/v1/users/logout`)
-        .then(response => {
+        .then(() => {
           store.logout()
           this.$router.push('/login')
         })
@@ -20,20 +20,6 @@ export default {
           console.error(e)
           store.logout()
           this.$router.push('/login')
-        })
-    },
-    Check() {
-      Api().get(`/api/v1/users/check`)
-        .then(response => {
-          if (response.data) {
-            console.log(response.data)
-            } else {
-            store.logout()
-            this.$router.push('/login')
-          }
-        })
-        .catch(e => {
-          console.error(e)
         })
     }
   }

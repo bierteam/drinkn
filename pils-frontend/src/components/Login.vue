@@ -3,7 +3,7 @@ import Api from '../services/Api'
 import { store } from '../store.js'
 
 export default {
-  data() {
+  data () {
     return {
       username: '',
       password: '',
@@ -16,13 +16,11 @@ export default {
   },
   computed: {
     isDisabled: function () {
-      if (!this.$data.username || !this.$data.password) {
-        return true
-      }
+      return !this.username || !this.password
     }
   },
   methods: {
-    Post() {
+    Post () {
       const data = {
         username: this.$data.username,
         password: this.$data.password,
@@ -39,8 +37,8 @@ export default {
             if (response.data.admin) {
               store.setAdmin(true)
             }
-            const query = this.$route.query
-            this.$router.push((query.redirect) ? {path: query.redirect, query} : '/discounts')
+            const redirect = this.$route.query.redirect
+            this.$router.push(redirect || '/discounts')
           }
         })
         .catch(e => {
@@ -49,14 +47,14 @@ export default {
         })
     }
   },
-  updated() {
+  updated () {
     if (this.otpRequired) this.$refs.token.focus()
   }
 }
 </script>
 
 <template>
-<body>
+<div class="hero">
   <div class="hero-body">
     <div class="container has-text-centered">
       <div class="column is-4 is-offset-4">
@@ -65,7 +63,7 @@ export default {
           {{error}}
         </div>
         <div v-if="message" class="notification is-success">
-          <button class="delete" @click="error = ''"></button>
+          <button class="delete" @click="message = ''"></button>
           {{message}}
         </div>
         <h3 class="title has-text-grey">Login</h3>
@@ -74,17 +72,17 @@ export default {
           <form>
             <div v-if="!otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="username" type="username" placeholder="Your username" autofocus>
+                <input class="input is-large" v-model="username" type="text" name="username" autocomplete="username" placeholder="Your username" autofocus>
               </div>
             </div>
             <div v-if="!otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="password" type="password" placeholder="Your password">
+                <input class="input is-large" v-model="password" type="password" name="password" autocomplete="current-password" placeholder="Your password">
               </div>
             </div>
             <div v-if="otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="token" type="token" placeholder="2fa code" ref="token">
+                <input class="input is-large" v-model="token" type="text" name="token" inputmode="numeric" autocomplete="one-time-code" placeholder="2fa code" ref="token">
               </div>
             </div>
             <div v-if="!otpRequired" class="field">
@@ -103,5 +101,5 @@ export default {
       </div>
     </div>
   </div>
-</body>
+</div>
 </template>

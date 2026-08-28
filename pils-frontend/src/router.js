@@ -20,8 +20,9 @@ export const Router = createRouter({
   ]
 })
 
-Router.beforeEach(async (to, from) => {
+Router.beforeEach(async to => {
   if (!store.isAuthenticated && to.path !== '/login') {
-    return { path: '/login' }
+    // remember where they were headed so Login.vue can send them back
+    return { path: '/login', query: { redirect: to.fullPath } }
   }
 })
