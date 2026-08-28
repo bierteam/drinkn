@@ -37,7 +37,7 @@ importers:
         version: 2.30.1
       mongoose:
         specifier: ^7.4.3
-        version: 7.8.10(supports-color@5.5.0)
+        version: 7.8.12(supports-color@5.5.0)
       otplib:
         specifier: ^12.0.1
         version: 12.0.1
@@ -1059,8 +1059,8 @@ packages:
       snappy:
         optional: true
 
-  mongoose@7.8.10:
-    resolution: {integrity: sha512-d+ASyz9FjXnzA9yrgbiAKP3DX//i0QA7TgSOPmU/ONqbUP7v8tg5HbbY28a7wtOKiPYSaP605JoRLFelU7wKxA==}
+  mongoose@7.8.12:
+    resolution: {integrity: sha512-OLM9mdTuAc8oNDSJ9yoNtsMFFvHxQh/QAWR+yW0GwsXPywn/sdfHfOZnD2rZnNCMl7mo8EZM4zAK4ZOTuq7sMg==}
     engines: {node: '>=14.20.1'}
 
   mpath@0.9.0:
@@ -2816,7 +2816,7 @@ snapshots:
     optionalDependencies:
       '@mongodb-js/saslprep': 1.4.6
 
-  mongoose@7.8.10(supports-color@5.5.0):
+  mongoose@7.8.12(supports-color@5.5.0):
     dependencies:
       bson: 5.5.1
       kareem: 2.5.1
