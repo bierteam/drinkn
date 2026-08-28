@@ -83,7 +83,6 @@ jobs:
       -
         # reuses the cached test stage above, so the suite is not run again
         name: Extract coverage report
-        if: matrix.folder == 'pils-frontend'
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.folder }}
@@ -91,7 +90,6 @@ jobs:
           outputs: type=local,dest=${{ matrix.folder }}/coverage
       -
         name: Coverage summary
-        if: matrix.folder == 'pils-frontend'
         run: |
           {
             echo "### Coverage: ${{ matrix.folder }}"
@@ -104,7 +102,6 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
       -
         name: Upload coverage report
-        if: matrix.folder == 'pils-frontend'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.folder }}
@@ -114,11 +111,9 @@ jobs:
         # resolves them against the repo root. runs after the artifact upload
         # so the artifact keeps the paths its HTML report expects.
         name: Prefix coverage paths for Codecov
-        if: matrix.folder == 'pils-frontend'
         run: sed -i "s|^SF:|SF:${{ matrix.folder }}/|" "${{ matrix.folder }}/coverage/lcov.info"
       -
         name: Upload coverage to Codecov
-        if: matrix.folder == 'pils-frontend'
         uses: codecov/codecov-action@v5
         with:
           files: ${{ matrix.folder }}/coverage/lcov.info
