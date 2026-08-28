@@ -1,6 +1,8 @@
 <script>
 import Api from '../services/Api'
 import Vue2Filters from 'vue2-filters'
+import { getCachedData, setCachedData } from '../services/db'
+import { toRaw } from 'vue'
 
 export default {
   mixins: [Vue2Filters.mixin],
@@ -35,11 +37,18 @@ export default {
     }
   },
   created() {
-    this.getPils()
+    this.cache()
   },
   methods: {
     async getPils() {
       const response = await Api().get('/api/v1/discounts')
+      const discountAverage = [0]
+      const percentageAverage = [0]
+      const literAverage = [0]
+      const stores = []
+      const volumes = []
+      let onlineCounter = 0
+
       for (const item of response.data) {
         // take data to main object for sorting
         item.discount = ((item.pricing.oldPrice - item.pricing.newPrice) / 100).toFixed(2)
@@ -48,22 +57,55 @@ export default {
         item.newPrice = item.pricing.newPrice
         item.oldPrice = item.pricing.oldPrice
 
-        this.discountAverage.push(item.discount)
-        this.percentageAverage.push(item.discountPercentage)
-        this.literAverage.push(item.literPrice)
+        discountAverage.push(item.discount)
+        percentageAverage.push(item.discountPercentage)
+        literAverage.push(item.literPrice)
         if (item.uri) {
-          this.onlineCounter++
+          onlineCounter++
         }
-        if (this.stores.indexOf(item.store) === -1) {
-          this.stores.push(item.store)
+        if (stores.indexOf(item.store) === -1) {
+          stores.push(item.store)
         }
-        if (this.volumes.indexOf(item.volume) === -1) {
-          this.volumes.push(item.volume)
+        if (volumes.indexOf(item.volume) === -1) {
+          volumes.push(item.volume)
         }
       }
+      volumes.sort()
 
+      // assign in one go so a re-run replaces the previous totals instead of
+      // adding to them, which would double-count anything restored from cache
+      this.discountAverage = discountAverage
+      this.percentageAverage = percentageAverage
+      this.literAverage = literAverage
+      this.onlineCounter = onlineCounter
+      this.stores = stores
+      this.volumes = volumes
       this.discounts = response.data
-      this.volumes.sort()
+    },
+    async cache() {
+      const cachekeys = ['discounts', 'onlineCounter', 'literAverage', 'discountAverage', 'percentageAverage', 'stores', 'volumes']
+      // the cache is an enhancement: if it is unavailable we still fetch
+      try {
+        for (const cacheKey of cachekeys) {
+          const cached = await getCachedData(cacheKey)
+          if (cached) {
+            this[cacheKey] = cached
+          }
+        }
+      } catch (error) {
+        console.warn('Could not read cached discounts:', error)
+      }
+
+      await this.getPils()
+
+      try {
+        for (const cacheKey of cachekeys) {
+          const plainClone = structuredClone(toRaw(this[cacheKey]))
+          await setCachedData(cacheKey, plainClone)
+        }
+      } catch (error) {
+        console.warn('Could not cache discounts:', error)
+      }
     },
     toggleSort: function (input) {
       if (input === this.sort) {

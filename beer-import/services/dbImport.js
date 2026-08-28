@@ -10,9 +10,13 @@ const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const dbImport = async () => {
   try {
-    const ms = Math.round(Math.random() * 60) * 1000 * 60
-    writeLog(`Cron: running import in: ${ms / 60000} minutes.`, 'Info', context)
-    await timeout(ms)
+    if (process.env.SKIP_DELAY) {
+      writeLog('Skipping delay as SKIP_DELAY is set.', 'Info', context)
+    } else {
+      const ms = Math.round(Math.random() * 60) * 1000 * 60
+      writeLog(`Cron: running import in: ${ms / 60000} minutes.`, 'Info', context)
+      await timeout(ms)
+    }
 
     let stores
     const data = await getData()
