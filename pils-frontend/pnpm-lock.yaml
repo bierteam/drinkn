@@ -52,7 +52,7 @@ importers:
         version: 26.1.0
       pnpm:
         specifier: ^10.13.1
-        version: 10.34.4
+        version: 10.34.5
       qrcode:
         specifier: ^1.5.3
         version: 1.5.4
@@ -1331,8 +1331,8 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
-  pnpm@10.34.4:
-    resolution: {integrity: sha512-h2i+VSAK4/Iia2Un/Momh+FLxOXxLXchoPJdo99HkVF3BYZI20F3uvNIEg+guidS2NjZP2vq8f5krhjajelhrw==}
+  pnpm@10.34.5:
+    resolution: {integrity: sha512-pO4F8vc2WCVb1qiYWcBlpFwopX2u+uLIk6Fo7itzFow3uR6D5X6mdlStA/AwMXRkMOi84442LgQmBfuKvIAZLg==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -2886,7 +2886,7 @@ snapshots:
 
   pngjs@5.0.0: {}
 
-  pnpm@10.34.4: {}
+  pnpm@10.34.5: {}
 
   postcss-selector-parser@7.1.5:
     dependencies:
