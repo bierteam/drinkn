@@ -4,11 +4,21 @@ import Vue2Filters from 'vue2-filters'
 import { getCachedData, setCachedData } from '../services/db'
 import { toRaw } from 'vue'
 
+const filterKeys = ['search', 'store', 'volume', 'online', 'zero']
+
+// shallow, order-insensitive compare so we skip redundant router navigations
+const sameQuery = (a, b) => {
+  const aKeys = Object.keys(a).sort()
+  const bKeys = Object.keys(b).sort()
+  return aKeys.length === bKeys.length
+    && aKeys.every((key, index) => key === bKeys[index] && String(a[key]) === String(b[key]))
+}
+
 export default {
   mixins: [Vue2Filters.mixin],
-  data() {
+  data () {
     return {
-      discountAverage: [0],
+      discountAverage: [],
       discounts: [],
       headers: {
         brand: 'Brand',
@@ -22,10 +32,10 @@ export default {
         volume: 'Volume',
         uri: 'Link'
       },
-      literAverage: [0],
+      literAverage: [],
       online: false,
       onlineCounter: 0,
-      percentageAverage: [0],
+      percentageAverage: [],
       search: '',
       sort: 'literPrice',
       sortDir: 1,
@@ -36,15 +46,16 @@ export default {
       zero: true
     }
   },
-  created() {
+  created () {
+    this.queryTimer = null
     this.cache()
   },
   methods: {
-    async getPils() {
+    async getPils () {
       const response = await Api().get('/api/v1/discounts')
-      const discountAverage = [0]
-      const percentageAverage = [0]
-      const literAverage = [0]
+      const discountAverage = []
+      const percentageAverage = []
+      const literAverage = []
       const stores = []
       const volumes = []
       let onlineCounter = 0
@@ -53,7 +64,7 @@ export default {
         // take data to main object for sorting
         item.discount = ((item.pricing.oldPrice - item.pricing.newPrice) / 100).toFixed(2)
         item.discountPercentage = (100 - (item.pricing.newPrice * 100 / item.pricing.oldPrice)).toPrecision(2)
-        item.literPrice = item.pricing.newPrice / item.liter * 10
+        item.literPrice = item.pricing.literPrice
         item.newPrice = item.pricing.newPrice
         item.oldPrice = item.pricing.oldPrice
 
@@ -82,7 +93,7 @@ export default {
       this.volumes = volumes
       this.discounts = response.data
     },
-    async cache() {
+    async cache () {
       const cachekeys = ['discounts', 'onlineCounter', 'literAverage', 'discountAverage', 'percentageAverage', 'stores', 'volumes']
       // the cache is an enhancement: if it is unavailable we still fetch
       try {
@@ -114,6 +125,9 @@ export default {
       this.sort = input
     },
     average: function (inputArray) {
+      if (!inputArray.length) {
+        return 0
+      }
       let result = 0
       for (const item of inputArray) {
         result += Number(item)
@@ -121,14 +135,15 @@ export default {
       return result / inputArray.length
     },
     formatPrice: function (value) {
-      if (typeof value !== "number") {
-          return value
+      const number = Number(value)
+      if (value === null || value === '' || !Number.isFinite(number)) {
+        return value
       }
       const formatter = new Intl.NumberFormat('nl-NL', {
-          style: 'currency',
-          currency: 'EUR'
+        style: 'currency',
+        currency: 'EUR'
       })
-      return formatter.format(value)
+      return formatter.format(number)
     }
   },
   computed: {
@@ -144,26 +159,48 @@ export default {
       data = this.filterBy(data, this.store)
       data = this.filterBy(data, this.volume)
       return data
+    },
+    filterQuery: function () {
+      const query = {}
+      if (this.search) query.search = this.search
+      if (this.store) query.store = this.store
+      if (this.volume) query.volume = this.volume
+      if (this.online) query.online = String(this.online)
+      // zero defaults to true, so it is the off state that is worth encoding
+      if (!this.zero) query.zero = 'false'
+      return query
     }
   },
-  updated() {
-    const query = {}
-    if (this.search) query.search = this.search
-    if (this.store) query.store = this.store
-    if (this.volume) query.volume = this.volume
-    if (this.online) query.online = this.online
-    if (this.zero) query.zero = this.zero
-    this.$router.replace({
-      query
-    })
+  watch: {
+    // sync the active filters into the URL. this used to live in updated(),
+    // which fired on every render and navigated on every keystroke
+    filterQuery (query) {
+      clearTimeout(this.queryTimer)
+      this.queryTimer = setTimeout(() => {
+        const next = { ...this.$route.query }
+        for (const key of filterKeys) {
+          delete next[key]
+        }
+        Object.assign(next, query)
+        if (!sameQuery(next, this.$route.query)) {
+          this.$router.replace({ query: next })
+        }
+      }, 300)
+    }
   },
-  mounted() {
-    this.search = this.$route.query.search
-    this.store = this.$route.query.store
-    this.volume = this.$route.query.volume
-    this.online = this.$route.query.online
-    this.zero = this.$route.query.zero
+  mounted () {
+    const query = this.$route.query
+    // only override a default when the key is really in the URL: reading a
+    // missing key gives undefined, which used to wipe every default
+    if (query.search !== undefined) this.search = query.search
+    if (query.store !== undefined) this.store = query.store
+    if (query.volume !== undefined) this.volume = query.volume
+    if (query.online !== undefined) this.online = query.online === 'true'
+    if (query.zero !== undefined) this.zero = query.zero === 'true'
   },
+  beforeUnmount () {
+    clearTimeout(this.queryTimer)
+  }
 }
 </script>
 
@@ -215,11 +252,11 @@ export default {
         <th>
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
-              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+              <button class="button" aria-haspopup="true" aria-controls="dropdown-store">
                 <div @click='store = null'>{{ store || "Select a store" }}</div>
               </button>
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-menu" id="dropdown-store" role="menu">
               <div class="dropdown-content" v-for="option in stores" :key='option'>
                 <a class="dropdown-item" @click='store = option'>{{ option }}</a>
               </div>
@@ -234,11 +271,11 @@ export default {
         <th>
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
-              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+              <button class="button" aria-haspopup="true" aria-controls="dropdown-volume">
                 <div @click='volume = null'>{{ volume || "Select a Volume" }}</div>
               </button>
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-menu" id="dropdown-volume" role="menu">
               <div class="dropdown-content" v-for="option in volumes" :key='option'>
                 <a class="dropdown-item" @click='volume = option'>{{ option }}</a>
               </div>
@@ -272,8 +309,9 @@ export default {
         <td>{{ formatPrice(discount.discount) }}</td>
         <td>{{ discount.discountPercentage }}%</td>
         <td @click='volume = discount.volume'>{{ discount.volume }}</td>
-        <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
-        <a v-else></a>
+        <td>
+          <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
+        </td>
       </tr>
     </tbody>
   </table>

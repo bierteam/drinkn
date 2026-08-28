@@ -2,9 +2,19 @@
 import Api from '../services/Api'
 import Vue2Filters from 'vue2-filters'
 
+const filterKeys = ['search', 'context', 'type']
+
+// shallow, order-insensitive compare so we skip redundant router navigations
+const sameQuery = (a, b) => {
+  const aKeys = Object.keys(a).sort()
+  const bKeys = Object.keys(b).sort()
+  return aKeys.length === bKeys.length
+    && aKeys.every((key, index) => key === bKeys[index] && String(a[key]) === String(b[key]))
+}
+
 export default {
   mixins: [Vue2Filters.mixin],
-  data() {
+  data () {
     return {
       search: '',
       context: '',
@@ -26,20 +36,36 @@ export default {
       }
     }
   },
-  updated() {
-    const query = {}
-    if (this.search) query.search = this.search
-    if (this.context) query.context = this.context
-    if (this.type) query.type = this.type
-    this.$router.replace({
-      query
-    })
+  created () {
+    this.queryTimer = null
   },
-  mounted() {
+  watch: {
+    // same fix as Discounts.vue: this lived in updated(), which fired on every
+    // render and so navigated on every keystroke
+    filterQuery (query) {
+      clearTimeout(this.queryTimer)
+      this.queryTimer = setTimeout(() => {
+        const next = { ...this.$route.query }
+        for (const key of filterKeys) {
+          delete next[key]
+        }
+        Object.assign(next, query)
+        if (!sameQuery(next, this.$route.query)) {
+          this.$router.replace({ query: next })
+        }
+      }, 300)
+    }
+  },
+  mounted () {
     this.getLogs()
-    this.search = this.$route.query.search
-    this.context = this.$route.query.context
-    this.type = this.$route.query.type
+    const query = this.$route.query
+    // only override a default when the key is really in the URL
+    if (query.search !== undefined) this.search = query.search
+    if (query.context !== undefined) this.context = query.context
+    if (query.type !== undefined) this.type = query.type
+  },
+  beforeUnmount () {
+    clearTimeout(this.queryTimer)
   },
   computed: {
     processed: function () {
@@ -48,10 +74,17 @@ export default {
       data = this.filterBy(data, this.context)
       data = this.filterBy(data, this.type)
       return data
+    },
+    filterQuery: function () {
+      const query = {}
+      if (this.search) query.search = this.search
+      if (this.context) query.context = this.context
+      if (this.type) query.type = this.type
+      return query
     }
   },
   methods: {
-    async getLogs() {
+    async getLogs () {
       try {
         const response = await Api().get('/api/v1/logging')
         this.logs = response.data
@@ -72,7 +105,7 @@ export default {
         console.error('Error fetching logs:', error)
       }
     },
-    async deleteLogs() {
+    async deleteLogs () {
       try {
         const response = await Api().delete('/api/v1/logging')
         this.message = response.data
@@ -102,7 +135,7 @@ export default {
           <button class="delete" @click="state.deleteMsg = false"></button>
           Are you sure? This is permanent.
           <br><br>
-          <Button class="button is-danger is-large" @click.once="deleteLogs" type="button">I am sure!</Button>
+          <button class="button is-danger is-large" @click.once="deleteLogs" type="button">I am sure!</button>
         </div>
         <th>
           <div class="control has-icons-right">
