@@ -58,6 +58,21 @@ describe('discount', () => {
     expect(filter).toHaveProperty('validity.$gte')
   })
 
+  it('recomputes the validity cutoff on every call', async () => {
+    const { discount, beer } = load()
+    stubQuery(beer, jest.fn().mockResolvedValue([]))
+
+    await discount()
+    const first = beer.find.mock.calls[0][0].validity.$gte
+    await new Promise(resolve => setTimeout(resolve, 5))
+    await discount()
+    const second = beer.find.mock.calls[1][0].validity.$gte
+
+    // the cutoff used to be assigned at module load, so it stayed pinned to
+    // process start and let expired offers through
+    expect(second.getTime()).toBeGreaterThan(first.getTime())
+  })
+
   it('does not cap the result set by default', async () => {
     const { discount, beer } = load()
     const query = stubQuery(beer, jest.fn().mockResolvedValue([]))

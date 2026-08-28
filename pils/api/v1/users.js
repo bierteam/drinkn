@@ -7,34 +7,39 @@ const writeLog = require('../../services/writeLog')
 const context = 'Users'
 
 router.post('/login', async function (req, res) {
-  if (req.body.username && req.body.password) {
-    try {
-      const user = await authenticateUser(req.body.username, req.body.password, req.body.token)
-
-      if (user.otp?.status && !req.body.token) {
-        writeLog(`User ${user.username}: ${user._id} requires a 2fa token.`, 'Info', context, req.realIp)
-        return res.json({ otp: true })
-      } else {
-        if (user.otp?.status && !otp.check(req.body.token, user.otp.secret)) {
-          return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
-        }
-        writeLog(`User ${user.username}: ${user._id} has logged in.`, 'Info', context, req.realIp)
-        if (!req.body.remember) {
-          req.session.cookie.expires = false
-        }
-        req.session.userId = user._id
-        req.session.admin = user.admin
-        req.session.username = user.username
-        res.status(200).send({ admin: user.admin, _id: user._id })
-      }
-    } catch (error) {
-      writeLog(`Failed login attempt for user: ${req.body.username}`, 'Warning', context, req.realIp)
-      res.status(401).send('Incorrect username or password')
-    }
-  } else {
+  if (!req.body.username || !req.body.password) {
     writeLog('Login try with missing fields', 'Warning', context, req.realIp)
-    res.status(403).send('Missing fields')
+    return res.status(403).send('Missing fields')
   }
+
+  // named `account` so it does not shadow the user model imported above
+  let account
+  try {
+    account = await authenticateUser(req.body.username, req.body.password, req.body.token)
+  } catch (error) {
+    // the reason is recorded here but never returned, so a caller cannot tell
+    // an unknown username from a wrong password
+    writeLog(`Failed login attempt for user: ${req.body.username} (${error})`, 'Warning', context, req.realIp)
+    return res.status(401).send('Incorrect username or password')
+  }
+
+  const needsToken = Boolean(account.otp?.status)
+  if (needsToken && !req.body.token) {
+    writeLog(`User ${account.username}: ${account._id} requires a 2fa token.`, 'Info', context, req.realIp)
+    return res.json({ otp: true })
+  }
+  if (needsToken && !otp.check(req.body.token, account.otp.secret)) {
+    return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
+  }
+
+  writeLog(`User ${account.username}: ${account._id} has logged in.`, 'Info', context, req.realIp)
+  if (!req.body.remember) {
+    req.session.cookie.expires = false
+  }
+  req.session.userId = account._id
+  req.session.admin = account.admin
+  req.session.username = account.username
+  return res.status(200).send({ admin: account.admin, _id: account._id })
 })
 
 async function authenticateUser (username, password, token) {

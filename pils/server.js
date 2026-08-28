@@ -58,6 +58,12 @@ const options = {
     mongoUrl: connectionString
   })
 }
+// ahead of the session middleware on purpose: static assets should not
+// allocate a session each, which would fill the store with empty records
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static('../pils-frontend/public'))
+}
+
 app.use(session(options))
 
 db.on('error', console.error.bind(console, 'connection error:'))
@@ -92,10 +98,6 @@ if (process.env.DEFAULT_USER && process.env.DEFAULT_PASS) {
 
 const api = require('./api')
 app.use('/api', api)
-
-if (process.env.NODE_ENV !== 'production') {
-  app.use(express.static('../pils-frontend/public'))
-}
 
 const port = Number(process.env.PORT) || 3000
 app.listen(port, function () {

@@ -11,7 +11,8 @@ const writeLog = async (message, type, context, ip) => {
       context: context?.toString(),
       ip: ip?.toString()
     }
-    console.log(logMessage.message)
+    // strip newlines so user-supplied text cannot forge extra log lines
+    console.log(logMessage.message?.replace(/[\r\n]+/g, ' '))
     await logger.create(logMessage)
   } catch (err) {
     console.error(err)

@@ -4,7 +4,7 @@ const moment = require('moment')
 moment.locale('nl')
 const validateKeys = require('./validateKeys')
 const mandatoryKeys = ['id', 'brand', 'store', 'pricing', 'volume', 'rawValidity']
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 // TODO: Fix this
 // const beer = require('../models/beer')
 // const mandatoryKeys = beer.schema._requiredpaths
@@ -38,7 +38,7 @@ const processData = (data, stores) => {
     }
 
     if (data[obj].alcoholpercentage) {
-      data[obj].rawAlcoholpercentage = parseFloat(data[obj].alcoholpercentage).toFixed(2)
+      data[obj].rawAlcoholpercentage = Number.parseFloat(data[obj].alcoholpercentage).toFixed(2)
       data[obj].alcoholPercentage = data[obj].rawAlcoholpercentage * 100
     }
     if (data[obj].kleur) {

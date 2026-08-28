@@ -1,5 +1,5 @@
 // Mirrors beer-import's config so both services report coverage the same way.
-const path = require('path')
+const path = require('node:path')
 
 module.exports = {
   rootDir: path.resolve(__dirname, '../../'),

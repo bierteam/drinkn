@@ -1,7 +1,7 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
-const path = require('path')
+const path = require('node:path')
 
 module.exports = {
   rootDir: path.resolve(__dirname, '../../'),

@@ -29,7 +29,6 @@ router.post('/stores', isAdmin, async function (req, res) {
 
 router.delete('/stores', isAdmin, async function (req, res) {
   try {
-    console.log(req.body)
     const result = await store.updateOne({}, { $unset: req.body.remove }, { strict: false }).exec()
     writeLog(`${req.session.username}: ${req.session.userId} deleted store data`, 'Info', context, req.realIp)
     res.json(result.ok)

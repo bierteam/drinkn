@@ -1,24 +1,28 @@
+// The `(.*)` patterns this used to carry were unanchored and global, so the
+// engine retried them at every position -- quadratic on long uris. Anchoring
+// them says the same thing in one pass: strip everything up to the last
+// marker, or from the first marker to the end.
 const uriPrettifier = rawUri => {
   const uri = rawUri
-    .replace(/(.*)tion:/g, '')
-    .replace(/%2F/g, '/')
-    .replace(/%3A/g, ':')
-    .replace(/(.*)diurl=/g, '')
-    .replace(/(.*)diurl%3D/g, '')
-    .replace(/\?utm_source(.*)/g, '')
-    .replace(/%3Freturn(.*)/g, '')
-    .replace(/\?return(.*)/g, '')
-    .replace(/(.*)&p=/g, '')
+    .replace(/^.*tion:/, '')
+    .replaceAll('%2F', '/')
+    .replaceAll('%3A', ':')
+    .replace(/^.*diurl=/, '')
+    .replace(/^.*diurl%3D/, '')
+    .replace(/\?utm_source.*$/, '')
+    .replace(/%3Freturn.*$/, '')
+    .replace(/\?return.*$/, '')
+    .replace(/^.*&p=/, '')
     .replace(/http[^s]/g, 'https:')
-    .replace(/%253A/g, ':')
-    .replace(/%252F/g, '/')
-    .replace(/%23tab2(.*)/g, '')
-    .replace(/(.*)u=/g, 'https://jumbo.com')
-    .replace(/\[/g, '')
-    .replace(/\]/g, '')
-    .replace(/%3F(.*)/g, '')
-    .replace(/%5D(.*)/g, '')
-    .replace(/(.*)%5B/g, '')
+    .replaceAll('%253A', ':')
+    .replaceAll('%252F', '/')
+    .replace(/%23tab2.*$/, '')
+    .replace(/^.*u=/, 'https://jumbo.com')
+    .replaceAll('[', '')
+    .replaceAll(']', '')
+    .replace(/%3F.*$/, '')
+    .replace(/%5D.*$/, '')
+    .replace(/^.*%5B/, '')
 
   return uri
 }

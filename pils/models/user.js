@@ -83,9 +83,8 @@ UserSchema.statics.authenticate = async function (username, password, callback) 
 
 UserSchema.pre('save', async function (next) {
   try {
-    const user = this
-    const hash = await bcrypt.hash(user.password, SALT_ROUNDS)
-    user.password = hash
+    const hash = await bcrypt.hash(this.password, SALT_ROUNDS)
+    this.password = hash
     next()
   } catch (err) {
     next(err)
