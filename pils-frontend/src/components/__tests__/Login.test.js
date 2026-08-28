@@ -122,6 +122,24 @@ describe('Post', () => {
     expect(store.isAuthenticated).toBe(true)
   })
 
+  it('focuses the 2FA field once, not on every keystroke', async () => {
+    const focus = vi.spyOn(window.HTMLInputElement.prototype, 'focus')
+    post.mockResolvedValue({ status: 200, data: { otp: true } })
+    const { wrapper } = mountLogin()
+    focus.mockClear()
+
+    await submit(wrapper)
+    await wrapper.vm.$nextTick()
+    expect(focus).toHaveBeenCalledTimes(1)
+
+    // typing re-renders; the old updated() hook re-focused on every one
+    const field = wrapper.find('input[name="token"]')
+    await field.setValue('123')
+    await field.setValue('123456')
+
+    expect(focus).toHaveBeenCalledTimes(1)
+  })
+
   it('surfaces the server message on a rejected login', async () => {
     post.mockRejectedValue({ response: { data: 'Invalid credentials' } })
     const { wrapper } = mountLogin()

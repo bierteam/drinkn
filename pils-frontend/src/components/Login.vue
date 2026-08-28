@@ -47,8 +47,15 @@ export default {
         })
     }
   },
-  updated () {
-    if (this.otpRequired) this.$refs.token.focus()
+  watch: {
+    // focus the field as it appears. this was an updated() hook, which fires
+    // on every render -- so once the field was shown, every keystroke in it
+    // re-focused it
+    async otpRequired (required) {
+      if (!required) return
+      await this.$nextTick()
+      this.$refs.token?.focus()
+    }
   }
 }
 </script>
