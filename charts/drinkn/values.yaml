@@ -15,3 +15,43 @@ pr:
     - PostSync
     - SyncFail
     - PostDelete
+
+# Requests only, deliberately no memory limits: requests give the scheduler
+# something to reserve and lift these pods out of BestEffort, where they are
+# first to be evicted under node pressure. A memory limit would instead get
+# the container OOM-killed the moment it exceeded the number, which is the
+# trade we are not making here.
+#
+# Sized from observed usage (kubectl top) with headroom:
+#   pils 50Mi, cocktail-api 32Mi, auth ~0Mi, both frontends 6-8Mi
+resources:
+  pils:
+    requests:
+      cpu: 25m
+      memory: 128Mi
+      ephemeral-storage: 128Mi
+  pilsFrontend:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+      ephemeral-storage: 64Mi
+  drinknFrontend:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+      ephemeral-storage: 64Mi
+  cocktailApi:
+    requests:
+      cpu: 25m
+      memory: 96Mi
+      ephemeral-storage: 128Mi
+  auth:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+      ephemeral-storage: 64Mi
+  githubWebhooks:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+      ephemeral-storage: 64Mi

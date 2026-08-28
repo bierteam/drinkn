@@ -19,6 +19,7 @@ spec:
       labels:
         app: drinkn-cocktail-api
     spec:
+      automountServiceAccountToken: false
       securityContext:
         # runAsNonRoot: true #TODO
         seccompProfile:
@@ -31,6 +32,9 @@ spec:
                 optional: false
           imagePullPolicy: Always
           name: drinkn-cocktail-api
+          resources:
+            requests:
+              {{- toYaml .Values.resources.cocktailApi.requests | nindent 14 }}
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

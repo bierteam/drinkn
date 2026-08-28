@@ -18,6 +18,7 @@ spec:
       labels:
         app: pils-frontend
     spec:
+      automountServiceAccountToken: false
       securityContext:
         # runAsNonRoot: true #TODO
         seccompProfile:
@@ -26,6 +27,9 @@ spec:
         - image: ghcr.io/bierteam/drinkn/pils-frontend:{{ .Values.image.tag }}
           imagePullPolicy: Always
           name: pils-frontend
+          resources:
+            requests:
+              {{- toYaml .Values.resources.pilsFrontend.requests | nindent 14 }}
           securityContext:
             allowPrivilegeEscalation: false
             # capabilities: #TODO

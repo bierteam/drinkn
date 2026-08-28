@@ -19,6 +19,7 @@ spec:
       labels:
         app: drinkn-frontend
     spec:
+      automountServiceAccountToken: false
       securityContext:
         # runAsNonRoot: true #TODO
         seccompProfile:
@@ -37,6 +38,9 @@ spec:
             successThreshold: 1
             timeoutSeconds: 2
           name: drinkn-frontend
+          resources:
+            requests:
+              {{- toYaml .Values.resources.drinknFrontend.requests | nindent 14 }}
           readinessProbe:
             failureThreshold: 3
             httpGet:

@@ -18,6 +18,7 @@ spec:
       labels:
         app: pils
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -36,6 +37,9 @@ spec:
                 optional: false
           imagePullPolicy: Always
           name: pils
+          resources:
+            requests:
+              {{- toYaml .Values.resources.pils.requests | nindent 14 }}
 ---
 apiVersion: v1
 kind: Service
