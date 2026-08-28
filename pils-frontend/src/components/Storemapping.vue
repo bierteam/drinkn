@@ -84,14 +84,14 @@ export default {
     <caption>Table of store names</caption>
     <thead>
       <tr>
-        <th>Old</th>
-        <th>New</th>
+        <th scope="col">Old</th>
+        <th scope="col">New</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for='(newName, oldName) in stores' :key='oldName'>
-        <th><input class="input" type="text" v-model="stores[oldName]" readonly></th>
-        <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]"></th>
+        <th><input class="input" type="text" v-model="stores[oldName]" readonly :aria-label="`Current name for ${oldName}`"></th>
+        <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]" :aria-label="`New name for ${oldName}`"></th>
       </tr>
       <tr>
         <th></th>

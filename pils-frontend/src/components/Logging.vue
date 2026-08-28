@@ -121,7 +121,7 @@ export default {
 
 <div class='container'>
   <div v-if="message" @click="message = ''" class="notification is-danger">
-    <button class="delete" @click="message = ''"></button>
+    <button type="button" class="delete" @click="message = ''"></button>
     {{message}}
   </div>
   <table class='table'>
@@ -132,14 +132,15 @@ export default {
         <th></th>
         <!-- <th><a class="button is-danger" @click='state.deleteMsg = !state.deleteMsg'>Delete all logs</a></th> -->
         <div v-if="state.deleteMsg" class="notification is-light">
-          <button class="delete" @click="state.deleteMsg = false"></button>
+          <button type="button" class="delete" @click="state.deleteMsg = false"></button>
           Are you sure? This is permanent.
           <br><br>
           <button class="button is-danger is-large" @click.once="deleteLogs" type="button">I am sure!</button>
         </div>
         <th>
           <div class="control has-icons-right">
-            <input class='input' type='text' placeholder='Search' v-model="search">
+            <label class="is-sr-only" for="logging-search">Search logs</label>
+            <input id="logging-search" class='input' type='text' placeholder='Search' v-model="search">
             <span class="icon is-small is-right">
               <i class="delete" :class="{'is-hidden': !search }" @click='search = null'></i>
             </span>
@@ -148,11 +149,11 @@ export default {
         <th>
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
-              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+              <button type="button" class="button" aria-haspopup="true" aria-controls="dropdown-context">
                 <div @click='context = null'>{{ context || "Select a context" }}</div>
               </button>
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-menu" id="dropdown-context" role="menu">
               <div class="dropdown-content" v-for="option in contexts" :key='option'>
                 <a class="dropdown-item" @click='context = option'>{{ option }}</a>
               </div>
@@ -162,11 +163,11 @@ export default {
         <th>
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
-              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+              <button type="button" class="button" aria-haspopup="true" aria-controls="dropdown-type">
                 <div @click='type = null'>{{ type || "Select a type" }}</div>
               </button>
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-menu" id="dropdown-type" role="menu">
               <div class="dropdown-content" v-for="option in types" :key='option'>
                 <a class="dropdown-item" @click='type = option'>{{ option }}</a>
               </div>

@@ -66,11 +66,11 @@ export default {
     <div class="container has-text-centered">
       <div class="column is-4 is-offset-4">
         <div v-if="error" class="notification is-danger">
-          <button class="delete" @click="error = ''"></button>
+          <button type="button" class="delete" @click="error = ''"></button>
           {{error}}
         </div>
         <div v-if="message" class="notification is-success">
-          <button class="delete" @click="message = ''"></button>
+          <button type="button" class="delete" @click="message = ''"></button>
           {{message}}
         </div>
         <h3 class="title has-text-grey">Login</h3>
@@ -79,17 +79,20 @@ export default {
           <form>
             <div v-if="!otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="username" type="text" name="username" autocomplete="username" placeholder="Your username" autofocus>
+                <label class="is-sr-only" for="login-username">Username</label>
+                <input id="login-username" class="input is-large" v-model="username" type="text" name="username" autocomplete="username" placeholder="Your username" autofocus>
               </div>
             </div>
             <div v-if="!otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="password" type="password" name="password" autocomplete="current-password" placeholder="Your password">
+                <label class="is-sr-only" for="login-password">Password</label>
+                <input id="login-password" class="input is-large" v-model="password" type="password" name="password" autocomplete="current-password" placeholder="Your password">
               </div>
             </div>
             <div v-if="otpRequired" class="field">
               <div class="control">
-                <input class="input is-large" v-model="token" type="text" name="token" inputmode="numeric" autocomplete="one-time-code" placeholder="2fa code" ref="token">
+                <label class="is-sr-only" for="login-token">Two factor code</label>
+                <input id="login-token" class="input is-large" v-model="token" type="text" name="token" inputmode="numeric" autocomplete="one-time-code" placeholder="2fa code" ref="token">
               </div>
             </div>
             <div v-if="!otpRequired" class="field">

@@ -22,4 +22,6 @@ client.interceptors.response.use(
   }
 )
 
-export default () => client
+const Api = () => client
+
+export default Api

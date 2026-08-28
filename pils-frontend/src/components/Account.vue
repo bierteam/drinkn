@@ -135,7 +135,7 @@ export default {
           The password is not the same.
         </div>
         <div v-if="error" class="notification is-danger">
-          <button class="delete" @click="error = ''"></button>
+          <button type="button" class="delete" @click="error = ''"></button>
           {{error}}
         </div>
         <h3 class="title has-text-grey">Edit your account</h3>
@@ -143,29 +143,34 @@ export default {
           <form>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
+                <label class="is-sr-only" for="account-username">Username</label>
+                <input id="account-username" class="input is-large" v-model="newUser.username" type="text" name="username" autocomplete="username" :placeholder="user.username">
               </div>
             </div>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="newUser.oldPassword" type="password" placeholder="Your password *">
+                <label class="is-sr-only" for="account-old-password">Current password</label>
+                <input id="account-old-password" class="input is-large" v-model="newUser.oldPassword" type="password" name="current-password" autocomplete="current-password" placeholder="Your password *">
               </div>
             </div>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="newUser.password" type="password" placeholder="Your new password">
+                <label class="is-sr-only" for="account-new-password">New password</label>
+                <input id="account-new-password" class="input is-large" v-model="newUser.password" type="password" name="new-password" autocomplete="new-password" placeholder="Your new password">
               </div>
             </div>
             <div class="field">
               <div class="control">
-                <input class="input is-large" v-model="verifyPassword" type="password" placeholder="Verify new password">
+                <label class="is-sr-only" for="account-verify-password">Verify new password</label>
+                <input id="account-verify-password" class="input is-large" v-model="verifyPassword" type="password" name="verify-password" autocomplete="new-password" placeholder="Verify new password">
               </div>
             </div>
             <div class="columns">
               <div class="column">
                 <div class="field">
                   <div class="control">
-                    <input class="input is-large" :disabled="user.otp && user.otp.status" v-model="newUser.otp" type="string" placeholder="2FA code">
+                    <label class="is-sr-only" for="account-otp">Two factor code</label>
+                    <input id="account-otp" class="input is-large" :disabled="user.otp && user.otp.status" v-model="newUser.otp" type="text" name="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="2FA code">
                   </div>
                 </div>
                 <button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
@@ -183,7 +188,7 @@ export default {
               </div>
             </div>
             <div v-if="state.deleteMsg" class="notification is-light">
-              <button class="delete" @click="state.deleteMsg = false"></button>
+              <button type="button" class="delete" @click="state.deleteMsg = false"></button>
               Are you sure? This is permanent.
               <br><br>
               <button class="button is-danger is-large" @click='Delete' type="button">I am sure!</button>

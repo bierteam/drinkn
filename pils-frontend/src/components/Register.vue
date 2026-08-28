@@ -50,14 +50,14 @@ export default {
   <div class="container has-text-centered">
     <div class="column is-4 is-offset-4">
       <div v-if="message" class="notification is-success">
-        <button class="delete" @click="message = ''"></button>
+        <button type="button" class="delete" @click="message = ''"></button>
         {{ message }}
       </div>
       <div v-if="isPwned" class="notification is-warning">
         This password has been pwned.
       </div>
       <div v-if="error" class="notification is-danger">
-        <button class="delete" @click="error = ''"></button>
+        <button type="button" class="delete" @click="error = ''"></button>
         {{ error }}
       </div>
       <h3 class="title has-text-grey">Register</h3>
@@ -66,17 +66,21 @@ export default {
         <form>
           <div class="field">
             <div class="control">
-              <input class="input is-large" v-model="username" type="username" placeholder="Username" autofocus>
+              <label class="is-sr-only" for="register-username">Username</label>
+              <input id="register-username" class="input is-large" v-model="username" type="text" name="username" autocomplete="username" placeholder="Username" autofocus>
             </div>
           </div>
           <div class="field">
             <div class="control">
-              <input class="input is-large" v-model="password" @input="checkPwned(password)" type="password" placeholder="Password">
+              <label class="is-sr-only" for="register-password">Password</label>
+              <input id="register-password" class="input is-large" v-model="password" @input="checkPwned(password)" type="password" name="new-password" autocomplete="new-password" placeholder="Password">
             </div>
           </div>
           <div class="field">
-            <input type="checkbox" v-model="admin">
-            Make this user an administrator
+            <label class="checkbox" for="register-admin">
+              <input id="register-admin" type="checkbox" v-model="admin">
+              Make this user an administrator
+            </label>
           </div>
           <button type="submit" class="button is-block is-light is-large is-fullwidth" @click.prevent="registerAccount" :disabled="shouldDisableButton">Register new account</button>
         </form>

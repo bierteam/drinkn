@@ -93,7 +93,7 @@ export default {
         This password has been pwned.
       </div>
       <div v-if="state.error" class="notification is-danger">
-        <button class="delete" @click="clearError"></button>
+        <button type="button" class="delete" @click="clearError"></button>
         {{ state.error }}
       </div>
       <h3 class="title has-text-grey">Edit account</h3>
@@ -101,16 +101,21 @@ export default {
         <form>
           <div class="field">
             <div class="control">
-              <input class="input is-large" v-model="newUser.username" type="username" :placeholder="user.username">
+              <label class="is-sr-only" for="user-username">Username</label>
+              <input id="user-username" class="input is-large" v-model="newUser.username" type="text" name="username" autocomplete="username" :placeholder="user.username">
             </div>
           </div>
           <div class="field">
             <div class="control">
-              <input class="input is-large" v-model="newUser.password" @input="checkPwned(newUser.password)" type="password" placeholder="Their new password">
+              <label class="is-sr-only" for="user-password">New password</label>
+              <input id="user-password" class="input is-large" v-model="newUser.password" @input="checkPwned(newUser.password)" type="password" name="new-password" autocomplete="new-password" placeholder="Their new password">
             </div>
           </div>
           <div class="field">
-            <input type="checkbox" v-model="newUser.admin" :placeholder="user.admin">
+            <label class="checkbox" for="user-admin">
+              <input id="user-admin" type="checkbox" v-model="newUser.admin">
+              Administrator
+            </label>
             Admin
           </div>
           <div class="columns">
@@ -125,7 +130,7 @@ export default {
             </div>
           </div>
           <div v-if="state.deleteMsg" class="notification is-light">
-            <button class="delete" @click="toggleDeleteMsg"></button>
+            <button type="button" class="delete" @click="toggleDeleteMsg"></button>
             Are you sure? This is permanent.
             <br><br>
             <button class="button is-danger is-large" @click="deleteUser" type="button">I am sure!</button>

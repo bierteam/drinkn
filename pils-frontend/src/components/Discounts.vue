@@ -74,10 +74,10 @@ export default {
         if (item.uri) {
           onlineCounter++
         }
-        if (stores.indexOf(item.store) === -1) {
+        if (!stores.includes(item.store)) {
           stores.push(item.store)
         }
-        if (volumes.indexOf(item.volume) === -1) {
+        if (!volumes.includes(item.volume)) {
           volumes.push(item.volume)
         }
       }
@@ -240,19 +240,20 @@ export default {
         <!-- first row -->
         <th>
           <div class="control has-icons-right">
-            <input class='input' type='text' placeholder='Search' v-model="search" autofocus>
+            <label class="is-sr-only" for="discounts-search">Search discounts</label>
+            <input id="discounts-search" class='input' type='text' placeholder='Search' v-model="search" autofocus>
             <span class="icon is-small is-right">
               <i class="delete" :class="{'is-hidden': !search }" @click='search = null'></i>
             </span>
           </div>
         </th>
         <th>
-          <button class="button" :class="{'is-primary': zero }" @click='zero = !zero'>0.0</button>
+          <button type="button" class="button" :class="{'is-primary': zero }" @click='zero = !zero'>0.0</button>
         </th>
         <th>
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
-              <button class="button" aria-haspopup="true" aria-controls="dropdown-store">
+              <button type="button" class="button" aria-haspopup="true" aria-controls="dropdown-store">
                 <div @click='store = null'>{{ store || "Select a store" }}</div>
               </button>
             </div>
@@ -271,7 +272,7 @@ export default {
         <th>
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
-              <button class="button" aria-haspopup="true" aria-controls="dropdown-volume">
+              <button type="button" class="button" aria-haspopup="true" aria-controls="dropdown-volume">
                 <div @click='volume = null'>{{ volume || "Select a Volume" }}</div>
               </button>
             </div>
@@ -283,7 +284,7 @@ export default {
           </div>
         </th>
         <th>
-          <button class="button" :class="{'is-primary': online }" @click='online = !online'>Online</button>
+          <button type="button" class="button" :class="{'is-primary': online }" @click='online = !online'>Online</button>
         </th>
       </tr>
       <tr>

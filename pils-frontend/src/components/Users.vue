@@ -38,22 +38,22 @@ export default {
 <template>
 <div>
   <div v-if="error" class="notification is-danger">
-    <button class="delete" @click="error = ''"></button>
+    <button type="button" class="delete" @click="error = ''"></button>
     {{error}}
   </div>
   <table class='container table'>
     <caption>Table of users</caption>
     <thead>
       <tr>
-        <th>Username</th>
-        <th>Admin</th>
-        <th>Manage</th>
+        <th scope="col">Username</th>
+        <th scope="col">Admin</th>
+        <th scope="col">Manage</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for='user in users' :key='user._id'>
         <th>{{user.username}}</th>
-        <th><input type="checkbox" disabled :checked="user.admin"></th>
+        <th><input type="checkbox" disabled :checked="user.admin" :aria-label="`${user.username} is an administrator`"></th>
         <th>
           <router-link class="button is-primary" v-if="user._id !== store.userId" :to="`/users/${user._id}`">Manage</router-link>
           <router-link class="button is-info" v-else to="/account">Manage</router-link>

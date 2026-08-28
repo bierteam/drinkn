@@ -50,7 +50,7 @@ export default {
         <div class="navbar-item">
           <div class="buttons">
             <router-link class="button is-light" to="/account">Account</router-link>
-            <button class="button is-primary" @click='Logout'>Logout</button>
+            <button type="button" class="button is-primary" @click='Logout'>Logout</button>
           </div>
         </div>
       </div>
