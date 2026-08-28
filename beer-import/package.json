@@ -23,8 +23,8 @@
     "mongoose": "^7.4.3"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1",
-    "jest": "^29.6.2",
+    "dotenv": "^17.4.2",
+    "jest": "^30.4.2",
     "pnpm": "^10.13.1",
     "rimraf": "^6.0.0",
     "standard": "^17.1.0"
