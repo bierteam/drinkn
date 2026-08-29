@@ -43,6 +43,6 @@
     "coverage": "vitest run --coverage",
     "test:ci": "eslint . && vitest run --coverage"
   },
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.34.5",
   "type": "module"
 }
