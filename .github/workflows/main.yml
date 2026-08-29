@@ -39,11 +39,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder:
-          - discounts-import
-          - pils-frontend
-          - pils-backend
-          # - api
+        # folder is the build context, image is what the chart pulls. They
+        # stopped matching when the directories were renamed after what they
+        # hold rather than after the images they produce.
+        include:
+          - folder: discount-import
+            image: discounts-import
+          - folder: frontend
+            image: pils-frontend
+          - folder: backend
+            image: pils-backend
+          # - folder: api
+          #   image: api
 
     steps:
       -
@@ -57,7 +64,7 @@ jobs:
           DOCKER_METADATA_PR_HEAD_SHA: ${{ github.event_name == 'pull_request' }}
         with:
           images: |
-            ghcr.io/${{ github.repository }}/${{ matrix.folder }}
+            ghcr.io/${{ github.repository }}/${{ matrix.image }}
           tags: |
             type=ref,event=branch
             type=sha
@@ -92,7 +99,7 @@ jobs:
         name: Coverage summary
         run: |
           {
-            echo "### Coverage: ${{ matrix.folder }}"
+            echo "### Coverage: ${{ matrix.image }}"
             echo
             echo "| Metric | Covered | Total | % |"
             echo "| --- | ---: | ---: | ---: |"
@@ -104,7 +111,7 @@ jobs:
         name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: coverage-${{ matrix.folder }}
+          name: coverage-${{ matrix.image }}
           path: ${{ matrix.folder }}/coverage
       -
         # vitest writes paths relative to the frontend project, but Codecov
@@ -117,7 +124,7 @@ jobs:
         uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5
         with:
           files: ${{ matrix.folder }}/coverage/lcov.info
-          flags: ${{ matrix.folder }}
+          flags: ${{ matrix.image }}
           token: ${{ secrets.CODECOV_TOKEN }}
           # reporting only: a Codecov hiccup should not fail the build
           fail_ci_if_error: false
