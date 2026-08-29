@@ -5,6 +5,16 @@ on:
   pull_request:
     branches: [ main ]
 
+# One run per ref. A new push makes the run in flight pointless, and leaving it
+# queued only delays the one that matters -- which bites hardest when the
+# runners are already backed up.
+#
+# Pull requests only: a push to main is a deploy, and cancelling that halfway
+# is not something to do for the sake of a queue slot.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:     
   # test-go:
   #   runs-on: ubuntu-latest
