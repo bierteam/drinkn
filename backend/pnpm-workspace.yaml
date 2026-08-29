@@ -1,5 +1,8 @@
-# unrs-resolver is eslint's native module resolver. Its install script only
-# picks a prebuilt binary, and lint resolves imports fine without it, so it
-# stays off rather than running a build on install.
+# Both of these only compile or fetch a native binary on install, and neither
+# is needed for what this package actually runs: eslint resolves imports
+# without unrs-resolver, and jest falls back to polling without @parcel/watcher
+# (which only speeds up --watch, something CI never uses). Left off so an
+# install runs no build scripts at all.
 allowBuilds:
+  '@parcel/watcher': false
   unrs-resolver: false
