@@ -52,19 +52,19 @@ export default {
     </thead>
     <tbody>
       <tr v-for='user in users' :key='user._id'>
-        <th>{{user.username}}</th>
-        <th><input type="checkbox" disabled :checked="user.admin" :aria-label="`${user.username} is an administrator`"></th>
-        <th>
+        <th scope="row">{{user.username}}</th>
+        <td><input type="checkbox" disabled :checked="user.admin" :aria-label="`${user.username} is an administrator`"></td>
+        <td>
           <router-link class="button is-primary" v-if="user._id !== store.userId" :to="`/users/${user._id}`">Manage</router-link>
           <router-link class="button is-info" v-else to="/account">Manage</router-link>
-        </th>
+        </td>
       </tr>
       <tr>
-        <th></th>
-        <th></th>
-        <th>
+        <td></td>
+        <td></td>
+        <td>
           <router-link :to="`/register`">Add</router-link>
-        </th>
+        </td>
       </tr>
     </tbody>
   </table>

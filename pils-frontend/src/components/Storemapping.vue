@@ -90,11 +90,11 @@ export default {
     </thead>
     <tbody>
       <tr v-for='(newName, oldName) in stores' :key='oldName'>
-        <th><input class="input" type="text" v-model="stores[oldName]" readonly :aria-label="`Current name for ${oldName}`"></th>
-        <th><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]" :aria-label="`New name for ${oldName}`"></th>
+        <td><input class="input" type="text" v-model="stores[oldName]" readonly :aria-label="`Current name for ${oldName}`"></td>
+        <td><input class="input" type="text" :placeholder="newName" v-model="newStores[oldName]" :aria-label="`New name for ${oldName}`"></td>
       </tr>
       <tr>
-        <th></th>
+        <td></td>
       </tr>
     </tbody>
   </table>
