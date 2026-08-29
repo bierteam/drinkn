@@ -32,6 +32,13 @@ spec:
             capabilities:
               drop:
                 - "ALL"
+          env:
+            # passkeys are bound to the exact domain they were created on, so
+            # these are pinned rather than taken from the incoming request
+            - name: RP_ID
+              value: {{ .Values.fqdn | quote }}
+            - name: RP_ORIGIN
+              value: https://{{ .Values.fqdn }}
           envFrom:
             - secretRef:
                 name: drinkn-env

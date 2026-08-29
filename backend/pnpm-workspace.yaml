@@ -1,0 +1,5 @@
+# unrs-resolver is eslint's native module resolver. Its install script only
+# picks a prebuilt binary, and lint resolves imports fine without it, so it
+# stays off rather than running a build on install.
+allowBuilds:
+  unrs-resolver: false

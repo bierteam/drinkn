@@ -1,28 +1,27 @@
 <script>
 import Api from '../services/Api'
 import pwned from '../services/pwned'
-import QRCode from 'qrcode'
 import { store } from '../store.js'
+import { startRegistration, browserSupportsWebAuthn } from '@simplewebauthn/browser'
 
 export default {
   data () {
     return {
       user: {},
-      otp: {
-        secret: '',
-        uri: '',
-        QRdata: ''
-      },
       newUser: {},
       verifyPassword: undefined,
+      passkeyName: '',
+      passkeySupported: browserSupportsWebAuthn(),
       error: '',
+      message: '',
       state: {
         error: false,
         saving: false,
         saved: false,
         isPwned: false,
         notEqual: false,
-        deleteMsg: false
+        deleteMsg: false,
+        passkeyBusy: false
       }
     }
   },
@@ -31,11 +30,14 @@ export default {
   },
   computed: {
     isDisabled () {
-      // Check if there is anything to edit (password, username, or otp)
-      const stuffToEdit = this.newUser.password || this.newUser.username || this.newUser.otp
+      // Check if there is anything to edit (password or username)
+      const stuffToEdit = this.newUser.password || this.newUser.username
 
       // Determine if the form should be disabled
-      return !(this.newUser.oldPassword && stuffToEdit && !this.state.isPwned && !this.state.notEqual)
+      return !(stuffToEdit && !this.state.isPwned && !this.state.notEqual)
+    },
+    passkeys () {
+      return this.user.credentials || []
     }
   },
   watch: {
@@ -64,23 +66,44 @@ export default {
           console.error(e)
         })
     },
-    Otp () {
-      Api().get(`/api/v1/account/otp`, {})
+    async AddPasskey () {
+      this.error = ''
+      this.message = ''
+      this.state.passkeyBusy = true
+      try {
+        const options = await Api().post(`/api/v1/account/passkey/options`, {})
+        const response = await startRegistration({ optionsJSON: options.data })
+        const saved = await Api().post(`/api/v1/account/passkey`, {
+          response,
+          name: this.passkeyName || 'Passkey'
+        })
+        this.user = saved.data
+        this.passkeyName = ''
+        this.message = 'Passkey added.'
+      } catch (e) {
+        // the browser prompt was dismissed, or the key is already enrolled
+        if (e.name === 'NotAllowedError' || e.name === 'AbortError') {
+          this.message = 'Passkey setup was cancelled.'
+        } else if (e.name === 'InvalidStateError') {
+          this.error = 'That passkey is already registered on this account.'
+        } else {
+          this.error = e.response?.data || e.message || e
+          console.error(e)
+        }
+      } finally {
+        this.state.passkeyBusy = false
+      }
+    },
+    RemovePasskey (credentialID) {
+      this.error = ''
+      Api().delete(`/api/v1/account/passkey/${encodeURIComponent(credentialID)}`)
         .then(response => {
-          if (response.status === 200) {
-            QRCode.toDataURL(response.data.uri, {
-              errorCorrectionLevel: 'H'
-            }, function (err, result) {
-              if (err) console.error(err)
-              response.data.QRdata = result
-              return response.data
-            })
-            this.otp = response.data
-          }
+          this.user = response.data
+          this.message = 'Passkey removed.'
         })
         .catch(e => {
-          this.error = e.response.data || e
-          console.error()
+          this.error = e.response?.data || e
+          console.error(e)
         })
     },
     Update () {
@@ -96,7 +119,6 @@ export default {
           this.state.saving = false
           this.state.error = false
           this.newUser = {}
-          this.otp = {}
           this.verifyPassword = undefined
         })
         .catch(e => {
@@ -138,6 +160,10 @@ export default {
           <button type="button" class="delete" @click="error = ''"></button>
           {{error}}
         </div>
+        <div v-if="message" class="notification is-success">
+          <button type="button" class="delete" @click="message = ''"></button>
+          {{message}}
+        </div>
         <h3 class="title has-text-grey">Edit your account</h3>
         <div class="box">
           <form>
@@ -145,12 +171,6 @@ export default {
               <div class="control">
                 <label class="is-sr-only" for="account-username">Username</label>
                 <input id="account-username" class="input is-large" v-model="newUser.username" type="text" name="username" autocomplete="username" :placeholder="user.username">
-              </div>
-            </div>
-            <div class="field">
-              <div class="control">
-                <label class="is-sr-only" for="account-old-password">Current password</label>
-                <input id="account-old-password" class="input is-large" v-model="newUser.oldPassword" type="password" name="current-password" autocomplete="current-password" placeholder="Your password *">
               </div>
             </div>
             <div class="field">
@@ -167,23 +187,12 @@ export default {
             </div>
             <div class="columns">
               <div class="column">
-                <div class="field">
-                  <div class="control">
-                    <label class="is-sr-only" for="account-otp">Two factor code</label>
-                    <input id="account-otp" class="input is-large" :disabled="user.otp && user.otp.status" v-model="newUser.otp" type="text" name="otp" inputmode="numeric" autocomplete="one-time-code" placeholder="2FA code">
-                  </div>
-                </div>
                 <button class="button is-light is-large is-fullwidth" @click.prevent='Update' v-bind:class="{
                 'is-loading': state.saving,
                 'is-success': state.saved,
                 'is-danger': state.error }" type="submit" :disabled="isDisabled">Save</button>
               </div>
               <div class="column">
-                <div class="field">
-                  <div class="control">
-                    <button class="button is-info is-large is-fullwidth" :disabled="user.otp && user.otp.status" @click.once='Otp()' type="button">Setup 2FA</button>
-                  </div>
-                </div>
                 <button class="button is-danger is-large is-fullwidth" @click='state.deleteMsg = !state.deleteMsg' type="button">Delete account</button>
               </div>
             </div>
@@ -195,34 +204,36 @@ export default {
             </div>
           </form>
         </div>
-        <div v-if="otp.secret" class="box">
-          <h3 class="title has-text-grey">Scan this QR code</h3>
-          <a :href='otp.uri'>
-            <div class="container" id="qrcode">
-              <img id="preview" src="/favicon.ico" alt="Beer emoji">
-              <img :src='otp.QRdata' :alt='otp.uri'>
+        <div class="box">
+          <h3 class="title has-text-grey">Passkeys</h3>
+          <p class="subtitle has-text-grey is-6">Sign in with your fingerprint, face or security key instead of a password.</p>
+          <div v-if="!passkeySupported" class="notification is-warning">
+            This browser does not support passkeys.
+          </div>
+          <table v-if="passkeys.length" class="table is-fullwidth">
+            <tbody>
+              <tr v-for="passkey in passkeys" :key="passkey.credentialID">
+                <td>{{passkey.name}}</td>
+                <td class="has-text-grey">{{new Date(passkey.createdAt).toLocaleDateString()}}</td>
+                <td class="has-text-right">
+                  <button class="button is-small is-danger is-light" type="button" @click='RemovePasskey(passkey.credentialID)'>Remove</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-else class="has-text-grey">No passkeys yet.</p>
+          <div v-if="passkeySupported" class="field has-addons">
+            <div class="control is-expanded">
+              <label class="is-sr-only" for="account-passkey-name">Passkey name</label>
+              <input id="account-passkey-name" class="input" v-model="passkeyName" type="text" name="passkey-name" placeholder="Name this device (optional)">
             </div>
-          </a>
-          <h4 class="has-text-grey">{{otp.secret}}</h4>
+            <div class="control">
+              <button class="button is-info" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click='AddPasskey'>Add passkey</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </body>
 </template>
-
-<style>
-#qrcode {
-  position: relative;
-  max-width: 256px;
-  display: block;
-}
-
-#preview {
-  position: absolute;
-  height: calc(100% / 3);
-  width: calc(100% / 3);
-  left: calc(100% / 3);
-  top: calc(100% / 3);
-}
-</style>

@@ -7,6 +7,7 @@ try {
   if (!process.env.DB_USERNAME) throw new Error('Please enter your database username in DB_USERNAME')
   if (!process.env.DB_PASSWORD) throw new Error('Please enter your database password in DB_PASSWORD')
   if (!process.env.DB_NAME) throw new Error('Please enter your database name in DB_NAME')
+  if (!process.env.RP_ID || !process.env.RP_ORIGIN) console.log('RP_ID/RP_ORIGIN are unset, deriving the passkey origin from each request')
 } catch (error) {
   console.error(error)
   console.error('Committing suicide..')

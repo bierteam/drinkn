@@ -4,9 +4,16 @@ import Login from '../Login.vue'
 import { store } from '../../store.js'
 
 const post = vi.hoisted(() => vi.fn())
+const startAuthentication = vi.hoisted(() => vi.fn())
+const supported = vi.hoisted(() => ({ value: true }))
 
 vi.mock('../../services/Api', () => ({
   default: () => ({ post })
+}))
+
+vi.mock('@simplewebauthn/browser', () => ({
+  startAuthentication,
+  browserSupportsWebAuthn: () => supported.value
 }))
 
 const mountLogin = (query = {}) => {
@@ -31,6 +38,8 @@ const submit = async (wrapper, { username = 'oscar', password = 'secret' } = {})
 
 beforeEach(() => {
   post.mockReset()
+  startAuthentication.mockReset()
+  supported.value = true
   store.logout()
   vi.spyOn(console, 'error').mockImplementation(() => {})
 })
@@ -63,8 +72,7 @@ describe('Post', () => {
     expect(post).toHaveBeenCalledWith('/api/v1/users/login', {
       username: 'oscar',
       password: 'secret',
-      remember: true,
-      token: undefined
+      remember: true
     })
   })
 
@@ -95,51 +103,6 @@ describe('Post', () => {
     expect(push).toHaveBeenCalledWith('/users')
   })
 
-  it('asks for a second factor without authenticating', async () => {
-    post.mockResolvedValue({ status: 200, data: { otp: true } })
-    const { wrapper, push } = mountLogin()
-    await submit(wrapper)
-
-    expect(wrapper.vm.otpRequired).toBe(true)
-    expect(wrapper.vm.message).toBe('Two factor authentication required.')
-    expect(store.isAuthenticated).toBe(false)
-    expect(push).not.toHaveBeenCalled()
-  })
-
-  it('sends the token once a second factor is required', async () => {
-    post.mockResolvedValue({ status: 200, data: { otp: true } })
-    const { wrapper } = mountLogin()
-    await submit(wrapper)
-
-    post.mockResolvedValue({ status: 200, data: { _id: 'user-1' } })
-    wrapper.vm.token = '123456'
-    wrapper.vm.Post()
-    await flushPromises()
-
-    expect(post).toHaveBeenLastCalledWith('/api/v1/users/login', expect.objectContaining({
-      token: '123456'
-    }))
-    expect(store.isAuthenticated).toBe(true)
-  })
-
-  it('focuses the 2FA field once, not on every keystroke', async () => {
-    const focus = vi.spyOn(window.HTMLInputElement.prototype, 'focus')
-    post.mockResolvedValue({ status: 200, data: { otp: true } })
-    const { wrapper } = mountLogin()
-    focus.mockClear()
-
-    await submit(wrapper)
-    await wrapper.vm.$nextTick()
-    expect(focus).toHaveBeenCalledTimes(1)
-
-    // typing re-renders; the old updated() hook re-focused on every one
-    const field = wrapper.find('input[name="token"]')
-    await field.setValue('123')
-    await field.setValue('123456')
-
-    expect(focus).toHaveBeenCalledTimes(1)
-  })
-
   it('surfaces the server message on a rejected login', async () => {
     post.mockRejectedValue({ response: { data: 'Invalid credentials' } })
     const { wrapper } = mountLogin()
@@ -156,5 +119,95 @@ describe('Post', () => {
     await submit(wrapper)
 
     expect(wrapper.vm.error).toBe(failure)
+  })
+})
+
+describe('Passkey', () => {
+  const optionsThenLogin = (data = { _id: 'user-1' }) => {
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    startAuthentication.mockResolvedValue({ id: 'cred-1' })
+    post.mockResolvedValueOnce({ status: 200, data })
+  }
+
+  it('fetches options, signs the challenge and authenticates', async () => {
+    optionsThenLogin()
+    const { wrapper, push } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(post).toHaveBeenNthCalledWith(1, '/api/v1/users/login/passkey/options', {})
+    expect(startAuthentication).toHaveBeenCalledWith({ optionsJSON: { challenge: 'abc' } })
+    expect(post).toHaveBeenNthCalledWith(2, '/api/v1/users/login/passkey', {
+      response: { id: 'cred-1' },
+      remember: true
+    })
+    expect(store.isAuthenticated).toBe(true)
+    expect(store.userId).toBe('user-1')
+    expect(push).toHaveBeenCalledWith('/discounts')
+  })
+
+  it('needs no username or password', async () => {
+    optionsThenLogin()
+    const { wrapper } = mountLogin()
+    // the password form is still disabled; the passkey path ignores it
+    expect(wrapper.vm.isDisabled).toBe(true)
+
+    await wrapper.vm.Passkey()
+
+    expect(store.isAuthenticated).toBe(true)
+  })
+
+  it('marks admins as admin', async () => {
+    optionsThenLogin({ _id: 'user-1', admin: true })
+    const { wrapper } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(store.isAdmin).toBe(true)
+  })
+
+  it('honours the redirect the guard put in the query', async () => {
+    optionsThenLogin()
+    const { wrapper, push } = mountLogin({ redirect: '/users' })
+    await wrapper.vm.Passkey()
+
+    expect(push).toHaveBeenCalledWith('/users')
+  })
+
+  it('treats a dismissed browser prompt as a message, not an error', async () => {
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const cancelled = new Error('The operation either timed out or was not allowed')
+    cancelled.name = 'NotAllowedError'
+    startAuthentication.mockRejectedValue(cancelled)
+    const { wrapper, push } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(wrapper.vm.message).toBe('Passkey sign in was cancelled.')
+    expect(wrapper.vm.error).toBe('')
+    expect(push).not.toHaveBeenCalled()
+  })
+
+  it('surfaces a server refusal', async () => {
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    startAuthentication.mockResolvedValue({ id: 'cred-1' })
+    post.mockRejectedValueOnce({ response: { data: 'That passkey was not accepted' } })
+    const { wrapper } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(wrapper.vm.error).toBe('That passkey was not accepted')
+    expect(store.isAuthenticated).toBe(false)
+  })
+
+  it('clears the busy flag whichever way it ends', async () => {
+    post.mockRejectedValueOnce({ response: { data: 'Server error' } })
+    const { wrapper } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(wrapper.vm.passkeyBusy).toBe(false)
+  })
+
+  it('hides the button on a browser without webauthn', () => {
+    supported.value = false
+    const { wrapper } = mountLogin()
+
+    expect(wrapper.find('button[type="button"]').exists()).toBe(false)
   })
 })

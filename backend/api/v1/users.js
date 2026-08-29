@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
 const isAdmin = require('../../services/isAdmin')
-const otp = require('../../services/otp')
+const passkey = require('../../services/passkey')
 const writeLog = require('../../services/writeLog')
 const context = 'Users'
 
@@ -23,23 +23,65 @@ router.post('/login', async function (req, res) {
     return res.status(401).send('Incorrect username or password')
   }
 
-  const needsToken = Boolean(account.otp?.status)
-  if (needsToken && !req.body.token) {
-    writeLog(`User ${account.username}: ${account._id} requires a 2fa token.`, 'Info', context, req.realIp)
-    return res.json({ otp: true })
-  }
-  if (needsToken && !otp.check(req.body.token, account.otp.secret)) {
-    return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
-  }
-
   writeLog(`User ${account.username}: ${account._id} has logged in.`, 'Info', context, req.realIp)
-  if (!req.body.remember) {
+  establishSession(req, account, req.body.remember)
+  return res.status(200).send({ admin: account.admin, _id: account._id })
+})
+
+// shared by the password and passkey routes below, so both end a login the
+// same way
+function establishSession (req, account, remember) {
+  if (!remember) {
     req.session.cookie.expires = false
   }
   req.session.userId = account._id
   req.session.admin = account.admin
   req.session.username = account.username
-  return res.status(200).send({ admin: account.admin, _id: account._id })
+}
+
+// Step one of a passkey login. No username is asked for: the credentials are
+// discoverable, so the authenticator offers whichever passkey it holds for
+// this site and step two looks the account up from the credential id.
+router.post('/login/passkey/options', async function (req, res) {
+  try {
+    const options = await passkey.authenticationOptions(req)
+    res.json(options)
+  } catch (err) {
+    console.error(err)
+    writeLog(err, 'Error', context)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+router.post('/login/passkey', async function (req, res) {
+  const response = req.body.response
+  if (!response?.id) {
+    writeLog('Passkey login with a malformed response', 'Warning', context, req.realIp)
+    return res.status(403).send('Missing fields')
+  }
+
+  try {
+    const account = await user.findOne({ 'credentials.credentialID': response.id }).exec()
+    if (!account) throw new Error(`No account holds credential ${response.id}`)
+
+    const stored = account.credentials.find(credential => credential.credentialID === response.id)
+    const newCounter = await passkey.verifyAuthentication(req, response, stored)
+
+    // the signature counter only ever moves forward; persisting it is what
+    // makes a cloned authenticator detectable later
+    await user.updateOne(
+      { _id: account._id, 'credentials.credentialID': response.id },
+      { $set: { 'credentials.$.counter': newCounter } }
+    )
+
+    writeLog(`User ${account.username}: ${account._id} has logged in with a passkey.`, 'Info', context, req.realIp)
+    establishSession(req, account, req.body.remember)
+    return res.status(200).send({ admin: account.admin, _id: account._id })
+  } catch (error) {
+    // as with the password route, the reason stays server-side
+    writeLog(`Failed passkey login attempt (${error})`, 'Warning', context, req.realIp)
+    return res.status(401).send('That passkey was not accepted')
+  }
 })
 
 async function authenticateUser (username, password) {
@@ -109,7 +151,7 @@ router.get('/', isAdmin, async function (req, res) {
 router.get('/:_id', isAdmin, async function (req, res) {
   try {
     const _id = { _id: req.params._id }
-    const result = await user.findOne(_id).select('username admin createdBy editedBy otp.status').exec()
+    const result = await user.findOne(_id).select('username admin createdBy editedBy credentials.name credentials.createdAt').exec()
     writeLog(`${req.session.username}: ${req.session.userId} requested ${req.params._id}`, 'Info', context, req.realIp)
     res.json(result)
   } catch (err) {
