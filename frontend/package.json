@@ -35,20 +35,12 @@
   },
   "scripts": {
     "build": "vite build",
-    "serve": "vite",
-    "test": "eslint . && vitest run",
-    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "coverage": "vitest run --coverage",
-    "test:ci": "eslint . && vitest run --coverage"
-  },
-  "packageManager": "pnpm@10.28.1",
-  "type": "module",
-  "pnpm": {
-    "overrides": {
-      "brace-expansion@5": "5.0.9",
-      "postcss": "8.5.23"
-    }
+    "serve": "vite",
+    "test": "eslint . && vitest run",
+    "test:ci": "eslint . && vitest run --coverage",
+    "test:watch": "vitest"
   }
 }

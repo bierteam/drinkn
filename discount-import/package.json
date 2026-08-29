@@ -1,29 +1,17 @@
 {
-  "description": "import-bier",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bierteam/import-bier.git"
+  "bugs": {
+    "url": "https://github.com/bierteam/FrontEnd/issues"
   },
-  "homepage": "https://github.com/bierteam/import-bier/docs/README.md",
   "contibutors": [
     "Oscar Wieman (https://github.com/oscrx)",
     "Nino van der Laan (https://github.com/NvdLaan)"
   ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bierteam/FrontEnd/issues"
-  },
-  "main": "server.js",
-  "scripts": {
-    "test": "eslint . && jest --config test/unit/jest.conf.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
-  },
   "dependencies": {
     "axios": "^1.20.0",
     "moment": "^2.30.1",
     "mongoose": "^9.9.4"
   },
+  "description": "import-bier",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
@@ -33,5 +21,16 @@
     "jest": "^30.5.0",
     "pnpm": "^11.24.0"
   },
-  "packageManager": "pnpm@10.28.1"
+  "homepage": "https://github.com/bierteam/import-bier/docs/README.md",
+  "license": "MIT",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bierteam/import-bier.git"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "eslint . && jest --config test/unit/jest.conf.js"
+  }
 }
