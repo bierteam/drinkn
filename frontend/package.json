@@ -42,5 +42,6 @@
     "test": "eslint . && vitest run",
     "test:ci": "eslint . && vitest run --coverage",
     "test:watch": "vitest"
-  }
+  },
+  "type": "module"
 }

@@ -1,2 +1,4 @@
+# esbuild ships prebuilt binaries and needs its install script to pick one.
+# pnpm refuses to run install scripts until they are allowed by name.
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true
