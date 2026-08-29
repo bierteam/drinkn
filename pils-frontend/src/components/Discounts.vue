@@ -1,6 +1,6 @@
 <script>
 import Api from '../services/Api'
-import Vue2Filters from 'vue2-filters'
+import { filterBy, orderBy } from '../composables/useArrayFilters'
 import { getCachedData, setCachedData } from '../services/db'
 import { toRaw } from 'vue'
 
@@ -15,7 +15,6 @@ const sameQuery = (a, b) => {
 }
 
 export default {
-  mixins: [Vue2Filters.mixin],
   data () {
     return {
       discountAverage: [],
@@ -148,16 +147,16 @@ export default {
   },
   computed: {
     processed: function () {
-      let data = this.orderBy(this.discounts, this.sort, this.sortDir)
+      let data = orderBy(this.discounts, this.sort, this.sortDir)
       if (this.online) {
         data = data.filter(obj => obj.uri)
       }
       if (!this.zero) {
         data = data.filter(obj => obj.alcoholPercentage > 100)
       }
-      data = this.filterBy(data, this.search)
-      data = this.filterBy(data, this.store)
-      data = this.filterBy(data, this.volume)
+      data = filterBy(data, this.search)
+      data = filterBy(data, this.store)
+      data = filterBy(data, this.volume)
       return data
     },
     filterQuery: function () {

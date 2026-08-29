@@ -74,9 +74,6 @@ importers:
       vue-router:
         specifier: ^4.2.4
         version: 4.6.4(vue@3.5.42(typescript@6.0.3))
-      vue2-filters:
-        specifier: ^0.14.0
-        version: 0.14.0
 
 packages:
 
@@ -1625,9 +1622,6 @@ packages:
     resolution: {integrity: sha512-Hz9q5sa33Yhduglwz6g9skT8OBPii+4bFn88w6J+J4MfEo4KRRpmiNG/hHHkdbRFlLBOqxN8y8gf2Fb0MTUgVg==}
     peerDependencies:
       vue: ^3.5.0
-
-  vue2-filters@0.14.0:
-    resolution: {integrity: sha512-2tFWC6gx1SVIr+6VXoufkL+bZa8Gn0/P09T/bnGjOEAGH1+eVT05bPm/VF2V/nL/HMyWkLdlvxKh9JNqpfFlyw==}
 
   vue@3.5.42:
     resolution: {integrity: sha512-4RyHQTbQvOPs3MfvUO1Sg0YRrKNnA0mAVtvpd12Tg1fKDN7OHBUl1IqSn8zGJjK9nI3NkNp8cgTpVrSZC5TTcA==}
@@ -3206,8 +3200,6 @@ snapshots:
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.42(typescript@6.0.3)
-
-  vue2-filters@0.14.0: {}
 
   vue@3.5.42(typescript@6.0.3):
     dependencies:

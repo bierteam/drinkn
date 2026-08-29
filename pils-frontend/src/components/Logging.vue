@@ -1,6 +1,6 @@
 <script>
 import Api from '../services/Api'
-import Vue2Filters from 'vue2-filters'
+import { filterBy } from '../composables/useArrayFilters'
 
 const filterKeys = ['search', 'context', 'type']
 
@@ -13,7 +13,6 @@ const sameQuery = (a, b) => {
 }
 
 export default {
-  mixins: [Vue2Filters.mixin],
   data () {
     return {
       search: '',
@@ -70,9 +69,9 @@ export default {
   computed: {
     processed: function () {
       let data = this.logs
-      data = this.filterBy(data, this.search)
-      data = this.filterBy(data, this.context)
-      data = this.filterBy(data, this.type)
+      data = filterBy(data, this.search)
+      data = filterBy(data, this.context)
+      data = filterBy(data, this.type)
       return data
     },
     filterQuery: function () {
