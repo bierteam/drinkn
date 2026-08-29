@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: beer-import
+  name: discounts-import
 spec:
   jobTemplate:
     spec:
@@ -16,9 +16,9 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           containers:
-            - image: "ghcr.io/bierteam/drinkn/beer-import:{{ .Values.image.tag }}"
+            - image: "ghcr.io/bierteam/drinkn/discounts-import:{{ .Values.image.tag }}"
               imagePullPolicy: Always
-              name: beer-import
+              name: discounts-import
               envFrom:
                 - secretRef:
                     name: drinkn-env

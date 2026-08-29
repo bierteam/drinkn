@@ -40,9 +40,9 @@ jobs:
     strategy:
       matrix:
         folder:
-          - beer-import
+          - discounts-import
           - pils-frontend
-          - pils
+          - pils-backend
           # - api
 
     steps:
@@ -159,12 +159,12 @@ jobs:
           # Trim the first few characters to match the desired format (e.g., sha-c27d339)
           SHORT_SHA="sha-${COMMIT_SHA:0:7}"
           
-          # Change image.tag in charts/drinkn/values.yaml
-          sed -i "s|tag:.*|tag: \"$SHORT_SHA\"|" charts/drinkn/values.yaml
+          # Change image.tag in charts/pils/values.yaml
+          sed -i "s|tag:.*|tag: \"$SHORT_SHA\"|" charts/pils/values.yaml
 
           # Commit and push the changes to the deploy branch
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add charts/drinkn/values.yaml
+          git add charts/pils/values.yaml
           git commit -m "Update image.tag to $SHORT_SHA"
           git push origin main

@@ -3,20 +3,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: pils
-  name: pils
+    app: pils-backend
+  name: pils-backend
 spec:
   replicas: {{ .Values.replicas }}
   revisionHistoryLimit: 0
   selector:
     matchLabels:
-      app: pils
+      app: pils-backend
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: pils
+        app: pils-backend
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -24,7 +24,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - image: ghcr.io/bierteam/drinkn/pils:{{ .Values.image.tag }}
+        - image: ghcr.io/bierteam/drinkn/pils-backend:{{ .Values.image.tag }}
           securityContext:
             allowPrivilegeEscalation: false
             # writes nothing to disk: config in, mongo out
@@ -37,18 +37,18 @@ spec:
                 name: drinkn-env
                 optional: false
           imagePullPolicy: Always
-          name: pils
+          name: pils-backend
           resources:
             requests:
-              {{- toYaml .Values.resources.pils.requests | nindent 14 }}
+              {{- toYaml .Values.resources.pilsBackend.requests | nindent 14 }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pils
+  name: pils-backend
 spec:
   selector:
-    app: pils
+    app: pils-backend
   ports:
     - port: 80
       name: default

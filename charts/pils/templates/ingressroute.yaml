@@ -17,5 +17,5 @@ spec:
     - match: Host(`{{ .Values.fqdn }}`) && PathPrefix(`/api`)
       kind: Rule
       services:
-        - name: pils
+        - name: pils-backend
           port: 80

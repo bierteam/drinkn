@@ -25,7 +25,7 @@ pr:
 # Sized from observed usage (kubectl top) with headroom:
 #   pils 50Mi, pils-frontend 6-8Mi
 resources:
-  pils:
+  pilsBackend:
     requests:
       cpu: 25m
       memory: 128Mi
