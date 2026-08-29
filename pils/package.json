@@ -16,7 +16,9 @@
   "main": "server.js",
   "scripts": {
     "serve": "NODE_ENV=development nodemon",
-    "test": "standard && jest --config test/unit/jest.conf.js"
+    "test": "eslint . && jest --config test/unit/jest.conf.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -33,12 +35,15 @@
     "uuid": "^11.1.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "dotenv": "^17.4.2",
+    "eslint": "^10.9.1",
+    "globals": "^17.11.0",
     "jest": "30.4.2",
     "nodemon": "^3.0.1",
     "pnpm": "^10.34.5",
     "rimraf": "^6.0.0",
-    "standard": "^17.1.0",
     "supertest": "^7.2.2"
   },
   "pnpm": {

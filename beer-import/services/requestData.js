@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-const requestData = async (context) => {
+const requestData = async context => {
   const headers = {
     'User-Agent': 'nl.Biernet.iOS.app/V3',
     Accept: 'application/json, text/plain, /',

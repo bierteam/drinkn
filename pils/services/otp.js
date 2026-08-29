@@ -5,7 +5,7 @@ authenticator.options = {
   algorithm: 'sha1'
 }
 
-const generate = (req) => {
+const generate = req => {
   const result = {}
   result.secret = authenticator.generateSecret()
   result.uri = uri(req.session.username, req.hostname, result.secret, req.headers.host)

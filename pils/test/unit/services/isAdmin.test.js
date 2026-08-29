@@ -1,4 +1,3 @@
-/* global describe, it, expect, jest, afterEach */
 const isAdmin = require('../../../services/isAdmin')
 
 const mockRes = () => {

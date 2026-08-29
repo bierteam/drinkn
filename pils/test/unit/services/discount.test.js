@@ -1,4 +1,3 @@
-/* global describe, it, expect, jest, beforeEach, afterEach */
 jest.mock('../../../models/beer', () => ({ find: jest.fn() }))
 
 // discount.js reads process.env.PR at module load to decide its query, so each

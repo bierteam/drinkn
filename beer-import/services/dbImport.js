@@ -6,7 +6,7 @@ const writeLog = require('./writeLog')
 const context = 'Import'
 const mongoose = require('mongoose')
 
-const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const dbImport = async () => {
   try {

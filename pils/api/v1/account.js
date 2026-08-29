@@ -58,7 +58,7 @@ router.post('/', isAuthenticated, async function (req, res) {
   }
 })
 
-router.delete('/delete', isAuthenticated, async function (req, res, next) {
+router.delete('/delete', isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
 

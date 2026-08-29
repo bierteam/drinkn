@@ -5,6 +5,7 @@ RUN corepack enable
 WORKDIR /app
 COPY package.json ./
 COPY pnpm-lock.yaml ./
+COPY eslint.config.mjs ./
 COPY models ./models
 COPY services ./services
 COPY api ./api

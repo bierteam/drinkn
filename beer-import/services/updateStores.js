@@ -10,7 +10,7 @@ function updateStores (newStores) {
       upsert: true,
       setDefaultsOnInsert: true
     },
-    function (err, result) {
+    function (err) {
       if (err) console.error(err)
     })
 }

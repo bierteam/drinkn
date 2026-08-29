@@ -1,4 +1,3 @@
-/* global test, expect */
 const joinObjects = require('../../../services/joinObjects')
 
 const obj1 = [{

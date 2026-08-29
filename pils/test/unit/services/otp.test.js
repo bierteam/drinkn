@@ -1,4 +1,3 @@
-/* global describe, it, expect */
 const { authenticator } = require('otplib')
 const otp = require('../../../services/otp')
 

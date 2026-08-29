@@ -1,4 +1,3 @@
-/* global test, expect */
 const uriPrettifier = require('../../../services/uriPrettifier')
 
 test('expect a clean url back', () => {

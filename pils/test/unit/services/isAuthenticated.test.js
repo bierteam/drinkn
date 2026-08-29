@@ -1,4 +1,3 @@
-/* global describe, it, expect, jest, afterEach */
 const isAuthenticated = require('../../../services/isAuthenticated')
 
 const mockRes = () => {

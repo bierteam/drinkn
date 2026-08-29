@@ -15,32 +15,23 @@
   },
   "main": "server.js",
   "scripts": {
-    "test": "standard && jest --config test/unit/jest.conf.js"
+    "test": "eslint . && jest --config test/unit/jest.conf.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "axios": "^1.4.0",
-    "moment": "^2.29.4",
-    "mongoose": "^7.4.3"
+    "axios": "^1.20.0",
+    "moment": "^2.30.1",
+    "mongoose": "^9.9.4"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "dotenv": "^17.4.2",
-    "jest": "^30.4.2",
-    "pnpm": "^10.34.5",
-    "rimraf": "^6.0.0",
-    "standard": "^17.1.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@babel/core": "7.29.6",
-      "brace-expansion@1": "1.1.18",
-      "brace-expansion@5": "5.0.9",
-      "flatted": "3.4.2",
-      "ip-address": "10.5.0",
-      "js-yaml@3": "3.15.1",
-      "js-yaml@4": "4.3.1",
-      "minimatch@3": "3.1.4",
-      "picomatch@2": "2.3.2"
-    }
+    "eslint": "^10.9.1",
+    "globals": "^17.11.0",
+    "jest": "^30.5.0",
+    "pnpm": "^11.24.0"
   },
   "packageManager": "pnpm@10.28.1"
 }

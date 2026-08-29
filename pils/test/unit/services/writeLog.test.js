@@ -1,4 +1,3 @@
-/* global describe, it, expect, jest, beforeEach, afterEach */
 jest.mock('../../../models/log', () => ({ create: jest.fn() }))
 
 const logger = require('../../../models/log')

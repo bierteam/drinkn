@@ -15,7 +15,7 @@ router.post('/login', async function (req, res) {
   // named `account` so it does not shadow the user model imported above
   let account
   try {
-    account = await authenticateUser(req.body.username, req.body.password, req.body.token)
+    account = await authenticateUser(req.body.username, req.body.password)
   } catch (error) {
     // the reason is recorded here but never returned, so a caller cannot tell
     // an unknown username from a wrong password
@@ -42,7 +42,7 @@ router.post('/login', async function (req, res) {
   return res.status(200).send({ admin: account.admin, _id: account._id })
 })
 
-async function authenticateUser (username, password, token) {
+async function authenticateUser (username, password) {
   return new Promise((resolve, reject) => {
     user.authenticate(username, password, function (error, user) {
       if (error || !user) {
@@ -54,7 +54,7 @@ async function authenticateUser (username, password, token) {
   })
 }
 
-router.delete('/logout', function (req, res, next) {
+router.delete('/logout', function (req, res) {
   if (req.session) {
     req.session.destroy(function (err) {
       if (err) {

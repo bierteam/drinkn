@@ -1,4 +1,3 @@
-/* global describe, it, expect, jest, beforeEach, afterEach */
 jest.mock('../../../models/user', () => ({ authenticate: jest.fn() }))
 jest.mock('../../../services/otp', () => ({ check: jest.fn(), generate: jest.fn() }))
 jest.mock('../../../services/writeLog', () => jest.fn())
