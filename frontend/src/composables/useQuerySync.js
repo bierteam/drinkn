@@ -3,10 +3,9 @@
 
 // shallow, order-insensitive compare so we skip redundant router navigations
 export const sameQuery = (a, b) => {
-  const aKeys = Object.keys(a).sort()
-  const bKeys = Object.keys(b).sort()
-  return aKeys.length === bKeys.length
-    && aKeys.every((key, index) => key === bKeys[index] && String(a[key]) === String(b[key]))
+  const aKeys = Object.keys(a)
+  return aKeys.length === Object.keys(b).length
+    && aKeys.every(key => Object.hasOwn(b, key) && String(a[key]) === String(b[key]))
 }
 
 // drops the keys the page owns from the current query and lays the active

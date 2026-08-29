@@ -195,6 +195,19 @@ describe('filtering', () => {
     expect(ids(wrapper)).toEqual(['a', 'b'])
   })
 
+  it('hides an entry whose alcohol percentage is unknown when 0.0 is switched off', async () => {
+    // the import only sets the field when biernet lists one, and a missing
+    // strength is no promise that there is alcohol in the bottle
+    const { wrapper } = await mountWith()
+    wrapper.vm.discounts.push({
+      id: 'd', brand: 'Dunno', store: 'AH', volume: '500ml', uri: null, literPrice: 2, pricing: { oldPrice: 200, newPrice: 100, literPrice: 2 }
+    })
+    wrapper.vm.zero = false
+    await wrapper.vm.$nextTick()
+
+    expect(ids(wrapper)).toEqual(['a', 'b'])
+  })
+
   it('keeps only the buyable ones for the online filter', async () => {
     const { wrapper } = await mountWith()
     wrapper.vm.online = true
