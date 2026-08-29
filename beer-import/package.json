@@ -28,5 +28,11 @@
     "pnpm": "^10.34.5",
     "rimraf": "^6.0.0",
     "standard": "^17.1.0"
-  }
+  },
+  "pnpm": {
+    "overrides": {
+      "ip-address": "10.5.0"
+    }
+  },
+  "packageManager": "pnpm@10.28.1"
 }
