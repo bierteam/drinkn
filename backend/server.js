@@ -29,6 +29,7 @@ const mongoose = require('mongoose')
 const { MongoStore } = require('connect-mongo')
 const user = require('./models/user')
 const writeLog = require('./services/writeLog')
+const sessionCookie = require('./services/sessionCookie')
 
 mongoose.connect(connectionString)
 const db = mongoose.connection
@@ -54,6 +55,11 @@ const options = {
   secret: process.env.APPSECRET,
   resave: false,
   saveUninitialized: false,
+  // traefik terminates TLS, so this process only ever sees http; `proxy` makes
+  // express-session read the forwarded protocol instead of the socket, without
+  // which a secure cookie is never set at all
+  proxy: sessionCookie.production,
+  cookie: sessionCookie.cookie,
   store: MongoStore.create({
     mongoUrl: connectionString
   })

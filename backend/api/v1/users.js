@@ -5,6 +5,7 @@ const isAdmin = require('../../services/isAdmin')
 const rateLimit = require('../../services/rateLimit')
 const passkey = require('../../services/passkey')
 const writeLog = require('../../services/writeLog')
+const sessionCookie = require('../../services/sessionCookie')
 const context = 'Users'
 
 // enough to list and revoke a passkey, and no key material
@@ -115,7 +116,7 @@ router.delete('/logout', function (req, res) {
         res.sendStatus(500)
         writeLog(err, 'Error', context)
       } else {
-        res.clearCookie('connect.sid', { path: '/' }).status(200).send('Cookie deleted.')
+        res.clearCookie('connect.sid', sessionCookie.cookie).status(200).send('Cookie deleted.')
       }
     })
   }

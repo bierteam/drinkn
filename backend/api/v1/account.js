@@ -5,6 +5,7 @@ const isAuthenticated = require('../../services/isAuthenticated')
 const passkey = require('../../services/passkey')
 const rateLimit = require('../../services/rateLimit')
 const writeLog = require('../../services/writeLog')
+const sessionCookie = require('../../services/sessionCookie')
 const context = 'Account'
 
 // never select credentials.publicKey: the account screen only lists the keys,
@@ -127,7 +128,7 @@ router.delete('/delete', rateLimit.api, isAuthenticated, async function (req, re
 
     await user.deleteOne({ _id })
 
-    res.clearCookie('connect.sid', { path: '/' }).status(200).send('Account deleted, removing cookie...')
+    res.clearCookie('connect.sid', sessionCookie.cookie).status(200).send('Account deleted, removing cookie...')
     writeLog(`User ${req.session.username}: ${req.session.userId} deleted their account.`, 'Info', context, req.realIp)
   } catch (err) {
     console.error(err)
