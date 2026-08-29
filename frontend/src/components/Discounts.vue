@@ -1,186 +1,109 @@
 <script>
-import Api from '../services/Api'
-import { filterBy, orderBy } from '../composables/useArrayFilters'
-import { getCachedData, setCachedData } from '../services/db'
-import { toRaw } from 'vue'
+import { useDiscounts, formatPrice } from '../composables/useDiscounts'
+import { mergedQuery, sameQuery } from '../composables/useQuerySync'
 
-const filterKeys = ['search', 'store', 'volume', 'online', 'zero']
+const filterKeys = ['search', 'store', 'volume', 'online', 'zero', 'sort', 'dir']
 
-// shallow, order-insensitive compare so we skip redundant router navigations
-const sameQuery = (a, b) => {
-  const aKeys = Object.keys(a).sort()
-  const bKeys = Object.keys(b).sort()
-  return aKeys.length === bKeys.length
-    && aKeys.every((key, index) => key === bKeys[index] && String(a[key]) === String(b[key]))
+const sortOptions = [
+  { value: 'literPrice', label: 'Price per litre' },
+  { value: 'discountPercentage', label: 'Discount %' },
+  { value: 'discount', label: 'Amount saved' },
+  { value: 'newPrice', label: 'Price' },
+  { value: 'brand', label: 'Brand' },
+  { value: 'store', label: 'Store' }
+]
+
+// discount and discountPercentage arrive as toFixed()/toPrecision() strings, so
+// comparing them directly puts '9.0' after '10.0'. Numeric strings are compared
+// as numbers here; anything else falls back to a case-insensitive compare.
+const sortValue = (item, key) => {
+  const raw = item[key]
+  if (typeof raw !== 'string') {
+    return raw
+  }
+  const number = Number(raw)
+  return raw.trim() !== '' && Number.isFinite(number) ? number : raw.toLowerCase()
 }
 
+// the free text box searches the three fields a visitor can actually see,
+// rather than every property on the record including uris and timestamps
+const searchable = ['brand', 'store', 'volume']
+
+const matches = (item, needle) =>
+  searchable.some(key => String(item[key] ?? '').toLowerCase().includes(needle))
+
+const shortDate = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'short' })
+
 export default {
+  name: 'Discounts',
+  setup () {
+    return useDiscounts()
+  },
   data () {
     return {
-      discountAverage: [],
-      discounts: [],
-      headers: {
-        brand: 'Brand',
-        alcoholPercentage: '%',
-        store: 'Store',
-        newPrice: 'New',
-        oldPrice: 'Old',
-        literPrice: 'Liter',
-        discount: 'Discount',
-        discountPercentage: '%',
-        volume: 'Volume',
-        uri: 'Link'
-      },
-      literAverage: [],
       online: false,
-      onlineCounter: 0,
-      percentageAverage: [],
       search: '',
+      showFilters: false,
       sort: 'literPrice',
       sortDir: 1,
+      sortOptions,
       store: '',
-      stores: [],
       volume: '',
-      volumes: [],
       zero: true
     }
   },
   created () {
     this.queryTimer = null
-    this.cache()
-  },
-  methods: {
-    async getPils () {
-      const response = await Api().get('/api/v1/discounts')
-      const discountAverage = []
-      const percentageAverage = []
-      const literAverage = []
-      const stores = []
-      const volumes = []
-      let onlineCounter = 0
-
-      for (const item of response.data) {
-        // take data to main object for sorting
-        item.discount = ((item.pricing.oldPrice - item.pricing.newPrice) / 100).toFixed(2)
-        item.discountPercentage = (100 - (item.pricing.newPrice * 100 / item.pricing.oldPrice)).toPrecision(2)
-        item.literPrice = item.pricing.literPrice
-        item.newPrice = item.pricing.newPrice
-        item.oldPrice = item.pricing.oldPrice
-
-        discountAverage.push(item.discount)
-        percentageAverage.push(item.discountPercentage)
-        literAverage.push(item.literPrice)
-        if (item.uri) {
-          onlineCounter++
-        }
-        if (!stores.includes(item.store)) {
-          stores.push(item.store)
-        }
-        if (!volumes.includes(item.volume)) {
-          volumes.push(item.volume)
-        }
-      }
-      volumes.sort()
-
-      // assign in one go so a re-run replaces the previous totals instead of
-      // adding to them, which would double-count anything restored from cache
-      this.discountAverage = discountAverage
-      this.percentageAverage = percentageAverage
-      this.literAverage = literAverage
-      this.onlineCounter = onlineCounter
-      this.stores = stores
-      this.volumes = volumes
-      this.discounts = response.data
-    },
-    async cache () {
-      const cachekeys = ['discounts', 'onlineCounter', 'literAverage', 'discountAverage', 'percentageAverage', 'stores', 'volumes']
-      // the cache is an enhancement: if it is unavailable we still fetch
-      try {
-        for (const cacheKey of cachekeys) {
-          const cached = await getCachedData(cacheKey)
-          if (cached) {
-            this[cacheKey] = cached
-          }
-        }
-      } catch (error) {
-        console.warn('Could not read cached discounts:', error)
-      }
-
-      await this.getPils()
-
-      try {
-        for (const cacheKey of cachekeys) {
-          const plainClone = structuredClone(toRaw(this[cacheKey]))
-          await setCachedData(cacheKey, plainClone)
-        }
-      } catch (error) {
-        console.warn('Could not cache discounts:', error)
-      }
-    },
-    toggleSort: function (input) {
-      if (input === this.sort) {
-        this.sortDir = this.sortDir === 1 ? -1 : 1
-      }
-      this.sort = input
-    },
-    average: function (inputArray) {
-      if (!inputArray.length) {
-        return 0
-      }
-      let result = 0
-      for (const item of inputArray) {
-        result += Number(item)
-      }
-      return result / inputArray.length
-    },
-    formatPrice: function (value) {
-      const number = Number(value)
-      if (value === null || value === '' || !Number.isFinite(number)) {
-        return value
-      }
-      const formatter = new Intl.NumberFormat('nl-NL', {
-        style: 'currency',
-        currency: 'EUR'
-      })
-      return formatter.format(number)
-    }
+    this.load()
   },
   computed: {
-    processed: function () {
-      let data = orderBy(this.discounts, this.sort, this.sortDir)
-      if (this.online) {
-        data = data.filter(obj => obj.uri)
-      }
-      if (!this.zero) {
-        data = data.filter(obj => obj.alcoholPercentage > 100)
-      }
-      data = filterBy(data, this.search)
-      data = filterBy(data, this.store)
-      data = filterBy(data, this.volume)
-      return data
+    processed () {
+      const needle = this.search.trim().toLowerCase()
+      const filtered = this.discounts.filter(item => {
+        if (this.online && !item.uri) return false
+        // zero off hides the alcohol free entries; the API stores the
+        // percentage multiplied by a hundred
+        if (!this.zero && !(item.alcoholPercentage > 100)) return false
+        if (this.store && item.store !== this.store) return false
+        if (this.volume && item.volume !== this.volume) return false
+        if (needle && !matches(item, needle)) return false
+        return true
+      })
+
+      const direction = this.sortDir < 0 ? -1 : 1
+      return filtered.sort((a, b) => {
+        const left = sortValue(a, this.sort)
+        const right = sortValue(b, this.sort)
+        if (left === right) return 0
+        return left > right ? direction : -direction
+      })
     },
-    filterQuery: function () {
+    // only the filters hidden behind the toggle are counted, so the badge
+    // says what is on that the visitor cannot currently see
+    hiddenFilterCount () {
+      return [this.store, this.volume, this.online, !this.zero].filter(Boolean).length
+    },
+    activeFilters () {
+      return Boolean(this.search || this.hiddenFilterCount)
+    },
+    filterQuery () {
       const query = {}
       if (this.search) query.search = this.search
       if (this.store) query.store = this.store
       if (this.volume) query.volume = this.volume
-      if (this.online) query.online = String(this.online)
+      if (this.online) query.online = 'true'
       // zero defaults to true, so it is the off state that is worth encoding
       if (!this.zero) query.zero = 'false'
+      if (this.sort !== 'literPrice') query.sort = this.sort
+      if (this.sortDir !== 1) query.dir = 'desc'
       return query
     }
   },
   watch: {
-    // sync the active filters into the URL. this used to live in updated(),
-    // which fired on every render and navigated on every keystroke
     filterQuery (query) {
       clearTimeout(this.queryTimer)
       this.queryTimer = setTimeout(() => {
-        const next = { ...this.$route.query }
-        for (const key of filterKeys) {
-          delete next[key]
-        }
-        Object.assign(next, query)
+        const next = mergedQuery(this.$route.query, filterKeys, query)
         if (!sameQuery(next, this.$route.query)) {
           this.$router.replace({ query: next })
         }
@@ -190,130 +113,305 @@ export default {
   mounted () {
     const query = this.$route.query
     // only override a default when the key is really in the URL: reading a
-    // missing key gives undefined, which used to wipe every default
+    // missing key gives undefined, which would wipe every default
     if (query.search !== undefined) this.search = query.search
     if (query.store !== undefined) this.store = query.store
     if (query.volume !== undefined) this.volume = query.volume
     if (query.online !== undefined) this.online = query.online === 'true'
     if (query.zero !== undefined) this.zero = query.zero === 'true'
+    if (sortOptions.some(option => option.value === query.sort)) this.sort = query.sort
+    if (query.dir !== undefined) this.sortDir = query.dir === 'desc' ? -1 : 1
+    // a filter arriving from the URL is invisible while the panel is shut, and
+    // desktop has the room to leave it open
+    this.showFilters = this.hiddenFilterCount > 0 || window.innerWidth >= 1024
   },
   beforeUnmount () {
     clearTimeout(this.queryTimer)
+  },
+  methods: {
+    formatPrice,
+    alcohol (item) {
+      return typeof item.alcoholPercentage === 'number' ? `${item.alcoholPercentage / 100}%` : null
+    },
+    percentage (item) {
+      return Math.round(Number(item.discountPercentage))
+    },
+    validUntil (item) {
+      if (!item.validity) return null
+      const date = new Date(item.validity)
+      return Number.isNaN(date.getTime()) ? null : shortDate.format(date)
+    },
+    sortBy (key) {
+      if (key === this.sort) {
+        this.sortDir = this.sortDir === 1 ? -1 : 1
+        return
+      }
+      this.sort = key
+      this.sortDir = 1
+    },
+    reset () {
+      this.search = ''
+      this.store = ''
+      this.volume = ''
+      this.online = false
+      this.zero = true
+    }
   }
 }
 </script>
 
 <template>
-<div class='container'>
-  <nav class='level'>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Discounts</p>
-        <p class='title'>{{ discounts.length}}</p>
+<div class="container">
+  <div class="stats mb-4">
+    <div class="stat">
+      <p class="heading">Discounts</p>
+      <p class="stat-value">{{ discounts.length }}</p>
+    </div>
+    <div class="stat">
+      <p class="heading">Average discount</p>
+      <p class="stat-value">{{ formatPrice(averageDiscount) }}</p>
+    </div>
+    <div class="stat">
+      <p class="heading">Average liter price</p>
+      <p class="stat-value">{{ formatPrice(averageLiterPrice) }}</p>
+    </div>
+    <div class="stat">
+      <p class="heading">Online</p>
+      <p class="stat-value">{{ onlineCount }}</p>
+    </div>
+  </div>
+
+  <div class="box filters has-text-left">
+    <div class="field">
+      <label class="is-sr-only" for="discounts-search">Search discounts</label>
+      <div class="control has-icons-right">
+        <input id="discounts-search" class="input" type="search" placeholder="Search brand, store or volume" v-model="search">
+        <span class="icon is-small is-right" v-if="search">
+          <i class="delete" @click="search = ''"></i>
+        </span>
       </div>
     </div>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Average discount</p>
-        <p class='title'>{{ formatPrice(average(discountAverage)) }} & {{ Math.round(average(percentageAverage)) }}%</p>
+
+    <div class="field is-grouped filter-row">
+      <div class="control is-expanded">
+        <label class="is-sr-only" for="discounts-sort">Sort by</label>
+        <div class="select is-fullwidth">
+          <select id="discounts-sort" v-model="sort">
+            <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="control">
+        <button
+          type="button"
+          class="button"
+          :aria-label="sortDir === 1 ? 'Sort descending' : 'Sort ascending'"
+          @click="sortDir = sortDir === 1 ? -1 : 1">
+          {{ sortDir === 1 ? '↑ Low' : '↓ High' }}
+        </button>
+      </div>
+      <div class="control">
+        <button
+          type="button"
+          id="discounts-filter-toggle"
+          class="button"
+          :class="{ 'is-primary': hiddenFilterCount }"
+          :aria-expanded="String(showFilters)"
+          aria-controls="discounts-filter-panel"
+          @click="showFilters = !showFilters">
+          Filters<span v-if="hiddenFilterCount">&nbsp;({{ hiddenFilterCount }})</span>
+        </button>
       </div>
     </div>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Average liter price</p>
-        <p class='title'>{{ formatPrice(average(literAverage)) }}</p>
-      </div>
-    </div>
-    <div class='level-item has-text-centered'>
-      <div>
-        <p class='heading'>Online Discounts</p>
-        <p class='title'>{{ onlineCounter }}</p>
-      </div>
-    </div>
-  </nav>
-  <progress v-if="discounts.length === 0" class="progress is-small"></progress>
-  <table class='table container'>
-    <caption class='is-hidden'>Table of beer discounts</caption>
-    <thead>
-      <tr>
-        <!-- first row -->
-        <th>
-          <div class="control has-icons-right">
-            <label class="is-sr-only" for="discounts-search">Search discounts</label>
-            <input id="discounts-search" class='input' type='text' placeholder='Search' v-model="search" autofocus>
-            <span class="icon is-small is-right">
-              <i class="delete" :class="{'is-hidden': !search }" @click='search = null'></i>
-            </span>
+
+    <!-- the secondary filters cost a third of a phone screen, so they stay
+         folded away until they are asked for -->
+    <div id="discounts-filter-panel" v-show="showFilters">
+      <div class="field is-grouped is-grouped-multiline filter-row">
+        <div class="control is-expanded">
+          <label class="is-sr-only" for="discounts-store">Store</label>
+          <div class="select is-fullwidth">
+            <select id="discounts-store" v-model="store">
+              <option value="">All stores</option>
+              <option v-for="option in stores" :key="option" :value="option">{{ option }}</option>
+            </select>
           </div>
-        </th>
-        <th>
-          <button type="button" class="button" :class="{'is-primary': zero }" @click='zero = !zero'>0.0</button>
-        </th>
-        <th>
-          <div class="dropdown is-hoverable">
-            <div class="dropdown-trigger">
-              <button type="button" class="button" aria-haspopup="true" aria-controls="dropdown-store">
-                <div @click='store = null'>{{ store || "Select a store" }}</div>
-              </button>
-            </div>
-            <div class="dropdown-menu" id="dropdown-store" role="menu">
-              <div class="dropdown-content" v-for="option in stores" :key='option'>
-                <a class="dropdown-item" @click='store = option'>{{ option }}</a>
-              </div>
-            </div>
+        </div>
+        <div class="control is-expanded">
+          <label class="is-sr-only" for="discounts-volume">Volume</label>
+          <div class="select is-fullwidth">
+            <select id="discounts-volume" v-model="volume">
+              <option value="">All volumes</option>
+              <option v-for="option in volumes" :key="option" :value="option">{{ option }}</option>
+            </select>
           </div>
-        </th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th>
-          <div class="dropdown is-hoverable">
-            <div class="dropdown-trigger">
-              <button type="button" class="button" aria-haspopup="true" aria-controls="dropdown-volume">
-                <div @click='volume = null'>{{ volume || "Select a Volume" }}</div>
-              </button>
-            </div>
-            <div class="dropdown-menu" id="dropdown-volume" role="menu">
-              <div class="dropdown-content" v-for="option in volumes" :key='option'>
-                <a class="dropdown-item" @click='volume = option'>{{ option }}</a>
-              </div>
-            </div>
+        </div>
+      </div>
+
+      <div class="field is-grouped filter-row">
+        <div class="control is-expanded">
+          <button type="button" class="button is-fullwidth" :class="{ 'is-primary': zero }" @click="zero = !zero">
+            Include 0.0
+          </button>
+        </div>
+        <div class="control is-expanded">
+          <button type="button" class="button is-fullwidth" :class="{ 'is-primary': online }" @click="online = !online">
+            Online only
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="is-flex is-justify-content-space-between is-align-items-center">
+      <p class="is-size-7 has-text-grey">{{ processed.length }} of {{ discounts.length }} discounts</p>
+      <button type="button" class="button is-small is-ghost" v-if="activeFilters" @click="reset">Clear filters</button>
+    </div>
+  </div>
+
+  <progress v-if="loading" class="progress is-small"></progress>
+
+  <p class="notification" v-else-if="!processed.length">
+    Nothing matches those filters.
+  </p>
+
+  <!-- cards, up to the desktop breakpoint -->
+  <div class="cards is-hidden-desktop" v-if="!loading">
+    <article class="card discount-card" v-for="discount in processed" :key="discount.id">
+      <div class="card-content p-4 has-text-left">
+        <div class="is-flex is-justify-content-space-between is-align-items-flex-start">
+          <div class="pr-3">
+            <p class="title is-5 mb-1">{{ discount.brand }}</p>
+            <p class="is-size-7 has-text-grey">
+              {{ discount.volume }}<template v-if="alcohol(discount)"> · {{ alcohol(discount) }}</template>
+              <template v-if="validUntil(discount)"> · until {{ validUntil(discount) }}</template>
+            </p>
           </div>
-        </th>
-        <th>
-          <button type="button" class="button" :class="{'is-primary': online }" @click='online = !online'>Online</button>
-        </th>
-      </tr>
-      <tr>
-        <!-- second row -->
-        <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <!-- bottom row -->
-        <th v-for='(key, value) in headers' @click='toggleSort(value)' :key='value'>{{ key }}</th>
-      </tr>
-    </tfoot>
-    <tbody>
-      <!-- table -->
-      <tr v-for='discount in processed' :key='discount.id'>
-        <td @click='search = discount.brand'>{{ discount.brand }}</td>
-        <td>{{ discount.alcoholPercentage / 100 }}%</td>
-        <td @click='store = discount.store'>{{ discount.store }} </td>
-        <td class='has-text-success'>{{ formatPrice(discount.newPrice / 100) }}</td>
-        <td class='has-text-danger'>{{ formatPrice(discount.oldPrice / 100) }}</td>
-        <td>{{ formatPrice(discount.literPrice) }}</td>
-        <td>{{ formatPrice(discount.discount) }}</td>
-        <td>{{ discount.discountPercentage }}%</td>
-        <td @click='volume = discount.volume'>{{ discount.volume }}</td>
-        <td>
-          <a class='button is-primary' v-if='discount.uri' target="_blank" rel="noopener noreferrer" :href='discount.uri'>Buy!</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          <div class="has-text-right is-flex-shrink-0">
+            <p class="title is-4 mb-1 has-text-success">{{ formatPrice(discount.newPrice / 100) }}</p>
+            <p class="is-size-7 has-text-grey"><s>{{ formatPrice(discount.oldPrice / 100) }}</s></p>
+          </div>
+        </div>
+
+        <div class="tags mt-3 mb-0">
+          <span class="tag is-info is-light">{{ formatPrice(discount.literPrice) }} / liter</span>
+          <span class="tag is-success is-light">-{{ percentage(discount) }}%</span>
+          <span class="tag">save {{ formatPrice(discount.discount) }}</span>
+          <button type="button" class="tag is-clickable" @click="store = discount.store">{{ discount.store }}</button>
+        </div>
+
+        <a
+          class="button is-primary is-fullwidth mt-3"
+          v-if="discount.uri"
+          target="_blank"
+          rel="noopener noreferrer"
+          :href="discount.uri">Buy!</a>
+      </div>
+    </article>
+  </div>
+
+  <!-- the table stays for screens that have the room for it -->
+  <div class="table-container is-hidden-touch" v-if="!loading && processed.length">
+    <table class="table is-fullwidth is-hoverable">
+      <caption class="is-sr-only">Table of beer discounts</caption>
+      <thead>
+        <tr>
+          <th><button type="button" class="button is-ghost is-small" @click="sortBy('brand')">Brand</button></th>
+          <th><button type="button" class="button is-ghost is-small" @click="sortBy('store')">Store</button></th>
+          <th><button type="button" class="button is-ghost is-small" @click="sortBy('newPrice')">New</button></th>
+          <th>Old</th>
+          <th><button type="button" class="button is-ghost is-small" @click="sortBy('literPrice')">Liter</button></th>
+          <th><button type="button" class="button is-ghost is-small" @click="sortBy('discount')">Discount</button></th>
+          <th><button type="button" class="button is-ghost is-small" @click="sortBy('discountPercentage')">%</button></th>
+          <th>Volume</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="discount in processed" :key="discount.id">
+          <td>{{ discount.brand }}</td>
+          <td>{{ discount.store }}</td>
+          <td class="has-text-success">{{ formatPrice(discount.newPrice / 100) }}</td>
+          <td class="has-text-grey"><s>{{ formatPrice(discount.oldPrice / 100) }}</s></td>
+          <td>{{ formatPrice(discount.literPrice) }}</td>
+          <td>{{ formatPrice(discount.discount) }}</td>
+          <td>-{{ percentage(discount) }}%</td>
+          <td>{{ discount.volume }}</td>
+          <td>
+            <a class="button is-primary is-small" v-if="discount.uri" target="_blank" rel="noopener noreferrer" :href="discount.uri">Buy!</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 </template>
+
+<style scoped>
+/* the sortable headers are ghost buttons and the rest are plain text; matching
+   their metrics keeps the header row from looking ragged, while the link colour
+   still marks which ones can be clicked */
+.table thead th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.table thead th .button {
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: auto;
+  padding: 0;
+}
+/* four stats across a phone costs half the first screen, so they sit two by
+   two and only spread out once there is room */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+/* bulma 1.x dropped the .heading styles the old page relied on, so the label
+   rendered larger than the figure it labels */
+.stat .heading {
+  color: var(--bulma-text-weak, #7a7a7a);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  margin-bottom: 0.1rem;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.filters {
+  padding: 1rem;
+}
+
+.filter-row {
+  margin-bottom: 0.75rem;
+}
+
+.cards {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.discount-card .tags {
+  gap: 0.375rem;
+}
+
+@media screen and (min-width: 769px) {
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+  }
+}
+</style>
