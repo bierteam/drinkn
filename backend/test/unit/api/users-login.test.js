@@ -193,6 +193,16 @@ describe('POST /users/login/passkey', () => {
     expect(session.username).toBe('oscar')
   })
 
+  it('compares the credential id with $eq, so it cannot act as an operator', async () => {
+    findOneResolves(passkeyAccount)
+    passkey.verifyAuthentication.mockResolvedValue(5)
+    const { app } = buildApp()
+
+    await request(app).post('/users/login/passkey').send({ response: { id: 'cred-1' } })
+
+    expect(user.findOne).toHaveBeenCalledWith({ 'credentials.credentialID': { $eq: 'cred-1' } })
+  })
+
   it('verifies against the stored credential the response names', async () => {
     findOneResolves(passkeyAccount)
     passkey.verifyAuthentication.mockResolvedValue(5)
@@ -215,7 +225,7 @@ describe('POST /users/login/passkey', () => {
     await request(app).post('/users/login/passkey').send({ response: { id: 'cred-1' } })
 
     expect(user.updateOne).toHaveBeenCalledWith(
-      { _id: 'user-1', 'credentials.credentialID': 'cred-1' },
+      { _id: 'user-1', 'credentials.credentialID': { $eq: 'cred-1' } },
       { $set: { 'credentials.$.counter': 5 } }
     )
   })

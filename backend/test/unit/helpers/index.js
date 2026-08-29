@@ -4,6 +4,9 @@ const express = require('express')
 // properties, so a bare object is enough to assert what they store.
 const buildApp = (mount, router, session = {}) => {
   const app = express()
+  // the real server drops this via helmet; match that here so the tests are
+  // not exercising a slightly different app
+  app.disable('x-powered-by')
   app.use(express.json())
   app.use((req, res, next) => {
     req.session = session

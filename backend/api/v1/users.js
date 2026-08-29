@@ -61,14 +61,19 @@ router.post('/login/passkey', rateLimit.auth, async function (req, res) {
   const response = req.body.response
   // must be a string: a bare truthy check would let an operator object such as
   // {"$ne": null} through and straight into the query below
-  const credentialID = typeof response?.id === 'string' ? response.id : null
-  if (!credentialID) {
+  if (typeof response?.id !== 'string') {
     writeLog('Passkey login with a malformed response', 'Warning', context, req.realIp)
     return res.status(403).send('Missing fields')
   }
 
+  // String() hands the query a fresh primitive rather than whatever came off
+  // the body, and $eq forces mongo to compare it as a literal, so neither the
+  // value nor its type can steer the query
+  const credentialID = String(response.id)
+  const matchesCredential = { $eq: credentialID }
+
   try {
-    const account = await user.findOne({ 'credentials.credentialID': credentialID }).exec()
+    const account = await user.findOne({ 'credentials.credentialID': matchesCredential }).exec()
     if (!account) throw new Error(`No account holds credential ${credentialID}`)
 
     const stored = account.credentials.find(credential => credential.credentialID === credentialID)
@@ -77,7 +82,7 @@ router.post('/login/passkey', rateLimit.auth, async function (req, res) {
     // the signature counter only ever moves forward; persisting it is what
     // makes a cloned authenticator detectable later
     await user.updateOne(
-      { _id: account._id, 'credentials.credentialID': credentialID },
+      { _id: account._id, 'credentials.credentialID': matchesCredential },
       { $set: { 'credentials.$.counter': newCounter } }
     )
 
