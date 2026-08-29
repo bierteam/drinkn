@@ -49,7 +49,7 @@
       "node-releases": "2.0.54",
       "update-browserslist-db": "1.3.2",
       "ip-address": "10.5.0",
-      "bn.js": "4.12.5"
+      "bn.js": "5.2.5"
     }
   },
   "packageManager": "pnpm@10.28.1"
