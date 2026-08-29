@@ -31,7 +31,15 @@
   },
   "pnpm": {
     "overrides": {
-      "ip-address": "10.5.0"
+      "@babel/core": "7.29.6",
+      "brace-expansion@1": "1.1.18",
+      "brace-expansion@5": "5.0.9",
+      "flatted": "3.4.2",
+      "ip-address": "10.5.0",
+      "js-yaml@3": "3.15.1",
+      "js-yaml@4": "4.3.1",
+      "minimatch@3": "3.1.4",
+      "picomatch@2": "2.3.2"
     }
   },
   "packageManager": "pnpm@10.28.1"
