@@ -1,0 +1,85 @@
+{{- if .Values.pr.enabled }}
+{{- $wait := .Values.pr.waitForImages }}
+# ArgoCD syncs a preview as soon as the branch moves, usually before the build
+# has pushed the images. This holds the sync until the tag exists. It asks the
+# registry rather than the Actions API because "can this be pulled" is the
+# condition that actually matters.
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-for-images-{{ .Values.pr.number }}
+  namespace: drinkn-hooks
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    # BeforeHookCreation too, so a timed-out run left behind for its logs does
+    # not block the next sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,BeforeHookCreation
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        # see github-webhooks.yaml: curlimages/curl names its user, which
+        # kubelet cannot resolve
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: curl
+          image: curlimages/curl:8.21.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
+          resources:
+            requests:
+              {{- toYaml .Values.resources.githubWebhooks.requests | nindent 14 }}
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token
+                  key: token
+          command: ["ash", "-c"]
+          args:
+            - |
+              set -eu
+              TAG="{{ .Values.image.tag }}"
+              DEADLINE=$(( $(date +%s) + {{ $wait.timeoutSeconds }} ))
+
+              # a pull needs a per-repository token, even for a public package
+              registry_token() {
+                curl -sf -u "x:$GITHUB_TOKEN" \
+                  "https://ghcr.io/token?service=ghcr.io&scope=repository:bierteam/drinkn/$1:pull" \
+                  | sed -n 's/.*"token":"\([^"]*\)".*/\1/p'
+              }
+
+              manifest_exists() {
+                TOKEN="$(registry_token "$1")"
+                [ -n "$TOKEN" ] || return 1
+                curl -sf -o /dev/null -I \
+                  -H "Authorization: Bearer $TOKEN" \
+                  -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.docker.distribution.manifest.v2+json" \
+                  "https://ghcr.io/v2/bierteam/drinkn/$1/manifests/$TAG"
+              }
+
+              for IMAGE in {{ join " " $wait.images }}; do
+                echo "waiting for $IMAGE:$TAG"
+                until manifest_exists "$IMAGE"; do
+                  if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+                    echo "gave up on $IMAGE:$TAG -- is the build failing?"
+                    exit 1
+                  fi
+                  sleep {{ $wait.pollSeconds }}
+                done
+                echo "  found $IMAGE:$TAG"
+              done
+      restartPolicy: Never
+  backoffLimit: 0
+  # past the poll deadline, so the loop reports the timeout itself
+  activeDeadlineSeconds: {{ add $wait.timeoutSeconds 60 }}
+{{- end }}

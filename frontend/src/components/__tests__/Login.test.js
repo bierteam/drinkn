@@ -4,11 +4,12 @@ import Login from '../Login.vue'
 import { store } from '../../store.js'
 
 const post = vi.hoisted(() => vi.fn())
+const get = vi.hoisted(() => vi.fn())
 const startAuthentication = vi.hoisted(() => vi.fn())
 const supported = vi.hoisted(() => ({ value: true }))
 
 vi.mock('../../services/Api', () => ({
-  default: () => ({ post })
+  default: () => ({ post, get })
 }))
 
 vi.mock('@simplewebauthn/browser', () => ({
@@ -38,6 +39,7 @@ const submit = async (wrapper, { username = 'oscar', password = 'secret' } = {})
 
 beforeEach(() => {
   post.mockReset()
+  get.mockReset().mockResolvedValue({ status: 200, data: { enabled: false } })
   startAuthentication.mockReset()
   supported.value = true
   store.logout()
@@ -209,5 +211,62 @@ describe('Passkey', () => {
     const { wrapper } = mountLogin()
 
     expect(wrapper.find('button[type="button"]').exists()).toBe(false)
+  })
+})
+
+describe('preview banner', () => {
+  it('stays hidden outside a preview namespace', async () => {
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    expect(wrapper.vm.preview.enabled).toBe(false)
+    expect(wrapper.text()).not.toContain('Preview environment')
+  })
+
+  it('shows the throwaway credentials inside one', async () => {
+    get.mockResolvedValue({ status: 200, data: { enabled: true, username: 'test', password: 'test' } })
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Preview environment')
+    expect(wrapper.text()).toContain('test')
+  })
+
+  it('fills the form on request', async () => {
+    get.mockResolvedValue({ status: 200, data: { enabled: true, username: 'test', password: 'hunter2' } })
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    wrapper.vm.FillPreview()
+
+    expect(wrapper.vm.username).toBe('test')
+    expect(wrapper.vm.password).toBe('hunter2')
+    expect(wrapper.vm.isDisabled).toBe(false)
+  })
+
+  it('never blocks signing in when the lookup fails', async () => {
+    get.mockRejectedValue(new Error('Network Error'))
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    expect(wrapper.vm.preview.enabled).toBe(false)
+    expect(wrapper.vm.error).toBe('')
+  })
+})
+
+describe('a password manager handing the ceremony over', () => {
+  it('says nothing on an abort, rather than claiming it was cancelled', async () => {
+    // Bitwarden aborts its own overlay when you pick "use hardware key"; the
+    // old branch reported that as a cancellation
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const handoff = new Error('aborted')
+    handoff.name = 'AbortError'
+    startAuthentication.mockRejectedValue(handoff)
+    const { wrapper } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(wrapper.vm.message).toBe('')
+    expect(wrapper.vm.error).toBe('')
+    expect(wrapper.vm.passkeyBusy).toBe(false)
   })
 })

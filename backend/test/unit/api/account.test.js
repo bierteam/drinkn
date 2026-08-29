@@ -10,32 +10,16 @@ jest.mock('../../../services/passkey', () => ({
 jest.mock('../../../services/writeLog', () => jest.fn())
 jest.mock('../../../services/isAuthenticated', () => (req, res, next) => next())
 
-const express = require('express')
 const request = require('supertest')
 const user = require('../../../models/user')
 const account = require('../../../api/v1/account')
+const { buildApp: build, selected } = require('../helpers')
 
-// the same stand-in for express-session the login tests use
-const buildApp = () => {
-  const session = { userId: 'user-1', username: 'oscar' }
-  const app = express()
-  app.use(express.json())
-  app.use((req, res, next) => {
-    req.session = session
-    req.realIp = '203.0.113.1'
-    next()
-  })
-  app.use('/account', account)
-  return { app, session }
-}
+const buildApp = () => build('/account', account, { userId: 'user-1', username: 'oscar' })
 
-const updateResolves = value => {
-  user.findOneAndUpdate.mockReturnValue({ select: () => ({ exec: () => Promise.resolve(value) }) })
-}
+const updateResolves = value => user.findOneAndUpdate.mockReturnValue(selected(value))
 
-const findOneResolves = value => {
-  user.findOne.mockReturnValue({ select: () => ({ exec: () => Promise.resolve(value) }) })
-}
+const findOneResolves = value => user.findOne.mockReturnValue(selected(value))
 
 const parametersOf = () => user.findOneAndUpdate.mock.calls[0][1].$set
 

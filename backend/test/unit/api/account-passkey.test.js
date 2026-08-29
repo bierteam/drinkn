@@ -6,36 +6,19 @@ jest.mock('../../../services/passkey', () => ({
 jest.mock('../../../services/writeLog', () => jest.fn())
 jest.mock('../../../services/isAuthenticated', () => (req, res, next) => next())
 
-const express = require('express')
 const request = require('supertest')
 const user = require('../../../models/user')
 const passkey = require('../../../services/passkey')
 const writeLog = require('../../../services/writeLog')
 const account = require('../../../api/v1/account')
+const { buildApp: build, selected, selectedRejecting } = require('../helpers')
 
-const buildApp = () => {
-  const session = { userId: 'user-1', username: 'oscar' }
-  const app = express()
-  app.use(express.json())
-  app.use((req, res, next) => {
-    req.session = session
-    req.realIp = '203.0.113.1'
-    next()
-  })
-  app.use('/account', account)
-  return { app, session }
-}
+const buildApp = () => build('/account', account, { userId: 'user-1', username: 'oscar' })
 
 // both mongoose calls in this router end .select(...).exec()
-const findOneResolves = value => {
-  user.findOne.mockReturnValue({ select: () => ({ exec: () => Promise.resolve(value) }) })
-}
-const findOneAndUpdateResolves = value => {
-  user.findOneAndUpdate.mockReturnValue({ select: () => ({ exec: () => Promise.resolve(value) }) })
-}
-const findOneAndUpdateRejects = error => {
-  user.findOneAndUpdate.mockReturnValue({ select: () => ({ exec: () => Promise.reject(error) }) })
-}
+const findOneResolves = value => user.findOne.mockReturnValue(selected(value))
+const findOneAndUpdateResolves = value => user.findOneAndUpdate.mockReturnValue(selected(value))
+const findOneAndUpdateRejects = error => user.findOneAndUpdate.mockReturnValue(selectedRejecting(error))
 
 const storedAccount = { _id: 'user-1', username: 'oscar', credentials: [] }
 const verifiedCredential = {

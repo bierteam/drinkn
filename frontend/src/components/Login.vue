@@ -12,8 +12,12 @@ export default {
       error: '',
       message: '',
       passkeySupported: browserSupportsWebAuthn(),
-      passkeyBusy: false
+      passkeyBusy: false,
+      preview: { enabled: false }
     }
+  },
+  created () {
+    this.Preview()
   },
   computed: {
     isDisabled: function () {
@@ -52,9 +56,10 @@ export default {
         })
         this.Succeed(login.data)
       } catch (e) {
-        // dismissing the browser's own prompt is not a failure worth shouting
-        // about, and it is the most common way out of this dialog
-        if (e.name === 'NotAllowedError' || e.name === 'AbortError') {
+        // an abort is a password manager handing the ceremony over, not a
+        // refusal -- see the same branch in Account.vue
+        if (e.name === 'AbortError') return
+        if (e.name === 'NotAllowedError') {
           this.message = 'Passkey sign in was cancelled.'
         } else {
           this.error = e.response?.data || e.message || e
@@ -63,6 +68,20 @@ export default {
       } finally {
         this.passkeyBusy = false
       }
+    },
+    // only a preview namespace answers with anything; production reports
+    // disabled, and a failure here must never block signing in
+    async Preview () {
+      try {
+        const response = await Api().get(`/api/v1/users/preview`, {})
+        this.preview = response.data
+      } catch {
+        this.preview = { enabled: false }
+      }
+    },
+    FillPreview () {
+      this.username = this.preview.username
+      this.password = this.preview.password
     },
     Succeed (data) {
       store.setAuthenticated(data._id)
@@ -88,6 +107,14 @@ export default {
         <div v-if="message" class="notification is-success">
           <button type="button" class="delete" @click="message = ''"></button>
           {{message}}
+        </div>
+        <div v-if="preview.enabled" class="notification is-info is-light has-text-left">
+          <strong>Preview environment</strong>
+          <p>
+            Throwaway database, thrown away with the pull request. Sign in with
+            <code>{{preview.username}}</code> / <code>{{preview.password}}</code>.
+          </p>
+          <button type="button" class="button is-small is-info mt-2" @click="FillPreview">Fill them in</button>
         </div>
         <h3 class="title has-text-grey">Login</h3>
         <p class="subtitle has-text-grey">Please login to proceed.</p>

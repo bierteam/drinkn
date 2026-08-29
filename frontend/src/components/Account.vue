@@ -81,8 +81,12 @@ export default {
         this.passkeyName = ''
         this.message = 'Passkey added.'
       } catch (e) {
-        // the browser prompt was dismissed, or the key is already enrolled
-        if (e.name === 'NotAllowedError' || e.name === 'AbortError') {
+        // A password manager that hands the ceremony over -- Bitwarden's "use
+        // hardware key", for one -- aborts its own overlay to do it. That is a
+        // handoff rather than a refusal, so say nothing and let them try the
+        // key. Only NotAllowedError means the person actually declined.
+        if (e.name === 'AbortError') return
+        if (e.name === 'NotAllowedError') {
           this.message = 'Passkey setup was cancelled.'
         } else if (e.name === 'InvalidStateError') {
           this.error = 'That passkey is already registered on this account.'
@@ -211,6 +215,13 @@ export default {
             This browser does not support passkeys.
           </div>
           <table v-if="passkeys.length" class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Added</th>
+                <th scope="col"><span class="is-sr-only">Actions</span></th>
+              </tr>
+            </thead>
             <tbody>
               <tr v-for="passkey in passkeys" :key="passkey.credentialID">
                 <td>{{passkey.name}}</td>

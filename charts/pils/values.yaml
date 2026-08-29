@@ -10,6 +10,15 @@ pr:
   enabled: false
   number: 9999
   ref: main
+  # hold the sync until this revision's images are pushed, rather than starting
+  # pods that sit in ImagePullBackOff. Generous, because the build spends most
+  # of its time queued rather than building.
+  waitForImages:
+    timeoutSeconds: 1200
+    pollSeconds: 15
+    images:
+      - pils-backend
+      - pils-frontend
   status:
     - PreSync
     - PostSync

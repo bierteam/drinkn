@@ -194,6 +194,23 @@ describe('Passkeys', () => {
     expect(wrapper.vm.error).toBe('')
   })
 
+  it('says nothing when a password manager hands the ceremony over', async () => {
+    // Bitwarden aborts its own overlay for "use hardware key"; that is not a
+    // cancellation and should not be reported as one
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const handoff = new Error('aborted')
+    handoff.name = 'AbortError'
+    startRegistration.mockRejectedValue(handoff)
+    await wrapper.vm.AddPasskey()
+
+    expect(wrapper.vm.message).toBe('')
+    expect(wrapper.vm.error).toBe('')
+    expect(wrapper.vm.state.passkeyBusy).toBe(false)
+  })
+
   it('explains a key that is already enrolled', async () => {
     const wrapper = mountAccount()
     await flushPromises()

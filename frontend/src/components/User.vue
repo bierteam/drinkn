@@ -22,6 +22,9 @@ export default {
   computed: {
     shouldDisableButton () {
       return this.state.isPwned
+    },
+    passkeys () {
+      return this.user.credentials || []
     }
   },
   methods: {
@@ -58,6 +61,17 @@ export default {
       } catch (error) {
         this.handleApiError(error)
         this.state.saving = false
+      }
+    },
+    // revoking only. A passkey cannot be handed out from here: registering one
+    // needs the account holder's own authenticator in front of them.
+    async removePasskey (credentialID) {
+      try {
+        const _id = this.$route.params.id
+        const response = await Api().delete(`/api/v1/users/${_id}/passkey/${encodeURIComponent(credentialID)}`)
+        this.user = response.data
+      } catch (error) {
+        this.handleApiError(error)
       }
     },
     async deleteUser () {
@@ -136,6 +150,31 @@ export default {
             <button class="button is-danger is-large" @click="deleteUser" type="button">I am sure!</button>
           </div>
         </form>
+      </div>
+      <div class="box">
+        <h3 class="title has-text-grey is-5">Passkeys</h3>
+        <table v-if="passkeys.length" class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Added</th>
+              <th scope="col"><span class="is-sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="passkey in passkeys" :key="passkey.credentialID">
+              <td class="has-text-left">{{ passkey.name }}</td>
+              <td class="has-text-grey">{{ new Date(passkey.createdAt).toLocaleDateString() }}</td>
+              <td class="has-text-right">
+                <button class="button is-small is-danger is-light" type="button" @click="removePasskey(passkey.credentialID)">Revoke</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-else class="has-text-grey">This user has no passkeys.</p>
+        <p class="help has-text-grey">
+          Revoking is all that can be done from here. A passkey has to be added by the account holder, on their own device.
+        </p>
       </div>
     </div>
   </div>

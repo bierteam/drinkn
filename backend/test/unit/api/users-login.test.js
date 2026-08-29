@@ -6,27 +6,14 @@ jest.mock('../../../services/passkey', () => ({
 jest.mock('../../../services/writeLog', () => jest.fn())
 jest.mock('../../../services/isAdmin', () => (req, res, next) => next())
 
-const express = require('express')
 const request = require('supertest')
 const user = require('../../../models/user')
 const passkey = require('../../../services/passkey')
 const writeLog = require('../../../services/writeLog')
 const users = require('../../../api/v1/users')
+const { buildApp: build, query } = require('../helpers')
 
-// a stand-in for express-session: the handler only reads and writes plain
-// properties, so a bare object is enough to assert what it stores
-const buildApp = () => {
-  const session = { cookie: {}, destroy: jest.fn(cb => cb()) }
-  const app = express()
-  app.use(express.json())
-  app.use((req, res, next) => {
-    req.session = session
-    req.realIp = '203.0.113.1'
-    next()
-  })
-  app.use('/users', users)
-  return { app, session }
-}
+const buildApp = () => build('/users', users, { cookie: {}, destroy: jest.fn(cb => cb()) })
 
 const authenticateResolves = account => {
   user.authenticate.mockImplementation((username, password, cb) => cb(null, account))
@@ -39,9 +26,7 @@ const account = { _id: 'user-1', username: 'oscar', admin: true }
 const credential = { credentialID: 'cred-1', publicKey: 'key', counter: 4 }
 const passkeyAccount = { ...account, credentials: [credential] }
 
-const findOneResolves = value => {
-  user.findOne.mockReturnValue({ exec: () => Promise.resolve(value) })
-}
+const findOneResolves = value => user.findOne.mockReturnValue(query(value))
 
 beforeEach(() => {
   user.authenticate.mockReset()
@@ -68,6 +53,15 @@ describe('POST /users/login validation', () => {
   it('rejects a request with no password', async () => {
     const { app } = buildApp()
     const res = await request(app).post('/users/login').send({ username: 'oscar' })
+
+    expect(res.status).toBe(403)
+    expect(user.authenticate).not.toHaveBeenCalled()
+  })
+
+  it('rejects a username that is not a string', async () => {
+    const { app } = buildApp()
+
+    const res = await request(app).post('/users/login').send({ username: { $ne: null }, password: 'secret' })
 
     expect(res.status).toBe(403)
     expect(user.authenticate).not.toHaveBeenCalled()
@@ -159,6 +153,30 @@ describe('POST /users/login/passkey', () => {
     expect(res.status).toBe(403)
     expect(session.userId).toBe(undefined)
     expect(passkey.verifyAuthentication).not.toHaveBeenCalled()
+  })
+
+  it('refuses an operator object where the credential id belongs', async () => {
+    // {"$ne": null} is truthy, so a plain presence check would have handed it
+    // straight to mongo and matched whichever account came first
+    findOneResolves(passkeyAccount)
+    const { app, session } = buildApp()
+
+    const res = await request(app).post('/users/login/passkey').send({ response: { id: { $ne: null } } })
+
+    expect(res.status).toBe(403)
+    expect(user.findOne).not.toHaveBeenCalled()
+    expect(session.userId).toBe(undefined)
+  })
+
+  it('refuses a credential id that is not a string', async () => {
+    const { app } = buildApp()
+
+    for (const id of [42, ['cred-1'], { credentialID: 'cred-1' }, true]) {
+      const res = await request(app).post('/users/login/passkey').send({ response: { id } })
+      expect(res.status).toBe(403)
+    }
+
+    expect(user.findOne).not.toHaveBeenCalled()
   })
 
   it('establishes the session for a verified passkey', async () => {
@@ -288,5 +306,41 @@ describe('DELETE /users/logout', () => {
     const res = await request(app).delete('/users/logout')
 
     expect(res.status).toBe(500)
+  })
+})
+
+describe('GET /users/preview', () => {
+  const { PR, DEFAULT_USER, DEFAULT_PASS } = process.env
+
+  afterEach(() => {
+    delete process.env.PR
+    delete process.env.DEFAULT_USER
+    delete process.env.DEFAULT_PASS
+    if (PR) process.env.PR = PR
+    if (DEFAULT_USER) process.env.DEFAULT_USER = DEFAULT_USER
+    if (DEFAULT_PASS) process.env.DEFAULT_PASS = DEFAULT_PASS
+  })
+
+  it('says nothing at all outside a preview namespace', async () => {
+    delete process.env.PR
+    process.env.DEFAULT_USER = 'oscar'
+    process.env.DEFAULT_PASS = 'a-real-password'
+    const { app } = buildApp()
+
+    const res = await request(app).get('/users/preview')
+
+    expect(res.body).toEqual({ enabled: false })
+    expect(JSON.stringify(res.body)).not.toContain('a-real-password')
+  })
+
+  it('hands out the throwaway account inside one', async () => {
+    process.env.PR = 'true'
+    process.env.DEFAULT_USER = 'test'
+    process.env.DEFAULT_PASS = 'test'
+    const { app } = buildApp()
+
+    const res = await request(app).get('/users/preview')
+
+    expect(res.body).toEqual({ enabled: true, username: 'test', password: 'test' })
   })
 })

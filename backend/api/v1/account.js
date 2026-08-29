@@ -3,6 +3,7 @@ const router = express.Router()
 const user = require('../../models/user')
 const isAuthenticated = require('../../services/isAuthenticated')
 const passkey = require('../../services/passkey')
+const rateLimit = require('../../services/rateLimit')
 const writeLog = require('../../services/writeLog')
 const context = 'Account'
 
@@ -10,7 +11,7 @@ const context = 'Account'
 // and there is no reason to hand the browser the key material
 const PASSKEY_FIELDS = 'credentials.credentialID credentials.name credentials.createdAt'
 
-router.get('/', isAuthenticated, async function (req, res) {
+router.get('/', rateLimit.api, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
     const results = await user.findOne({ _id }).select(`username ${PASSKEY_FIELDS}`).exec()
@@ -24,7 +25,7 @@ router.get('/', isAuthenticated, async function (req, res) {
   }
 })
 
-router.post('/passkey/options', isAuthenticated, async function (req, res) {
+router.post('/passkey/options', rateLimit.auth, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
     const account = await user.findOne({ _id }).select('username credentials').exec()
@@ -41,7 +42,7 @@ router.post('/passkey/options', isAuthenticated, async function (req, res) {
   }
 })
 
-router.post('/passkey', isAuthenticated, async function (req, res) {
+router.post('/passkey', rateLimit.auth, isAuthenticated, async function (req, res) {
   let credential
   try {
     credential = await passkey.verifyRegistration(req, req.body.response)
@@ -69,7 +70,7 @@ router.post('/passkey', isAuthenticated, async function (req, res) {
   }
 })
 
-router.delete('/passkey/:credentialID', isAuthenticated, async function (req, res) {
+router.delete('/passkey/:credentialID', rateLimit.api, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
 
@@ -88,7 +89,7 @@ router.delete('/passkey/:credentialID', isAuthenticated, async function (req, re
   }
 })
 
-router.post('/', isAuthenticated, async function (req, res) {
+router.post('/', rateLimit.api, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
     const parameters = {}
@@ -120,7 +121,7 @@ router.post('/', isAuthenticated, async function (req, res) {
   }
 })
 
-router.delete('/delete', isAuthenticated, async function (req, res) {
+router.delete('/delete', rateLimit.api, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
 
