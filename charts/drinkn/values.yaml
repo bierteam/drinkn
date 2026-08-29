@@ -23,7 +23,7 @@ pr:
 # trade we are not making here.
 #
 # Sized from observed usage (kubectl top) with headroom:
-#   pils 50Mi, cocktail-api 32Mi, auth ~0Mi, both frontends 6-8Mi
+#   pils 50Mi, pils-frontend 6-8Mi
 resources:
   pils:
     requests:
@@ -34,21 +34,6 @@ resources:
     requests:
       cpu: 10m
       memory: 32Mi
-      ephemeral-storage: 64Mi
-  drinknFrontend:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-      ephemeral-storage: 64Mi
-  cocktailApi:
-    requests:
-      cpu: 25m
-      memory: 96Mi
-      ephemeral-storage: 128Mi
-  auth:
-    requests:
-      cpu: 10m
-      memory: 64Mi
       ephemeral-storage: 64Mi
   githubWebhooks:
     requests:

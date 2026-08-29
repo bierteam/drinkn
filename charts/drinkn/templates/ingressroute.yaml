@@ -9,33 +9,6 @@ spec:
   entryPoints:
     - websecure
   routes:
-    {{- if not .Values.pr.enabled }}
-    - match: Host(`drinkn.oscarr.nl`, `xn--xj8haa.tk`)
-      kind: Rule
-      services:
-        - name: drinkn-frontend
-          port: 80
-    - match: Host(`drinkn.oscarr.nl`, `xn--xj8haa.tk`) && PathPrefix(`/api/v2/auth`)
-      kind: Rule
-      services:
-        - name: drinkn-auth
-          port: 80
-    - match: Host(`drinkn.oscarr.nl`, `xn--xj8haa.tk`) && PathPrefix(`/api/v2/beer`)
-      kind: Rule
-      services:
-        - name: drinkn-auth
-          port: 80
-    - match: Host(`drinkn.oscarr.nl`, `xn--xj8haa.tk`) && PathPrefix(`/api/v2/mix`)
-      kind: Rule
-      services:
-        - name: drinkn-cocktail-api
-          port: 80
-    - match: Host(`drinkn.oscarr.nl`, `xn--xj8haa.tk`) && PathPrefix(`/api/v2/supermarket`)
-      kind: Rule
-      services:
-        - name: drinkn-auth
-          port: 80
-    {{- end }}
     - match: Host(`{{ .Values.fqdn }}`)
       kind: Rule
       services:
