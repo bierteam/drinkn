@@ -7,10 +7,6 @@ router.use(discounts)
 const store = require('./stores')
 router.use(store)
 
-// TODO create a possibillity for manual import
-// const dbImport = require('./dbImport')
-// router.use(dbImport)
-
 const users = require('./users')
 router.use('/users', users)
 
