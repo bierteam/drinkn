@@ -2,7 +2,6 @@ FROM node:24-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-USER node
 WORKDIR /app
 COPY package.json ./
 COPY pnpm-lock.yaml ./
@@ -13,12 +12,7 @@ COPY setup.js ./
 COPY server.js ./
 
 FROM base AS test
-COPY --chown=node:node test ./test
-# base runs as `node` but /app is root-owned, so jest cannot create its
-# coverage directory without this
-USER root
-RUN mkdir -p /app/test/unit/coverage && chown node:node /app/test/unit/coverage
-USER node
+COPY test ./test
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm run test
 
@@ -31,6 +25,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 FROM base
 COPY --from=build /app/node_modules /app/node_modules
+# nobody, and numeric on purpose: kubelet cannot verify runAsNonRoot against a
+# named user, so a named USER would force runAsUser into every manifest
+USER 65534
 ENV NODE_ENV=production
 ENV PORT=3000
 EXPOSE 3000

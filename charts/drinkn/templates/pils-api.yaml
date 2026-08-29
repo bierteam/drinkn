@@ -21,13 +21,14 @@ spec:
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
         - image: ghcr.io/bierteam/drinkn/pils:{{ .Values.image.tag }}
           securityContext:
             allowPrivilegeEscalation: false
+            # writes nothing to disk: config in, mongo out
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - "ALL"

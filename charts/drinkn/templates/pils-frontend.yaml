@@ -20,9 +20,19 @@ spec:
     spec:
       automountServiceAccountToken: false
       securityContext:
-        # runAsNonRoot: true #TODO
+        runAsNonRoot: true
+        # emptyDir ownership follows fsGroup, so the mounts below are writable
+        # by the container without pinning its uid
+        fsGroup: 65534
         seccompProfile:
           type: RuntimeDefault
+      volumes:
+        # the only two paths nginx writes to: its temp directories, and the
+        # pid file (relocated to /tmp for exactly this reason)
+        - name: cache
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
       containers:
         - image: ghcr.io/bierteam/drinkn/pils-frontend:{{ .Values.image.tag }}
           imagePullPolicy: Always
@@ -30,11 +40,19 @@ spec:
           resources:
             requests:
               {{- toYaml .Values.resources.pilsFrontend.requests | nindent 14 }}
+          volumeMounts:
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: tmp
+              mountPath: /tmp
           securityContext:
             allowPrivilegeEscalation: false
-            # capabilities: #TODO
-            #   drop:
-            #     - "ALL"
+            readOnlyRootFilesystem: true
+            # the unprivileged image needs none of these: it starts as 101 and
+            # listens on 8080, so there is nothing to chown and no low port
+            capabilities:
+              drop:
+                - "ALL"
 ---
 apiVersion: v1
 kind: Service
@@ -47,4 +65,4 @@ spec:
     - port: 80
       name: default
       protocol: TCP
-      targetPort: 80
+      targetPort: 8080

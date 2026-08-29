@@ -20,12 +20,15 @@ spec:
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
+        # the only place a uid is pinned: curlimages/curl declares USER
+        # "curl_user" by name, which kubelet cannot resolve, so runAsNonRoot
+        # will not start the pod without an explicit numeric uid here
         runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: curl
-          image: curlimages/curl
+          image: curlimages/curl:8.21.0
           resources:
             requests:
               {{- toYaml $.Values.resources.githubWebhooks.requests | nindent 14 }}
