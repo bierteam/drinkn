@@ -27,7 +27,7 @@ RUN pnpm run build
 # unprivileged variant: listens on 8080, so the container needs neither root
 # nor any capability. Runs as nobody (65534) rather than the image's own 101,
 # to match the other services -- only its cache directory has to follow.
-FROM nginxinc/nginx-unprivileged:1.30-alpine
+FROM nginxinc/nginx-unprivileged:1.31-alpine
 USER root
 RUN rm -rf /etc/nginx/conf.d /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/nginx.conf
