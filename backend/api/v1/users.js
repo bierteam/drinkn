@@ -17,13 +17,11 @@ router.post('/login', rateLimit.auth, async function (req, res) {
     return res.status(403).send('Missing fields')
   }
 
-  // named `account` so it does not shadow the user model imported above
   let account
   try {
     account = await authenticateUser(req.body.username, req.body.password)
   } catch (error) {
-    // the reason is recorded here but never returned, so a caller cannot tell
-    // an unknown username from a wrong password
+    // never returned: unknown username and wrong password look the same
     writeLog(`Failed login attempt for user: ${req.body.username} (${error})`, 'Warning', context, req.realIp)
     return res.status(401).send('Incorrect username or password')
   }
@@ -33,8 +31,6 @@ router.post('/login', rateLimit.auth, async function (req, res) {
   return res.status(200).send({ admin: account.admin, _id: account._id })
 })
 
-// shared by the password and passkey routes below, so both end a login the
-// same way
 function establishSession (req, account, remember) {
   if (!remember) {
     req.session.cookie.expires = false
@@ -44,9 +40,7 @@ function establishSession (req, account, remember) {
   req.session.username = account.username
 }
 
-// Step one of a passkey login. No username is asked for: the credentials are
-// discoverable, so the authenticator offers whichever passkey it holds for
-// this site and step two looks the account up from the credential id.
+// step one. No username: step two looks the account up from the credential id
 router.post('/login/passkey/options', rateLimit.auth, async function (req, res) {
   try {
     const options = await passkey.authenticationOptions(req)
@@ -60,16 +54,11 @@ router.post('/login/passkey/options', rateLimit.auth, async function (req, res) 
 
 router.post('/login/passkey', rateLimit.auth, async function (req, res) {
   const response = req.body.response
-  // must be a string: a bare truthy check would let an operator object such as
-  // {"$ne": null} through and straight into the query below
   if (typeof response?.id !== 'string') {
     writeLog('Passkey login with a malformed response', 'Warning', context, req.realIp)
     return res.status(403).send('Missing fields')
   }
 
-  // String() hands the query a fresh primitive rather than whatever came off
-  // the body, and $eq forces mongo to compare it as a literal, so neither the
-  // value nor its type can steer the query
   const credentialID = String(response.id)
   const matchesCredential = { $eq: credentialID }
 
@@ -80,8 +69,7 @@ router.post('/login/passkey', rateLimit.auth, async function (req, res) {
     const stored = account.credentials.find(credential => credential.credentialID === credentialID)
     const newCounter = await passkey.verifyAuthentication(req, response, stored)
 
-    // the signature counter only ever moves forward; persisting it is what
-    // makes a cloned authenticator detectable later
+    // only ever moves forward; this is what makes a clone detectable
     await user.updateOne(
       { _id: account._id, 'credentials.credentialID': matchesCredential },
       { $set: { 'credentials.$.counter': newCounter } }
@@ -91,7 +79,6 @@ router.post('/login/passkey', rateLimit.auth, async function (req, res) {
     establishSession(req, account, req.body.remember)
     return res.status(200).send({ admin: account.admin, _id: account._id })
   } catch (error) {
-    // as with the password route, the reason stays server-side
     writeLog(`Failed passkey login attempt (${error})`, 'Warning', context, req.realIp)
     return res.status(401).send('That passkey was not accepted')
   }
@@ -140,9 +127,7 @@ router.post('/register', rateLimit.api, isAdmin, async function (req, res) {
     }
   }
 })
-// Preview namespaces are seeded with a throwaway account and are meant to be
-// opened by anyone reviewing the PR. Nothing is returned unless PR is set, so
-// production never answers with credentials.
+// nothing is returned unless PR is set, so production answers with nothing
 router.get('/preview', rateLimit.api, function (req, res) {
   if (!process.env.PR) return res.json({ enabled: false })
 

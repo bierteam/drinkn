@@ -156,8 +156,7 @@ describe('POST /users/login/passkey', () => {
   })
 
   it('refuses an operator object where the credential id belongs', async () => {
-    // {"$ne": null} is truthy, so a plain presence check would have handed it
-    // straight to mongo and matched whichever account came first
+    // {"$ne": null} is truthy, so a presence check would match any account
     findOneResolves(passkeyAccount)
     const { app, session } = buildApp()
 

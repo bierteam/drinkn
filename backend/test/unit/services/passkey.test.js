@@ -8,8 +8,6 @@ jest.mock('@simplewebauthn/server', () => ({
 const webauthn = require('@simplewebauthn/server')
 const passkey = require('../../../services/passkey')
 
-// a stand-in for the express request the routes hand in: only the session and
-// the host details are ever read
 const buildReq = (session = {}) => ({
   session,
   hostname: 'pils.example.test',
@@ -64,7 +62,6 @@ describe('registrationOptions', () => {
   })
 
   it('copes with an account that has no credentials field at all', async () => {
-    // a user created before passkeys existed has no array to map over
     await passkey.registrationOptions(buildReq(), { _id: 'user-1', username: 'oscar' })
 
     expect(webauthn.generateRegistrationOptions).toHaveBeenCalledWith(
@@ -78,7 +75,6 @@ describe('registrationOptions', () => {
     const { excludeCredentials } = webauthn.generateRegistrationOptions.mock.calls[0][0]
     expect(excludeCredentials).toHaveLength(1)
     expect(excludeCredentials[0].id).toBe('cred-1')
-    // the stored base64url text has to reach the library as bytes
     expect(excludeCredentials[0].publicKey).toEqual(publicKeyBytes)
   })
 
@@ -96,8 +92,6 @@ describe('registrationOptions', () => {
     await passkey.registrationOptions(buildReq(), account)
 
     const { authenticatorSelection } = webauthn.generateRegistrationOptions.mock.calls[0][0]
-    // absent rather than undefined: an explicit undefined is still a key, and
-    // some authenticators read that as "no kind is acceptable"
     expect('authenticatorAttachment' in authenticatorSelection).toBe(false)
   })
 

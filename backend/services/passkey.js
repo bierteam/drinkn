@@ -8,18 +8,11 @@ const { isoBase64URL, isoUint8Array } = require('@simplewebauthn/server/helpers'
 
 const RP_NAME = 'Drinkn'
 
-// The relying party id is the bare domain a passkey is scoped to, and the
-// origin is the exact site the browser must be on. Both are pinned by
-// configuration in production. They fall back to the request only so that
-// `localhost` development works without extra setup -- see setup.js, which
-// warns when the fallback is in play.
+// pinned in production; the request is a localhost fallback, see setup.js
 const rpID = req => process.env.RP_ID || req.hostname
 
 const origin = req => process.env.RP_ORIGIN || `${req.protocol}://${req.get('host')}`
 
-// mongo stores the credential id and public key as base64url text; the
-// library works in bytes, so every crossing converts here rather than at
-// each call site
 const toStored = credential => ({
   credentialID: credential.id,
   publicKey: isoBase64URL.fromBuffer(credential.publicKey),
@@ -34,10 +27,7 @@ const fromStored = stored => ({
   transports: stored.transports
 })
 
-// 'platform' is the fingerprint or face on this device, 'cross-platform' a
-// key you plug in. Naming one keeps the browser from offering the other, and
-// keeps a password manager from claiming a ceremony meant for a security key
-// -- which it answers with a bare NotAllowedError, telling you nothing.
+// naming a kind keeps the browser from offering the other one
 const ATTACHMENTS = new Set(['platform', 'cross-platform'])
 
 const attachmentOf = value => ATTACHMENTS.has(value) ? value : undefined
@@ -55,8 +45,7 @@ const registrationOptions = async (req, account, attachment) => {
       // discoverable, so signing in needs no username first
       residentKey: 'required',
       userVerification: 'preferred',
-      // left out entirely when unset: an explicit undefined is still a key,
-      // and some authenticators read it as "no kind is acceptable"
+      // absent, not undefined: some authenticators read that as "no kind"
       ...(attachmentOf(attachment) && { authenticatorAttachment: attachmentOf(attachment) })
     }
   })
@@ -67,8 +56,8 @@ const registrationOptions = async (req, account, attachment) => {
 
 const verifyRegistration = async (req, response) => {
   const expectedChallenge = req.session.passkeyChallenge
-  // one challenge, one use: drop it before verifying so a replay of the same
-  // body cannot be checked against it a second time
+  // one challenge, one use: dropped before verifying, so a replay has nothing
+  // left to check against
   delete req.session.passkeyChallenge
 
   if (!expectedChallenge) throw new Error('No passkey registration in progress')
@@ -88,8 +77,7 @@ const verifyRegistration = async (req, response) => {
 const authenticationOptions = async req => {
   const options = await generateAuthenticationOptions({
     rpID: rpID(req),
-    // left empty on purpose: the authenticator offers whichever passkey it
-    // holds for this site, so the user never types a username
+    // empty on purpose: the authenticator offers what it holds for this site
     allowCredentials: [],
     userVerification: 'preferred'
   })

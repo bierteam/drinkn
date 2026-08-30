@@ -95,8 +95,7 @@ describe('DELETE /account/delete', () => {
 
 describe('POST /account', () => {
   it('changes the username without asking for a password first', async () => {
-    // the old-password field never actually verified anything, so it is gone;
-    // the session is what authorises this
+    // the old-password field never verified anything; the session authorises
     const { app } = buildApp()
 
     const res = await request(app).post('/account').send({ user: { username: 'oscar-renamed' } })
@@ -127,8 +126,7 @@ describe('POST /account', () => {
     const res = await request(app).post('/account').send({ user: {} })
 
     expect(res.status).toBe(400)
-    // an empty body used to be stopped by the missing old password; without a
-    // guard it would write nothing but editedBy
+    // without a guard an empty body writes nothing but editedBy
     expect(user.findOneAndUpdate).not.toHaveBeenCalled()
   })
 

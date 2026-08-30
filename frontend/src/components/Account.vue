@@ -67,8 +67,7 @@ export default {
           console.error(e)
         })
     },
-    // asks for this device's own authenticator, so the browser offers the
-    // fingerprint or face rather than a key you plug in
+    // asks for this device's own authenticator rather than a key you plug in
     async AddPasskey () {
       this.error = ''
       this.message = ''
@@ -86,17 +85,12 @@ export default {
       } catch (e) {
         const detail = passkeyError.log('registration', e)
 
-        // A password manager handing the ceremony over ends its own attempt at
-        // it, which arrives here as an abort. Nothing went wrong.
+        // a password manager taking the ceremony over aborts its own attempt
         if (detail.name === 'AbortError') return
 
         if (detail.name === 'InvalidStateError') {
           this.error = 'That authenticator already holds a passkey for this account. Use a different one.'
         } else if (detail.name === 'NotAllowedError') {
-          // The browser will not say which case this was, so lead with the one
-          // that actually happens: Bitwarden replaces navigator.credentials
-          // whatever the request asks for, cannot finish, and hands back this
-          // error -- bitwarden/clients#18117.
           this.error = 'No passkey was created. A password manager extension may have taken the prompt over; Bitwarden does by default, under Settings, Notifications.'
         } else {
           this.error = e.response?.data || detail.message || e

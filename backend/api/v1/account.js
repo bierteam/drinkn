@@ -8,8 +8,7 @@ const writeLog = require('../../services/writeLog')
 const sessionCookie = require('../../services/sessionCookie')
 const context = 'Account'
 
-// never select credentials.publicKey: the account screen only lists the keys,
-// and there is no reason to hand the browser the key material
+// never select credentials.publicKey: listing the keys needs no key material
 const PASSKEY_FIELDS = 'credentials.credentialID credentials.name credentials.createdAt'
 
 router.get('/', rateLimit.api, isAuthenticated, async function (req, res) {
@@ -103,8 +102,7 @@ router.post('/', rateLimit.api, isAuthenticated, async function (req, res) {
       parameters.username = req.body.user.username
     }
 
-    // the old-password field was the only thing standing between an empty
-    // body and a write that only stamped editedBy
+    // without this an empty body writes nothing but editedBy
     if (!parameters.password && !parameters.username) {
       return res.status(400).send('Nothing to change.')
     }

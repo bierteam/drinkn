@@ -3,9 +3,6 @@ const bcrypt = require('bcryptjs')
 const { v4: uuidv4 } = require('uuid')
 const SALT_ROUNDS = 10
 
-// One registered passkey. The credential id and public key are bytes that
-// mongo cannot hold directly, so both are kept as base64url text and
-// converted back in services/passkey.js.
 const CredentialSchema = new mongoose.Schema({
   credentialID: {
     type: String,
@@ -16,7 +13,6 @@ const CredentialSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // the authenticator's signature count, used to spot a cloned key
   counter: {
     type: Number,
     required: true,

@@ -63,8 +63,7 @@ export default {
         this.state.saving = false
       }
     },
-    // revoking only. A passkey cannot be handed out from here: registering one
-    // needs the account holder's own authenticator in front of them.
+    // revoking only: registering needs the account holder's own authenticator
     async removePasskey (credentialID) {
       try {
         const _id = this.$route.params.id

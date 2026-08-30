@@ -56,9 +56,6 @@ const options = {
   secret: process.env.APPSECRET,
   resave: false,
   saveUninitialized: false,
-  // traefik terminates TLS, so this process only ever sees http; `proxy` makes
-  // express-session read the forwarded protocol instead of the socket, without
-  // which a secure cookie is never set at all
   proxy: sessionCookie.production,
   cookie: sessionCookie.cookie,
   store: MongoStore.create({
@@ -73,8 +70,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(session(options))
 
-// after the session, because the token lives in it. Only guards the api: the
-// static handler above serves the dev build and changes nothing.
+// after the session, because the token lives in it
 app.use('/api', csrf.protect)
 
 db.on('error', console.error.bind(console, 'connection error:'))

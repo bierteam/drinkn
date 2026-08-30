@@ -65,7 +65,6 @@ describe('POST /account/passkey/options', () => {
 
     await request(app).post('/account/passkey/options').send({ attachment: 'cross-platform' })
 
-    // the service is what decides whether the value is one it accepts
     expect(passkey.registrationOptions).toHaveBeenCalledWith(expect.anything(), storedAccount, 'cross-platform')
   })
 

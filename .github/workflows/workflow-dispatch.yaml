@@ -11,9 +11,7 @@ on:
 permissions:
   deployments: write
 
-# The client payload is written by whoever fired the dispatch, so every value
-# taken from it is passed through env and quoted rather than interpolated with
-# ${{ }} straight into the shell.
+# the client payload is caller-written, so its values go through env
 jobs:
   update-status:
     runs-on: ubuntu-latest
@@ -75,7 +73,6 @@ jobs:
               ;;
           esac
 
-          # built with jq so a url carrying a quote cannot break out of the body
           jq -n \
             --arg state "$STATUS" \
             --arg description "$DESCRIPTION" \

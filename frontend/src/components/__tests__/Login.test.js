@@ -150,7 +150,6 @@ describe('Passkey', () => {
   it('needs no username or password', async () => {
     optionsThenLogin()
     const { wrapper } = mountLogin()
-    // the password form is still disabled; the passkey path ignores it
     expect(wrapper.vm.isDisabled).toBe(true)
 
     await wrapper.vm.Passkey()
@@ -198,8 +197,6 @@ describe('Passkey', () => {
     const { wrapper } = mountLogin()
     await wrapper.vm.Passkey()
 
-    // nothing of this reaches the screen any more, so the console is the only
-    // place a failure can still be taken apart
     expect(spy).toHaveBeenCalledWith('[passkey] authentication', {
       name: 'NotAllowedError',
       code: 'ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY',
@@ -279,8 +276,7 @@ describe('preview banner', () => {
 
 describe('a password manager handing the ceremony over', () => {
   it('says nothing on an abort, rather than claiming it was cancelled', async () => {
-    // Bitwarden aborts its own overlay when you pick "use hardware key"; the
-    // old branch reported that as a cancellation
+    // Bitwarden aborts its own overlay; the old branch called that a cancel
     post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
     const handoff = new Error('aborted')
     handoff.name = 'AbortError'

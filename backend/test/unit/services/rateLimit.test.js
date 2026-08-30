@@ -2,13 +2,9 @@ const express = require('express')
 const request = require('supertest')
 const rateLimit = require('../../../services/rateLimit')
 
-// A live limiter, built with the same factory the real ones use but without
-// the test-environment skip. Nothing here touches NODE_ENV, which is
-// process-wide and would leak into whichever file the worker runs next.
+// touching NODE_ENV would leak into the next file the worker runs
 const active = limit => rateLimit.build(limit, () => false)
 
-// the limiter counts per key, so each test uses its own client ip and starts
-// from a clean budget without having to reach into the store
 const buildApp = (limiter, ip) => {
   const app = express()
   app.use((req, res, next) => {
@@ -60,8 +56,6 @@ describe('a live limiter', () => {
   })
 
   it('buckets an IPv6 caller by subnet, not by exact address', async () => {
-    // a subscriber gets a whole /64, so keying on the full address would let
-    // them take a fresh one for each attempt
     const limiter = active(3)
     await hammer(buildApp(limiter, '2001:db8:1234:5678::1'), 5)
 

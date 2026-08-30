@@ -8,12 +8,7 @@ on:
   schedule:
     - cron: '0 20 * * 3'
 
-# One run per ref. A new push makes the run in flight pointless, and leaving it
-# queued only delays the one that matters -- which bites hardest when the
-# runners are already backed up.
-#
-# Pull requests only: a push to main is a deploy, and cancelling that halfway
-# is not something to do for the sake of a queue slot.
+# one run per ref, pull requests only: a push to main is a deploy
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}

@@ -47,8 +47,7 @@ export default {
       this.error = ''
       this.passkeyBusy = true
       try {
-        // the options carry the challenge, which the server also keeps in the
-        // session; the round trip is what ties this attempt to that challenge
+        // the options carry the challenge the server kept in the session
         const options = await Api().post(`/api/v1/users/login/passkey/options`, {})
         const response = await startAuthentication({ optionsJSON: options.data })
         const login = await Api().post(`/api/v1/users/login/passkey`, {
@@ -59,8 +58,7 @@ export default {
       } catch (e) {
         const detail = passkeyError.log('authentication', e)
 
-        // an abort is a password manager handing the ceremony over, not a
-        // refusal -- see the same branch in Account.vue
+        // an abort is a handover, not a refusal -- see Account.vue
         if (detail.name === 'AbortError') return
 
         if (detail.name === 'NotAllowedError') {
@@ -72,8 +70,7 @@ export default {
         this.passkeyBusy = false
       }
     },
-    // only a preview namespace answers with anything; production reports
-    // disabled, and a failure here must never block signing in
+    // only a preview namespace answers, and a failure must never block login
     async Preview () {
       try {
         const response = await Api().get(`/api/v1/users/preview`, {})

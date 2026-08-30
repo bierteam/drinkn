@@ -5,12 +5,7 @@ on:
   pull_request:
     branches: [ main ]
 
-# One run per ref. A new push makes the run in flight pointless, and leaving it
-# queued only delays the one that matters -- which bites hardest when the
-# runners are already backed up.
-#
-# Pull requests only: a push to main is a deploy, and cancelling that halfway
-# is not something to do for the sake of a queue slot.
+# one run per ref, pull requests only: a push to main is a deploy
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -113,9 +108,6 @@ jobs:
           # reporting only: a Codecov hiccup should not fail the build
           fail_ci_if_error: false
 
-  # Each architecture is built on a runner of that architecture. Emulating
-  # arm64 with QEMU made node crash with an illegal instruction, and the builds
-  # that survived took long enough to be worthless.
   build:
     needs:
       - test
@@ -171,7 +163,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        # pushed without a tag; the manifest job below is what names it
         name: Build and push by digest
         id: build
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
@@ -198,7 +189,6 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # Ties one digest per architecture together under the tags the chart pulls.
   docker:
     needs:
       - build

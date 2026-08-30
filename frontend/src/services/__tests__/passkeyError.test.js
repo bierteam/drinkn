@@ -7,8 +7,7 @@ afterEach(() => {
 
 describe('shape', () => {
   it('pulls the wrapper and the original apart', () => {
-    // @simplewebauthn wraps the DOMException, so the useful detail is split
-    // between the two objects
+    // @simplewebauthn wraps the DOMException, splitting the useful detail
     const error = Object.assign(new Error('outer'), {
       name: 'NotAllowedError',
       code: 'ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY',

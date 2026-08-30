@@ -195,8 +195,7 @@ describe('Passkeys', () => {
   })
 
   it('says nothing when a password manager hands the ceremony over', async () => {
-    // Bitwarden aborts its own overlay for "use hardware key"; that is not a
-    // cancellation and should not be reported as one
+    // Bitwarden aborts its own overlay; that is not a cancellation
     const wrapper = mountAccount()
     await flushPromises()
 

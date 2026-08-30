@@ -1,11 +1,8 @@
 const express = require('express')
 
-// A stand-in for express-session: the handlers only read and write plain
-// properties, so a bare object is enough to assert what they store.
 const buildApp = (mount, router, session = {}) => {
   const app = express()
-  // the real server drops this via helmet; match that here so the tests are
-  // not exercising a slightly different app
+  // the real server drops this via helmet
   app.disable('x-powered-by')
   app.use(express.json())
   app.use((req, res, next) => {
@@ -17,8 +14,6 @@ const buildApp = (mount, router, session = {}) => {
   return { app, session }
 }
 
-// The two mongoose shapes the routers use: a plain query, and one narrowed by
-// select() before it is awaited.
 const query = value => ({ exec: () => Promise.resolve(value) })
 const selected = value => ({ select: () => query(value) })
 const selectedRejecting = error => ({ select: () => ({ exec: () => Promise.reject(error) }) })

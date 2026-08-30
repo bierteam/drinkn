@@ -1,9 +1,5 @@
 {{- if .Values.pr.enabled }}
 {{- $wait := .Values.pr.waitForImages }}
-# ArgoCD syncs a preview as soon as the branch moves, usually before the build
-# has pushed the images. This holds the sync until the tag exists. It asks the
-# registry rather than the Actions API because "can this be pulled" is the
-# condition that actually matters.
 ---
 apiVersion: batch/v1
 kind: Job
@@ -12,8 +8,6 @@ metadata:
   namespace: drinkn-hooks
   annotations:
     argocd.argoproj.io/hook: PreSync
-    # BeforeHookCreation too, so a timed-out run left behind for its logs does
-    # not block the next sync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded,BeforeHookCreation
 spec:
   template:
@@ -21,8 +15,7 @@ spec:
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
-        # see github-webhooks.yaml: curlimages/curl names its user, which
-        # kubelet cannot resolve
+        # curlimages/curl names a user kubelet cannot resolve
         runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
@@ -74,12 +67,7 @@ spec:
                   "https://ghcr.io/v2/bierteam/drinkn/$1/manifests/$TAG"
               }
 
-              # A run that ended without success will never push the tag, so
-              # waiting out the deadline only delays the sync that follows.
-              # Superseded runs are cancelled on purpose, which makes this the
-              # ordinary case rather than a rare one. Asked only once the image
-              # is found missing, and scoped to this workflow and commit so an
-              # unrelated red check does not count.
+              # a finished run that did not succeed will never push the tag
               build_gave_up() {
                 FULL="$(gh_api "$API/commits/$SHA" \
                   | grep -oE '"sha": ?"[0-9a-f]{40}"' | head -1 \

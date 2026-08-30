@@ -121,8 +121,7 @@ describe('DELETE /users/:_id/passkey/:credentialID', () => {
   })
 
   it('does not collide with deleting the user itself', async () => {
-    // /users/:_id and /users/:_id/passkey/:credentialID are different depths;
-    // this pins that the passkey route wins for the longer path
+    // pins that the passkey route wins for the longer path
     user.deleteOne.mockResolvedValue({})
     const { app } = buildApp()
 

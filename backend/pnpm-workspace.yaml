@@ -1,8 +1,4 @@
-# Both of these only compile or fetch a native binary on install, and neither
-# is needed for what this package actually runs: eslint resolves imports
-# without unrs-resolver, and jest falls back to polling without @parcel/watcher
-# (which only speeds up --watch, something CI never uses). Left off so an
-# install runs no build scripts at all.
+# eslint resolves without unrs-resolver, jest polls without @parcel/watcher
 allowBuilds:
   '@parcel/watcher': false
   unrs-resolver: false

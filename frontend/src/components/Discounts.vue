@@ -61,9 +61,7 @@ export default {
       const needle = this.search.trim().toLowerCase()
       const filtered = this.discounts.filter(item => {
         if (this.online && !item.uri) return false
-        // zero off keeps only the entries known to contain alcohol; the API
-        // stores the percentage multiplied by a hundred, and leaves it off
-        // entirely when it does not know one
+        // the API stores the percentage times a hundred, and omits it when unknown
         const alcoholic = item.alcoholPercentage > 100
         if (!this.zero && !alcoholic) return false
         if (this.store && item.store !== this.store) return false

@@ -22,10 +22,6 @@ spec:
           type: RuntimeDefault
       containers:
         - name: mongodb
-          # 4.4 because mongo 5 and up need AVX, which these nodes do not have:
-          # https://github.com/docker-library/mongo/issues/583#issuecomment-1317935949
-          # bitnamilegacy because Bitnami pulled its old tags out of the main
-          # repo in 2025; bitnami/mongodb:4.4.15 now 404s on pull.
           image: bitnamilegacy/mongodb:4.4.15
           ports:
             - containerPort: 27017
@@ -39,9 +35,6 @@ spec:
                 secretKeyRef: 
                   name: drinkn-env
                   key: DB_NAME
-          # one list on purpose: this was two separate volumeMounts keys, and
-          # the second silently replaced the first, so the mongo-storage claim
-          # was provisioned and bound but never actually mounted
           volumeMounts:
             - name: mongo-storage
               mountPath: /bitnami/mongodb

@@ -8,14 +8,12 @@ const client = axios.create({})
 
 const SAFE_METHODS = new Set(['get', 'head', 'options'])
 
-// Fetched once and reused. The token is tied to the session rather than to a
-// single form, so it stays valid until the session ends.
+// fetched once: the token is tied to the session, not to a single form
 let csrfToken = null
 let inFlight = null
 
 const fetchToken = () => {
-  // share one request: several components load at once on first paint, and
-  // each would otherwise ask for its own token
+  // share one request: several components load at once on first paint
   inFlight = inFlight || axios.get('/api/v1/csrf')
     .then(response => {
       csrfToken = response.data.token
@@ -37,9 +35,7 @@ client.interceptors.request.use(async config => {
 client.interceptors.response.use(
   response => response,
   async error => {
-    // the session was replaced, so the token that went with it is stale. Fetch
-    // a fresh one and let the original call through once more, rather than
-    // making the person retry by hand.
+    // the session was replaced, so its token is stale: retry it once
     if (error.response?.status === 403 && !error.config?._csrfRetried) {
       error.config._csrfRetried = true
       csrfToken = null

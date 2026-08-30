@@ -77,8 +77,7 @@ describe('Api', () => {
 })
 
 describe('csrf', () => {
-  // Api.js caches the token in module scope, so each test gets a fresh copy of
-  // the module rather than inheriting whatever the previous one fetched
+  // Api.js caches the token in module scope, so each test re-imports it
   const freshApi = async () => {
     vi.resetModules()
     delete handlers.onRequest

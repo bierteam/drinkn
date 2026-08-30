@@ -2,8 +2,6 @@ const request = require('supertest')
 const express = require('express')
 const csrf = require('../../../services/csrf')
 
-// a session that behaves like express-session's for the purposes of the
-// library: a plain object the middleware can stash the token on
 const buildApp = () => {
   const session = {}
   const app = express()
@@ -17,10 +15,7 @@ const buildApp = () => {
   app.get('/read', (req, res) => res.send('read'))
   app.post('/write', (req, res) => res.send('written'))
   app.delete('/write', (req, res) => res.send('deleted'))
-  // the library rejects with a ForbiddenError; express needs a handler to turn
-  // that into a status rather than an html error page. Four parameters is what
-  // marks it as an error handler, so `next` has to stay even though it is not
-  // called.
+  // four parameters is what marks this an error handler, so `next` stays
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => res.status(err.statusCode || 500).send(err.message))
   return { app, session }

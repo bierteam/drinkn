@@ -60,7 +60,6 @@ export const useDiscounts = () => {
     }
   }
 
-  // the filter dropdowns list their options alphabetically; the values are
   // Dutch labels, so they are collated rather than compared by code point
   const unique = key => computed(() => [...new Set(discounts.value.map(item => item[key]))]
     .sort((a, b) => String(a).localeCompare(String(b))))
