@@ -23,3 +23,4 @@ selenium-server.log
 test/e2e/reports
 test/unit/coverage
 lidl.json
+lidl-selfscan-preview.json

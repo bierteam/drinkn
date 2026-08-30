@@ -32,7 +32,8 @@ of your shell history. `lidl.json` and `.lidl.env` are gitignored.
 
 ### Running it
 
-Dry run first -- fetches (or reads a saved dump) and prints, writing nothing:
+Dry run first -- it writes nothing to the database and instead dumps everything
+it *would* write to `lidl-selfscan-preview.json` (gitignored) for you to inspect:
 
 ```bash
 node scripts/lidl-selfscan.js --store NL0405            # fetch with $LIDL_TOKEN
