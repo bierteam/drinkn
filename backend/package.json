@@ -19,7 +19,7 @@
     "express-session": "^1.17.3",
     "helmet": "^8.3.0",
     "moment": "^2.29.4",
-    "mongoose": "^7.4.3",
+    "mongoose": "^9.0.0",
     "uuid": "^14.0.0"
   },
   "description": "pils api",

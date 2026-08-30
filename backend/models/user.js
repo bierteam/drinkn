@@ -102,26 +102,17 @@ UserSchema.statics.authenticate = async function (username, password, callback) 
   }
 }
 
-UserSchema.pre('save', async function (next) {
-  try {
-    const hash = await bcrypt.hash(this.password, SALT_ROUNDS)
-    this.password = hash
-    next()
-  } catch (err) {
-    next(err)
-  }
+// mongoose 9 no longer passes `next` to async middleware: returning/throwing
+// is the signal, so taking a `next` argument here would blow up with
+// "next is not a function"
+UserSchema.pre('save', async function () {
+  this.password = await bcrypt.hash(this.password, SALT_ROUNDS)
 })
 
-UserSchema.pre(['updateOne', 'findOneAndUpdate'], async function (next) {
-  try {
-    const user = this._update.$set || {}
-    if (user.password) {
-      const hash = await bcrypt.hash(user.password, SALT_ROUNDS)
-      user.password = hash
-    }
-    next()
-  } catch (err) {
-    next(err)
+UserSchema.pre(['updateOne', 'findOneAndUpdate'], async function () {
+  const user = this._update.$set || {}
+  if (user.password) {
+    user.password = await bcrypt.hash(user.password, SALT_ROUNDS)
   }
 })
 
