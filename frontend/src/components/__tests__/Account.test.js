@@ -209,7 +209,7 @@ describe('Passkeys', () => {
     expect(post).toHaveBeenLastCalledWith('/api/v1/account/passkey', expect.objectContaining({ name: 'Security key' }))
   })
 
-  it('points at the pin rather than the password manager when a key is refused', async () => {
+  it('names the password manager first when a key is refused', async () => {
     const wrapper = mountAccount()
     await flushPromises()
 
@@ -220,6 +220,8 @@ describe('Passkeys', () => {
     await wrapper.vm.AddPasskey('cross-platform')
 
     expect(wrapper.vm.error).toContain('security key was not accepted')
+    // the extension is the cause that actually happens; the pin is the fallback
+    expect(wrapper.vm.error).toContain('password manager extension')
     expect(wrapper.vm.error).toContain('FIDO2 PIN')
   })
 

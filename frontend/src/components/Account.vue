@@ -100,11 +100,15 @@ export default {
         if (detail.name === 'InvalidStateError') {
           this.error = 'That authenticator already holds a passkey for this account. Use a different key.'
         } else if (detail.name === 'NotAllowedError') {
-          // The browser will not say which of these it was, so name the ones
-          // worth checking rather than guessing at one.
+          // The browser will not say which case this was, so lead with the one
+          // that actually happens: Bitwarden replaces navigator.credentials
+          // whatever the request asks for, cannot finish the ceremony, and
+          // hands back this error. Naming the attachment does not stop it --
+          // see bitwarden/clients#18117.
+          const manager = 'A password manager extension probably took the prompt over. Bitwarden does this by default: turn off its Settings \u2192 Notifications \u2192 "Ask to save and use passkeys", then try again.'
           this.error = isKey
-            ? `The security key was not accepted (${passkeyError.tag(detail)}). Signing in without a username needs a discoverable credential, so the key must have a FIDO2 PIN set and a free slot for one.`
-            : `No passkey was created (${passkeyError.tag(detail)}). The prompt may have timed out or been dismissed. To enrol a key you plug in, use "Add security key" instead.`
+            ? `The security key was not accepted (${passkeyError.tag(detail)}). ${manager} If it still fails, the key needs a FIDO2 PIN and a free slot, because signing in without a username needs a discoverable credential.`
+            : `No passkey was created (${passkeyError.tag(detail)}). ${manager}`
         } else {
           this.error = `${e.response?.data || detail.message || e} (${passkeyError.tag(detail)})`
         }
