@@ -68,6 +68,8 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(express.static('../pils-frontend/public'))
 }
 
+// CSRF is enforced by csrf.protect below; CodeQL only recognises csurf
+// codeql[js/missing-token-validation]
 app.use(session(options))
 
 // after the session, because the token lives in it
