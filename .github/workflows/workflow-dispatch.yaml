@@ -11,37 +11,46 @@ on:
 permissions:
   deployments: write
 
+# the client payload is caller-written, so its values go through env
 jobs:
   update-status:
     runs-on: ubuntu-latest
     steps:
       - name: Find deployment ID
         id: find-deployment
+        env:
+          REF: ${{ github.event.client_payload.ref }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          # Use GitHub API to find the deployment ID
-          DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/deployments" | jq -r '.[] | select(.ref == "${{ github.event.client_payload.ref }}") | .id' | head -n 1)
-          
-          # Output the deployment ID as an output variable
-          echo "::set-output name=DEPLOYMENT_ID::$DEPLOYMENT_ID"
+          DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/deployments" \
+            | jq -r --arg ref "$REF" '.[] | select(.ref == $ref) | .id' | head -n 1)
+
+          echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> "$GITHUB_OUTPUT"
 
       - name: Check if deployment ID was found
         id: check-deployment
+        env:
+          DEPLOYMENT_ID: ${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}
+          REF: ${{ github.event.client_payload.ref }}
         run: |
-          if [ -z "${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}" ]; then
-            echo "No deployment found for ref: ${{ github.event.client_payload.ref }}"
-            # TODO exit(1) when there should always be a deployment is argo is doing stuff, eg the preview label is set (and removed) automatically
-            echo "::set-output name=DEPLOYMENT_FOUND::false"
+          if [ -z "$DEPLOYMENT_ID" ]; then
+            echo "No deployment found for ref: $REF"
+            echo "DEPLOYMENT_FOUND=false" >> "$GITHUB_OUTPUT"
           else
-            echo "::set-output name=DEPLOYMENT_FOUND::true"
+            echo "DEPLOYMENT_FOUND=true" >> "$GITHUB_OUTPUT"
           fi
-          
 
       - name: Update deployment status
         if: ${{ steps.check-deployment.outputs.DEPLOYMENT_FOUND == 'true' }}
+        env:
+          DEPLOYMENT_ID: ${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}
+          ACTION: ${{ github.event.action }}
+          LOG_URL: ${{ github.event.client_payload.log_url }}
+          ENVIRONMENT_URL: ${{ github.event.client_payload.environment_url }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          DEPLOYMENT_ID=${{ steps.find-deployment.outputs.DEPLOYMENT_ID }}
-          
-          case "${{ github.event.action }}" in
+          case "$ACTION" in
             PreSync)
               STATUS="in_progress"
               DESCRIPTION="Deployment is in progress (PreSync)"
@@ -59,20 +68,19 @@ jobs:
               DESCRIPTION="Deployment is inactive (PostDelete)"
               ;;
             *)
-              echo "Unsupported event type: ${{ github.event.action }}"
+              echo "Unsupported event type: $ACTION"
               exit 1
               ;;
           esac
 
-          # Use the DEPLOYMENT_ID to update the deployment status
-            curl -X POST "https://api.github.com/repos/${{ github.repository }}/deployments/$DEPLOYMENT_ID/statuses" \
-            -H "Authorization: Bearer ${{ github.token }}" \
+          jq -n \
+            --arg state "$STATUS" \
+            --arg description "$DESCRIPTION" \
+            --arg log_url "$LOG_URL" \
+            --arg environment_url "$ENVIRONMENT_URL" \
+            '{state: $state, description: $description, log_url: $log_url, environment_url: $environment_url}' \
+          | curl -X POST "https://api.github.com/repos/$GITHUB_REPOSITORY/deployments/$DEPLOYMENT_ID/statuses" \
+            -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d '{
-              "state": "'"$STATUS"'",
-              "description": "'"$DESCRIPTION"'",
-              "log_url": "${{ github.event.client_payload.log_url }}",
-              "environment_url": "${{ github.event.client_payload.environment_url }}"
-              }'
-              
+            --data @-

@@ -22,7 +22,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: mongodb
-          image: bitnami/mongodb:4.4.15 # https://github.com/docker-library/mongo/issues/583#issuecomment-1317935949
+          image: bitnamilegacy/mongodb:4.4.15
           ports:
             - containerPort: 27017
           env:
@@ -38,14 +38,13 @@ spec:
           volumeMounts:
             - name: mongo-storage
               mountPath: /bitnami/mongodb
+            - name: import-volume
+              mountPath: /docker-entrypoint-initdb.d
           readinessProbe:
             exec:
               command: ["mongo", "--eval", "db.adminCommand('ping')"]
             initialDelaySeconds: 10
             periodSeconds: 5
-          volumeMounts:
-            - name: import-volume
-              mountPath: /docker-entrypoint-initdb.d
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

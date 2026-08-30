@@ -12,13 +12,17 @@ vi.mock('../../services/pwned', () => ({
 const get = vi.hoisted(() => vi.fn())
 const post = vi.hoisted(() => vi.fn())
 const del = vi.hoisted(() => vi.fn())
-const toDataURL = vi.hoisted(() => vi.fn())
+const startRegistration = vi.hoisted(() => vi.fn())
+const supported = vi.hoisted(() => ({ value: true }))
 
 vi.mock('../../services/Api', () => ({
   default: () => ({ get, post, delete: del })
 }))
 
-vi.mock('qrcode', () => ({ default: { toDataURL } }))
+vi.mock('@simplewebauthn/browser', () => ({
+  startRegistration,
+  browserSupportsWebAuthn: () => supported.value
+}))
 
 const mountAccount = () => mount(Account, {
   global: {
@@ -34,7 +38,8 @@ beforeEach(() => {
   get.mockReset()
   post.mockReset()
   del.mockReset()
-  toDataURL.mockReset()
+  startRegistration.mockReset()
+  supported.value = true
   get.mockResolvedValue({ status: 200, data: { username: 'oscar', admin: false } })
   store.logout()
   vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -59,9 +64,8 @@ describe('Account isDisabled', () => {
     expect(wrapper.vm.isDisabled).toBe(true)
   })
 
-  it('enables once the old password and a change are supplied', async () => {
+  it('enables as soon as there is a change to submit', async () => {
     const wrapper = mountAccount()
-    wrapper.vm.newUser.oldPassword = 'current-secret'
     wrapper.vm.newUser.username = 'oscar-renamed'
     await wrapper.vm.$nextTick()
 
@@ -70,7 +74,6 @@ describe('Account isDisabled', () => {
 
   it('renders the Save button as enabled, not just the flag', async () => {
     const wrapper = mountAccount()
-    wrapper.vm.newUser.oldPassword = 'current-secret'
     wrapper.vm.newUser.username = 'oscar-renamed'
     await wrapper.vm.$nextTick()
 
@@ -81,7 +84,6 @@ describe('Account isDisabled', () => {
   it('flags a pwned password and blocks submission', async () => {
     pwnedResult.value = true
     const wrapper = mountAccount()
-    wrapper.vm.newUser.oldPassword = 'current-secret'
     wrapper.vm.newUser.password = 'hunter2'
     await vi.waitFor(() => expect(wrapper.vm.state.isPwned).toBe(true))
 
@@ -90,7 +92,6 @@ describe('Account isDisabled', () => {
 
   it('blocks submission while the verification does not match', async () => {
     const wrapper = mountAccount()
-    wrapper.vm.newUser.oldPassword = 'current-secret'
     wrapper.vm.newUser.password = 'a-good-one'
     wrapper.vm.verifyPassword = 'mistyped'
     await vi.waitFor(() => expect(wrapper.vm.state.notEqual).toBe(true))
@@ -100,7 +101,6 @@ describe('Account isDisabled', () => {
 
   it('clears the mismatch once the verification catches up', async () => {
     const wrapper = mountAccount()
-    wrapper.vm.newUser.oldPassword = 'current-secret'
     wrapper.vm.newUser.password = 'a-good-one'
     wrapper.vm.verifyPassword = 'a-good-one'
     await vi.waitFor(() => expect(wrapper.vm.state.notEqual).toBe(false))
@@ -127,32 +127,153 @@ describe('Account', () => {
   })
 })
 
-describe('Otp', () => {
-  it('renders a QR code for the returned secret', async () => {
+describe('Passkeys', () => {
+  const account = credentials => ({ status: 200, data: { username: 'oscar', credentials } })
+
+  it('lists the registered passkeys', async () => {
+    get.mockResolvedValue(account([{ credentialID: 'cred-1', name: 'Laptop', createdAt: '2026-08-01T00:00:00.000Z' }]))
     const wrapper = mountAccount()
     await flushPromises()
 
-    get.mockResolvedValue({ status: 200, data: { uri: 'otpauth://totp/pils' } })
-    wrapper.vm.Otp()
-    await flushPromises()
-
-    expect(toDataURL).toHaveBeenCalledWith(
-      'otpauth://totp/pils',
-      { errorCorrectionLevel: 'H' },
-      expect.any(Function)
-    )
-    expect(wrapper.vm.otp.uri).toBe('otpauth://totp/pils')
+    expect(wrapper.vm.passkeys).toHaveLength(1)
+    expect(wrapper.text()).toContain('Laptop')
   })
 
-  it('surfaces a failure to start 2FA setup', async () => {
+  it('copes with an account that has none', async () => {
     const wrapper = mountAccount()
     await flushPromises()
 
-    get.mockRejectedValue({ response: { data: 'Already enabled' } })
-    wrapper.vm.Otp()
+    expect(wrapper.vm.passkeys).toEqual([])
+    expect(wrapper.text()).toContain('No passkeys yet.')
+  })
+
+  it('fetches options, enrols the key and keeps the returned list', async () => {
+    const wrapper = mountAccount()
     await flushPromises()
 
-    expect(wrapper.vm.error).toBe('Already enabled')
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    startRegistration.mockResolvedValue({ id: 'cred-1' })
+    post.mockResolvedValueOnce(account([{ credentialID: 'cred-1', name: 'Laptop' }]))
+
+    wrapper.vm.passkeyName = 'Laptop'
+    await wrapper.vm.AddPasskey()
+
+    expect(post).toHaveBeenNthCalledWith(1, '/api/v1/account/passkey/options', { attachment: 'platform' })
+    expect(startRegistration).toHaveBeenCalledWith({ optionsJSON: { challenge: 'abc' } })
+    expect(post).toHaveBeenNthCalledWith(2, '/api/v1/account/passkey', {
+      response: { id: 'cred-1' },
+      name: 'Laptop'
+    })
+    expect(wrapper.vm.passkeys).toHaveLength(1)
+    expect(wrapper.vm.passkeyName).toBe('')
+  })
+
+  it('names an unnamed key rather than sending nothing', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    startRegistration.mockResolvedValue({ id: 'cred-1' })
+    post.mockResolvedValueOnce(account([]))
+    await wrapper.vm.AddPasskey()
+
+    expect(post).toHaveBeenLastCalledWith('/api/v1/account/passkey', expect.objectContaining({ name: 'Passkey' }))
+  })
+
+  it('explains a refused prompt and names the error', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const cancelled = new Error('cancelled')
+    cancelled.name = 'NotAllowedError'
+    startRegistration.mockRejectedValue(cancelled)
+    await wrapper.vm.AddPasskey()
+
+    expect(wrapper.vm.error).toContain('No passkey was created')
+    expect(wrapper.vm.error).toContain('password manager extension')
+  })
+
+  it('says nothing when a password manager hands the ceremony over', async () => {
+    // Bitwarden aborts its own overlay; that is not a cancellation
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const handoff = new Error('aborted')
+    handoff.name = 'AbortError'
+    startRegistration.mockRejectedValue(handoff)
+    await wrapper.vm.AddPasskey()
+
+    expect(wrapper.vm.message).toBe('')
+    expect(wrapper.vm.error).toBe('')
+    expect(wrapper.vm.state.passkeyBusy).toBe(false)
+  })
+
+  it('explains a key that is already enrolled', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const duplicate = new Error('already registered')
+    duplicate.name = 'InvalidStateError'
+    startRegistration.mockRejectedValue(duplicate)
+    await wrapper.vm.AddPasskey()
+
+    expect(wrapper.vm.error).toContain('already holds a passkey')
+  })
+
+  it('clears the busy flag whichever way it ends', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockRejectedValueOnce({ response: { data: 'Server error' } })
+    await wrapper.vm.AddPasskey()
+
+    expect(wrapper.vm.state.passkeyBusy).toBe(false)
+  })
+
+  it('removes a passkey and keeps the returned list', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    del.mockResolvedValue(account([]))
+    wrapper.vm.RemovePasskey('cred-1')
+    await flushPromises()
+
+    expect(del).toHaveBeenCalledWith('/api/v1/account/passkey/cred-1')
+    expect(wrapper.vm.passkeys).toEqual([])
+  })
+
+  it('escapes a credential id on its way into the url', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    del.mockResolvedValue(account([]))
+    wrapper.vm.RemovePasskey('a/b+c')
+    await flushPromises()
+
+    expect(del).toHaveBeenCalledWith('/api/v1/account/passkey/a%2Fb%2Bc')
+  })
+
+  it('surfaces a failed removal', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    del.mockRejectedValue({ response: { data: 'Not found' } })
+    wrapper.vm.RemovePasskey('cred-1')
+    await flushPromises()
+
+    expect(wrapper.vm.error).toBe('Not found')
+  })
+
+  it('warns instead of offering the button when webauthn is missing', async () => {
+    supported.value = false
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('This browser does not support passkeys.')
+    expect(wrapper.find('#account-passkey-name').exists()).toBe(false)
   })
 })
 

@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '0 20 * * 3'
 
+# one run per ref, pull requests only: a push to main is a deploy
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   analyse:
     name: Analyse

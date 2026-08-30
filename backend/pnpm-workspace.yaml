@@ -1,0 +1,4 @@
+# eslint resolves without unrs-resolver, jest polls without @parcel/watcher
+allowBuilds:
+  '@parcel/watcher': false
+  unrs-resolver: false

@@ -7,9 +7,9 @@ router.use(discounts)
 const store = require('./stores')
 router.use(store)
 
-// TODO create a possibillity for manual import
-// const dbImport = require('./dbImport')
-// router.use(dbImport)
+// reachable without a token, since it is what hands one out
+const csrf = require('../../services/csrf')
+router.get('/csrf', (req, res) => res.json({ token: csrf.generateToken(req) }))
 
 const users = require('./users')
 router.use('/users', users)

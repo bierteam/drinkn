@@ -7,17 +7,19 @@
     "Nino van der Laan (https://github.com/NvdLaan)"
   ],
   "dependencies": {
+    "@simplewebauthn/server": "^13.3.3",
     "bcryptjs": "^3.0.3",
     "body-parser": "^1.20.2",
     "connect-history-api-fallback": "^2.0.0",
     "connect-mongo": "^6.0.0",
     "cors": "^2.8.5",
+    "csrf-sync": "^4.2.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
     "express-session": "^1.17.3",
     "helmet": "^8.3.0",
     "moment": "^2.29.4",
     "mongoose": "^7.4.3",
-    "otplib": "^12.0.1",
     "uuid": "^11.1.1"
   },
   "description": "pils api",

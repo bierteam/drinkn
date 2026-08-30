@@ -29,6 +29,8 @@ const mongoose = require('mongoose')
 const { MongoStore } = require('connect-mongo')
 const user = require('./models/user')
 const writeLog = require('./services/writeLog')
+const sessionCookie = require('./services/sessionCookie')
+const csrf = require('./services/csrf')
 
 mongoose.connect(connectionString)
 const db = mongoose.connection
@@ -54,6 +56,8 @@ const options = {
   secret: process.env.APPSECRET,
   resave: false,
   saveUninitialized: false,
+  proxy: sessionCookie.production,
+  cookie: sessionCookie.cookie,
   store: MongoStore.create({
     mongoUrl: connectionString
   })
@@ -65,6 +69,9 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use(session(options))
+
+// after the session, because the token lives in it
+app.use('/api', csrf.protect)
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {

@@ -10,6 +10,13 @@ pr:
   enabled: false
   number: 9999
   ref: main
+  # hold the sync until this revision's images exist; the build mostly queues
+  waitForImages:
+    timeoutSeconds: 1200
+    pollSeconds: 15
+    images:
+      - pils-backend
+      - pils-frontend
   status:
     - PreSync
     - PostSync

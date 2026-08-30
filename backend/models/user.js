@@ -3,6 +3,36 @@ const bcrypt = require('bcryptjs')
 const { v4: uuidv4 } = require('uuid')
 const SALT_ROUNDS = 10
 
+const CredentialSchema = new mongoose.Schema({
+  credentialID: {
+    type: String,
+    required: true,
+    index: true
+  },
+  publicKey: {
+    type: String,
+    required: true
+  },
+  counter: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  transports: {
+    type: [String],
+    default: []
+  },
+  name: {
+    type: String,
+    required: false,
+    trim: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+}, { _id: false })
+
 const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
@@ -44,18 +74,9 @@ const UserSchema = new mongoose.Schema({
       required: true
     }
   },
-  otp: {
-    type: Object,
-    required: false,
-    status: {
-      type: Boolean,
-      required: true,
-      default: false
-    },
-    secret: {
-      type: String,
-      required: false
-    }
+  credentials: {
+    type: [CredentialSchema],
+    default: []
   }
 })
 
@@ -93,7 +114,7 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.pre(['updateOne', 'findOneAndUpdate'], async function (next) {
   try {
-    const user = this._update.$set
+    const user = this._update.$set || {}
     if (user.password) {
       const hash = await bcrypt.hash(user.password, SALT_ROUNDS)
       user.password = hash

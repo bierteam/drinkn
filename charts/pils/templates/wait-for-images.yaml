@@ -1,0 +1,99 @@
+{{- if .Values.pr.enabled }}
+{{- $wait := .Values.pr.waitForImages }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-for-images-{{ .Values.pr.number }}
+  namespace: drinkn-hooks
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,BeforeHookCreation
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        # curlimages/curl names a user kubelet cannot resolve
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: curl
+          image: curlimages/curl:8.21.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
+          resources:
+            requests:
+              {{- toYaml .Values.resources.githubWebhooks.requests | nindent 14 }}
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token
+                  key: token
+          command: ["ash", "-c"]
+          args:
+            - |
+              set -eu
+              TAG="{{ .Values.image.tag }}"
+              SHA="${TAG#sha-}"
+              API="https://api.github.com/repos/bierteam/drinkn"
+              DEADLINE=$(( $(date +%s) + {{ $wait.timeoutSeconds }} ))
+
+              gh_api() {
+                curl -sf -H "Authorization: Bearer $GITHUB_TOKEN" \
+                  -H "Accept: application/vnd.github+json" "$1"
+              }
+
+              # a pull needs a per-repository token, even for a public package
+              registry_token() {
+                curl -sf -u "x:$GITHUB_TOKEN" \
+                  "https://ghcr.io/token?service=ghcr.io&scope=repository:bierteam/drinkn/$1:pull" \
+                  | sed -n 's/.*"token":"\([^"]*\)".*/\1/p'
+              }
+
+              manifest_exists() {
+                TOKEN="$(registry_token "$1")"
+                [ -n "$TOKEN" ] || return 1
+                curl -sf -o /dev/null -I \
+                  -H "Authorization: Bearer $TOKEN" \
+                  -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.docker.distribution.manifest.v2+json" \
+                  "https://ghcr.io/v2/bierteam/drinkn/$1/manifests/$TAG"
+              }
+
+              # a finished run that did not succeed will never push the tag
+              build_gave_up() {
+                FULL="$(gh_api "$API/commits/$SHA" \
+                  | grep -oE '"sha": ?"[0-9a-f]{40}"' | head -1 \
+                  | cut -d'"' -f4)" || return 1
+                [ -n "$FULL" ] || return 1
+                gh_api "$API/actions/workflows/main.yml/runs?head_sha=$FULL&per_page=10" \
+                  | grep -q '"conclusion": *"\(cancelled\|failure\|timed_out\|startup_failure\)"'
+              }
+
+              for IMAGE in {{ join " " $wait.images }}; do
+                echo "waiting for $IMAGE:$TAG"
+                until manifest_exists "$IMAGE"; do
+                  if build_gave_up; then
+                    echo "the build for $SHA ended without success; no tag is coming"
+                    exit 1
+                  fi
+                  if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+                    echo "gave up on $IMAGE:$TAG -- is the build failing?"
+                    exit 1
+                  fi
+                  sleep {{ $wait.pollSeconds }}
+                done
+                echo "  found $IMAGE:$TAG"
+              done
+      restartPolicy: Never
+  backoffLimit: 0
+  # past the poll deadline, so the loop reports the timeout itself
+  activeDeadlineSeconds: {{ add $wait.timeoutSeconds 60 }}
+{{- end }}

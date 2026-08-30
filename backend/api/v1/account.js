@@ -2,14 +2,19 @@ const express = require('express')
 const router = express.Router()
 const user = require('../../models/user')
 const isAuthenticated = require('../../services/isAuthenticated')
-const otp = require('../../services/otp')
+const passkey = require('../../services/passkey')
+const rateLimit = require('../../services/rateLimit')
 const writeLog = require('../../services/writeLog')
+const sessionCookie = require('../../services/sessionCookie')
 const context = 'Account'
 
-router.get('/', isAuthenticated, async function (req, res) {
+// never select credentials.publicKey: listing the keys needs no key material
+const PASSKEY_FIELDS = 'credentials.credentialID credentials.name credentials.createdAt'
+
+router.get('/', rateLimit.api, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
-    const results = await user.findOne({ _id }).select('username otp.status').exec()
+    const results = await user.findOne({ _id }).select(`username ${PASSKEY_FIELDS}`).exec()
 
     writeLog(`${req.session.username}: ${req.session.userId} requested account data`, 'Info', context, req.realIp)
 
@@ -20,33 +25,90 @@ router.get('/', isAuthenticated, async function (req, res) {
   }
 })
 
-router.get('/otp', isAuthenticated, function (req, res) {
-  const result = otp.generate(req)
-  writeLog(`${req.session.username}: ${req.session.userId} requested otp secret`, 'Info', context, req.realIp)
-  res.json(result)
+router.post('/passkey/options', rateLimit.auth, isAuthenticated, async function (req, res) {
+  try {
+    const _id = req.session.userId
+    const account = await user.findOne({ _id }).select('username credentials').exec()
+
+    if (!account) return res.status(401).send('Thou shall not pass!')
+
+    const options = await passkey.registrationOptions(req, account, req.body.attachment)
+    writeLog(`${req.session.username}: ${req.session.userId} started passkey registration`, 'Info', context, req.realIp)
+    res.json(options)
+  } catch (err) {
+    console.error(err)
+    writeLog(err, 'Error', context)
+    res.status(500).json({ error: 'Server error' })
+  }
 })
 
-router.post('/', isAuthenticated, async function (req, res) {
+router.post('/passkey', rateLimit.auth, isAuthenticated, async function (req, res) {
+  let credential
+  try {
+    credential = await passkey.verifyRegistration(req, req.body.response)
+  } catch (error) {
+    writeLog(`Failed passkey registration for ${req.session.username}: ${req.session.userId} (${error})`, 'Warning', context, req.realIp)
+    return res.status(400).send('That passkey could not be registered, try again.')
+  }
+
+  try {
+    const _id = req.session.userId
+    credential.name = req.body.name ? req.body.name.toString() : 'Passkey'
+
+    const result = await user.findOneAndUpdate(
+      { _id },
+      { $push: { credentials: credential } },
+      { new: true }
+    ).select(`username ${PASSKEY_FIELDS}`).exec()
+
+    writeLog(`${req.session.username}: ${req.session.userId} registered a passkey`, 'Info', context, req.realIp)
+    res.json(result)
+  } catch (err) {
+    console.error(err)
+    writeLog(err, 'Error', context)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+router.delete('/passkey/:credentialID', rateLimit.api, isAuthenticated, async function (req, res) {
+  try {
+    const _id = req.session.userId
+
+    const result = await user.findOneAndUpdate(
+      { _id },
+      { $pull: { credentials: { credentialID: req.params.credentialID } } },
+      { new: true }
+    ).select(`username ${PASSKEY_FIELDS}`).exec()
+
+    writeLog(`${req.session.username}: ${req.session.userId} removed a passkey`, 'Warning', context, req.realIp)
+    res.json(result)
+  } catch (err) {
+    console.error(err)
+    writeLog(err, 'Error', context)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+router.post('/', rateLimit.api, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
     const parameters = {}
     parameters.editedBy = { _id: req.session.userId, username: req.session.username }
 
-    if (!req.body.user.oldPassword) {
-      return res.status(401).send('You need to fill in your old password.')
+    if (req.body.user.password) {
+      parameters.password = req.body.user.password
     }
-    // TODO: Implement authentication using the old password here.
+    if (req.body.user.username) {
+      parameters.username = req.body.user.username
+    }
 
-    if (req.body.user.otp && req.session.secret) {
-      if (!otp.check(req.body.user.otp, req.session.secret)) {
-        return res.status(401).send('The 2FA code is only valid for 30 seconds, try again.')
-      }
-      parameters.otp = { status: true, secret: req.session.secret }
-      delete req.session.secret
+    // without this an empty body writes nothing but editedBy
+    if (!parameters.password && !parameters.username) {
+      return res.status(400).send('Nothing to change.')
     }
 
     const result = await user.findOneAndUpdate({ _id }, { $set: parameters }, { strict: false, new: true })
-      .select('username admin otp.status')
+      .select(`username admin ${PASSKEY_FIELDS}`)
       .exec()
 
     writeLog(`${req.session.username}: ${req.session.userId} updated their account.`, 'Info', context, req.realIp)
@@ -58,13 +120,13 @@ router.post('/', isAuthenticated, async function (req, res) {
   }
 })
 
-router.delete('/delete', isAuthenticated, async function (req, res) {
+router.delete('/delete', rateLimit.api, isAuthenticated, async function (req, res) {
   try {
     const _id = req.session.userId
 
     await user.deleteOne({ _id })
 
-    res.clearCookie('connect.sid', { path: '/' }).status(200).send('Account deleted, removing cookie...')
+    res.clearCookie('connect.sid', sessionCookie.cookie).status(200).send('Account deleted, removing cookie...')
     writeLog(`User ${req.session.username}: ${req.session.userId} deleted their account.`, 'Info', context, req.realIp)
   } catch (err) {
     console.error(err)

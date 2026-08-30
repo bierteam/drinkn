@@ -146,3 +146,59 @@ describe('helpers', () => {
     expect(wrapper.vm.state.error).toBe('')
   })
 })
+
+describe('passkeys', () => {
+  const withKeys = credentials => ({ status: 200, data: { username: 'nino', admin: false, credentials } })
+
+  it('lists what the user has registered', async () => {
+    get.mockResolvedValue(withKeys([
+      { credentialID: 'cred-1', name: 'Phone', createdAt: '2026-08-01T00:00:00.000Z' }
+    ]))
+    const { wrapper } = await mountUser()
+
+    expect(wrapper.vm.passkeys).toHaveLength(1)
+    expect(wrapper.text()).toContain('Phone')
+  })
+
+  it('copes with a user who has none', async () => {
+    const { wrapper } = await mountUser()
+
+    expect(wrapper.vm.passkeys).toEqual([])
+    expect(wrapper.text()).toContain('This user has no passkeys.')
+  })
+
+  it('revokes against the user in the route, not the signed-in admin', async () => {
+    const { wrapper } = await mountUser()
+
+    del.mockResolvedValue(withKeys([]))
+    await wrapper.vm.removePasskey('cred-1')
+
+    expect(del).toHaveBeenCalledWith('/api/v1/users/user-2/passkey/cred-1')
+    expect(wrapper.vm.passkeys).toEqual([])
+  })
+
+  it('escapes a credential id on its way into the url', async () => {
+    const { wrapper } = await mountUser()
+
+    del.mockResolvedValue(withKeys([]))
+    await wrapper.vm.removePasskey('a/b+c')
+
+    expect(del).toHaveBeenCalledWith('/api/v1/users/user-2/passkey/a%2Fb%2Bc')
+  })
+
+  it('surfaces a failed revocation', async () => {
+    const { wrapper } = await mountUser()
+
+    del.mockRejectedValue({ response: { data: 'Not found' } })
+    await wrapper.vm.removePasskey('cred-1')
+
+    expect(wrapper.vm.state.error).toBe('Not found')
+  })
+
+  it('offers no way to add one, since that needs the account holder', async () => {
+    const { wrapper } = await mountUser()
+
+    expect(wrapper.text()).not.toContain('Add passkey')
+    expect(wrapper.text()).toContain('added by the account holder')
+  })
+})

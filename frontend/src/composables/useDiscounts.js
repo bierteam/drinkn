@@ -60,7 +60,9 @@ export const useDiscounts = () => {
     }
   }
 
-  const unique = key => computed(() => [...new Set(discounts.value.map(item => item[key]))].sort())
+  // Dutch labels, so they are collated rather than compared by code point
+  const unique = key => computed(() => [...new Set(discounts.value.map(item => item[key]))]
+    .sort((a, b) => String(a).localeCompare(String(b))))
   const averageOf = key => computed(() => average(discounts.value.map(item => item[key])))
 
   return {

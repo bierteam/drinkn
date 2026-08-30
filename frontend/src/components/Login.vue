@@ -1,18 +1,24 @@
 <script>
 import Api from '../services/Api'
 import { store } from '../store.js'
+import { startAuthentication, browserSupportsWebAuthn } from '@simplewebauthn/browser'
+import * as passkeyError from '../services/passkeyError'
 
 export default {
   data () {
     return {
       username: '',
       password: '',
-      token: undefined,
-      otpRequired: false,
       remember: true,
       error: '',
-      message: ''
+      message: '',
+      passkeySupported: browserSupportsWebAuthn(),
+      passkeyBusy: false,
+      preview: { enabled: false }
     }
+  },
+  created () {
+    this.Preview()
   },
   computed: {
     isDisabled: function () {
@@ -24,37 +30,66 @@ export default {
       const data = {
         username: this.$data.username,
         password: this.$data.password,
-        remember: this.$data.remember,
-        token: this.$data.token
+        remember: this.$data.remember
       }
       Api().post(`/api/v1/users/login`, data)
         .then(response => {
-          if (response.data.otp) {
-            this.otpRequired = true
-            this.message = 'Two factor authentication required.'
-          } else if (response.status === 200) {
-            store.setAuthenticated(response.data._id)
-            if (response.data.admin) {
-              store.setAdmin(true)
-            }
-            const redirect = this.$route.query.redirect
-            this.$router.push(redirect || '/discounts')
+          if (response.status === 200) {
+            this.Succeed(response.data)
           }
         })
         .catch(e => {
           this.error = e.response?.data || e
           console.error(e)
         })
-    }
-  },
-  watch: {
-    // focus the field as it appears. this was an updated() hook, which fires
-    // on every render -- so once the field was shown, every keystroke in it
-    // re-focused it
-    async otpRequired (required) {
-      if (!required) return
-      await this.$nextTick()
-      this.$refs.token?.focus()
+    },
+    async Passkey () {
+      this.error = ''
+      this.passkeyBusy = true
+      try {
+        // the options carry the challenge the server kept in the session
+        const options = await Api().post(`/api/v1/users/login/passkey/options`, {})
+        const response = await startAuthentication({ optionsJSON: options.data })
+        const login = await Api().post(`/api/v1/users/login/passkey`, {
+          response,
+          remember: this.remember
+        })
+        this.Succeed(login.data)
+      } catch (e) {
+        const detail = passkeyError.log('authentication', e)
+
+        // an abort is a handover, not a refusal -- see Account.vue
+        if (detail.name === 'AbortError') return
+
+        if (detail.name === 'NotAllowedError') {
+          this.error = 'No passkey was offered. If a password manager extension handles passkeys for you, turn that off and try again.'
+        } else {
+          this.error = e.response?.data || detail.message || e
+        }
+      } finally {
+        this.passkeyBusy = false
+      }
+    },
+    // only a preview namespace answers, and a failure must never block login
+    async Preview () {
+      try {
+        const response = await Api().get(`/api/v1/users/preview`, {})
+        this.preview = response.data
+      } catch {
+        this.preview = { enabled: false }
+      }
+    },
+    FillPreview () {
+      this.username = this.preview.username
+      this.password = this.preview.password
+    },
+    Succeed (data) {
+      store.setAuthenticated(data._id)
+      if (data.admin) {
+        store.setAdmin(true)
+      }
+      const redirect = this.$route.query.redirect
+      this.$router.push(redirect || '/discounts')
     }
   }
 }
@@ -73,35 +108,38 @@ export default {
           <button type="button" class="delete" @click="message = ''"></button>
           {{message}}
         </div>
+        <div v-if="preview.enabled" class="notification is-info is-light has-text-left">
+          <strong>Preview environment</strong>
+          <p>
+            Throwaway database, thrown away with the pull request. Sign in with
+            <code>{{preview.username}}</code> / <code>{{preview.password}}</code>.
+          </p>
+          <button type="button" class="button is-small is-info mt-2" @click="FillPreview">Fill them in</button>
+        </div>
         <h3 class="title has-text-grey">Login</h3>
         <p class="subtitle has-text-grey">Please login to proceed.</p>
         <div class="box">
           <form>
-            <div v-if="!otpRequired" class="field">
+            <div class="field">
               <div class="control">
                 <label class="is-sr-only" for="login-username">Username</label>
-                <input id="login-username" class="input is-large" v-model="username" type="text" name="username" autocomplete="username" placeholder="Your username" autofocus>
+                <input id="login-username" class="input is-large" v-model="username" type="text" name="username" autocomplete="username webauthn" placeholder="Your username" autofocus>
               </div>
             </div>
-            <div v-if="!otpRequired" class="field">
+            <div class="field">
               <div class="control">
                 <label class="is-sr-only" for="login-password">Password</label>
                 <input id="login-password" class="input is-large" v-model="password" type="password" name="password" autocomplete="current-password" placeholder="Your password">
               </div>
             </div>
-            <div v-if="otpRequired" class="field">
-              <div class="control">
-                <label class="is-sr-only" for="login-token">Two factor code</label>
-                <input id="login-token" class="input is-large" v-model="token" type="text" name="token" inputmode="numeric" autocomplete="one-time-code" placeholder="2fa code" ref="token">
-              </div>
-            </div>
-            <div v-if="!otpRequired" class="field">
+            <div class="field">
               <label class="checkbox tooltip is-tooltip-right" data-tooltip='For 30 days'>
                 <input type="checkbox" v-model="remember">
                 Remember me
               </label>
             </div>
             <button type="submit" class="button is-block is-primary is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Login</button>
+            <button v-if="passkeySupported" type="button" class="button is-block is-light is-large is-fullwidth mt-3" :class="{ 'is-loading': passkeyBusy }" @click.prevent='Passkey'>Use a passkey</button>
           </form>
         </div>
         <p class="has-text-grey">
