@@ -4,7 +4,7 @@ const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env
 
 const mongoose = require('mongoose')
 
-mongoose.connect(connectionString, { useNewUrlParser: true })
+mongoose.connect(connectionString)
 const db = mongoose.connection
 
 const dbImport = require('./services/dbImport')
