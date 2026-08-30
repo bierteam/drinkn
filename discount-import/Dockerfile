@@ -8,6 +8,8 @@ COPY pnpm-lock.yaml ./
 COPY eslint.config.mjs ./
 COPY models ./models
 COPY services ./services
+COPY sources ./sources
+COPY migrations ./migrations
 COPY setup.js ./
 COPY server.js ./
 

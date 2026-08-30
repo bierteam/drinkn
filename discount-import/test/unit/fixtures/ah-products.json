@@ -1,0 +1,82 @@
+{
+  "plainShelfPrice": {
+    "webshopId": 194903,
+    "title": "Gulpener Gladiator robuust bier",
+    "brand": "Gulpener",
+    "salesUnitSize": "0,5 l",
+    "unitPriceDescription": "prijs per liter €3.38",
+    "currentPrice": null,
+    "priceBeforeBonus": 1.69,
+    "isBonus": false,
+    "bonusMechanism": null,
+    "bonusStartDate": null,
+    "bonusEndDate": null,
+    "images": [
+      {
+        "width": 800,
+        "height": 800,
+        "url": "https://static.ah.nl/dam/product/AHI_78395053595757575171537647453249795a77376141?revLabel=1&rendition=800x800_WEBP&fileType=binary"
+      }
+    ]
+  },
+  "bonusMultipack": {
+    "webshopId": 548572,
+    "title": "Texels Skuumkoppe speciaalbier 6-pack",
+    "brand": "Texels",
+    "salesUnitSize": "6 x 0,3 l",
+    "unitPriceDescription": "normale prijs per liter €5.55",
+    "currentPrice": 7.49,
+    "priceBeforeBonus": 9.99,
+    "isBonus": true,
+    "bonusMechanism": "25% korting",
+    "bonusStartDate": "2026-08-24",
+    "bonusEndDate": "2026-08-30",
+    "images": [
+      {
+        "width": 800,
+        "height": 800,
+        "url": "https://static.ah.nl/dam/product/AHI_4354523130303732353937?revLabel=1&rendition=800x800_WEBP&fileType=binary"
+      }
+    ]
+  },
+  "countOnlyNoVolume": {
+    "webshopId": 574108,
+    "title": "Texels Skuumkoppe speciaalbier 12-pack",
+    "brand": "Texels",
+    "salesUnitSize": "2 stuks",
+    "unitPriceDescription": null,
+    "currentPrice": 14.98,
+    "priceBeforeBonus": 19.98,
+    "isBonus": true,
+    "bonusMechanism": null,
+    "bonusStartDate": "2026-08-30",
+    "bonusEndDate": "2026-08-30",
+    "images": [
+      {
+        "width": 800,
+        "height": 800,
+        "url": "https://static.ah.nl/dam/product/AHI_48646d79444d6d6954704b694769386e536c714a3877?revLabel=1&rendition=800x800_WEBP&fileType=binary"
+      }
+    ]
+  },
+  "bonusWithoutLowerPrice": {
+    "webshopId": 222563,
+    "title": "Amstel Radler citroen 0.0 6-pack",
+    "brand": "Amstel",
+    "salesUnitSize": "6 x 0,33 l",
+    "unitPriceDescription": "normale prijs per liter €3.28",
+    "currentPrice": null,
+    "priceBeforeBonus": 6.49,
+    "isBonus": true,
+    "bonusMechanism": "1 + 1 gratis",
+    "bonusStartDate": "2026-08-31",
+    "bonusEndDate": "2026-09-06",
+    "images": [
+      {
+        "width": 800,
+        "height": 800,
+        "url": "https://static.ah.nl/dam/product/AHI_4354523130303933353937?revLabel=1&rendition=800x800_WEBP&fileType=binary"
+      }
+    ]
+  }
+}
