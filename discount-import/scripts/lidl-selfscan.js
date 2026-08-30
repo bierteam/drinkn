@@ -42,11 +42,18 @@ const opt = name => {
 const has = name => args.includes(name)
 
 const filePath = opt('--file')
-// a Lidl store id is an alphanumeric code like "NL0405". Constrain it to that at
-// the source: it is both logged and interpolated into the request path, and
-// leaving it as free argv/env text invites log forging and path traversal
-const rawStoreId = opt('--store') || process.env.LIDL_STORE
-const storeId = rawStoreId ? rawStoreId.replace(/[^A-Za-z0-9]/g, '') : undefined
+
+// A Lidl store id is an alphanumeric code like "NL0405". It arrives from an
+// argument or env var and is both logged and interpolated into the request path,
+// so it is validated against a strict pattern and then rebuilt character by
+// character: what the rest of the script uses is constructed here, not the
+// string that came off the command line. Anything that is not a plain store id
+// becomes undefined, and load() then fails with a clear message.
+const cleanStoreId = value => {
+  if (typeof value !== 'string' || !/^[A-Za-z0-9]{1,12}$/.test(value)) return undefined
+  return Array.from(value).join('')
+}
+const storeId = cleanStoreId(opt('--store') || process.env.LIDL_STORE)
 const write = has('--write')
 
 // A row is beer if it is age-18 restricted *and* its name reads like beer. The
