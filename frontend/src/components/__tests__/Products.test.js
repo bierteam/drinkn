@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Products from '../Products.vue'
 
@@ -12,11 +12,15 @@ const items = () => ([
 ])
 
 const calls = []
+let failNext = false
+let emptyNext = false
 vi.mock('../../services/Api', () => ({
   default: () => ({
     get: async (url, config) => {
       calls.push({ url, params: config?.params })
       if (url.endsWith('/facets')) return { data: { stores: ['Albert Heijn', 'Jumbo'], total: 900, discounted: 300 } }
+      if (failNext) throw new Error('offline')
+      if (emptyNext) return { data: { items: [], total: 0, totalPages: 0, page: 0 } }
       return { data: { items: items(), total: 3, totalPages: 2, page: 0 } }
     }
   })
@@ -31,6 +35,12 @@ const mountProducts = async () => {
 
 beforeEach(() => {
   calls.length = 0
+  failNext = false
+  emptyNext = false
+})
+
+afterEach(() => {
+  vi.useRealTimers()
 })
 
 describe('Products', () => {
@@ -84,5 +94,55 @@ describe('Products', () => {
 
     wrapper.vm.turnTo(1)
     await vi.waitFor(() => expect(calls.some(c => c.params?.page === 1)).toBe(true))
+  })
+
+  it('debounces typing instead of a request per keystroke', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    const wrapper = mount(Products)
+    await vi.waitFor(() => expect(wrapper.vm.products).toHaveLength(3))
+    calls.length = 0
+
+    wrapper.vm.search = 'her'
+    await wrapper.vm.$nextTick()
+    wrapper.vm.search = 'hert'
+    await wrapper.vm.$nextTick()
+    expect(calls.filter(c => c.params?.search)).toHaveLength(0)
+
+    await vi.advanceTimersByTimeAsync(400)
+    expect(calls.filter(c => c.params?.search === 'hert')).toHaveLength(1)
+  })
+
+  it('asks the server to re-sort when the direction flips', async () => {
+    const wrapper = await mountProducts()
+    calls.length = 0
+
+    wrapper.vm.dir = 'desc'
+    await vi.waitFor(() => expect(calls.some(c => c.params?.dir === 'desc')).toBe(true))
+  })
+
+  it('says so when the products cannot be loaded', async () => {
+    failNext = true
+    const wrapper = mount(Products)
+
+    await vi.waitFor(() => expect(wrapper.vm.error).toBeTruthy())
+    await wrapper.vm.$nextTick()
+    // an empty table would read as "no beers exist" rather than "we could not ask"
+    expect(wrapper.text()).toContain('Could not load products')
+    expect(wrapper.find('tbody').exists()).toBe(false)
+  })
+
+  it('distinguishes no matches from a failure', async () => {
+    emptyNext = true
+    const wrapper = mount(Products)
+
+    await vi.waitFor(() => expect(wrapper.vm.loading).toBe(false))
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('No products match')
+  })
+
+  it('shows the offer end date where there is one', async () => {
+    const wrapper = await mountProducts()
+    expect(wrapper.vm.validUntil(items()[0])).toBeTruthy()
+    expect(wrapper.vm.validUntil(items()[1])).toBeNull()
   })
 })
