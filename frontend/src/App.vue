@@ -9,7 +9,23 @@ export default {
       store
     }
   },
+  data () {
+    return {
+      // bulma hides .navbar-menu below 1024px until the burger opens it
+      menuOpen: false
+    }
+  },
+  watch: {
+    // vue-router hands out a fresh route object per navigation, so this fires
+    // on every page change: the open menu would otherwise sit on top of it
+    $route () {
+      this.closeMenu()
+    }
+  },
   methods: {
+    closeMenu () {
+      this.menuOpen = false
+    },
     Logout () {
       Api().delete(`/api/v1/users/logout`)
         .then(() => {
@@ -29,8 +45,25 @@ export default {
 <template>
 <div class="has-text-centered">
   <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand"></div>
-    <div id="navbar" class="navbar-menu" v-if="store.isAuthenticated">
+    <div class="navbar-brand">
+      <button
+        type="button"
+        class="navbar-burger"
+        :class="{ 'is-active': menuOpen }"
+        aria-label="menu"
+        :aria-expanded="menuOpen"
+        aria-controls="navbar"
+        v-if="store.isAuthenticated"
+        @click="menuOpen = !menuOpen">
+        <!-- four: bulma 1.x rotates the first two into the cross and hides
+             the other two -->
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+    <div id="navbar" class="navbar-menu" :class="{ 'is-active': menuOpen }" v-if="store.isAuthenticated">
       <div class="navbar-start">
         <router-link class="navbar-item" to="/home">Home</router-link>
         <router-link class="navbar-item" to="/discounts">Discounts</router-link>

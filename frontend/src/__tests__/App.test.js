@@ -48,6 +48,44 @@ describe('navigation', () => {
     expect(wrapper.text()).toContain('Discounts')
   })
 
+  it('gives touch viewports a burger to open the menu with', async () => {
+    // bulma hides .navbar-menu below 1024px unless it carries is-active, so
+    // without the burger there is no way to reach any page on a phone
+    store.setAuthenticated('user-1')
+    const { wrapper } = mountApp()
+    await wrapper.vm.$nextTick()
+
+    const burger = wrapper.find('.navbar-burger')
+    expect(burger.exists()).toBe(true)
+    expect(wrapper.find('#navbar').classes()).not.toContain('is-active')
+    expect(burger.attributes('aria-expanded')).toBe('false')
+
+    await burger.trigger('click')
+    expect(wrapper.find('#navbar').classes()).toContain('is-active')
+    expect(burger.classes()).toContain('is-active')
+    expect(burger.attributes('aria-expanded')).toBe('true')
+
+    await burger.trigger('click')
+    expect(wrapper.find('#navbar').classes()).not.toContain('is-active')
+  })
+
+  it('keeps the burger from anonymous visitors', () => {
+    const { wrapper } = mountApp()
+    expect(wrapper.find('.navbar-burger').exists()).toBe(false)
+  })
+
+  it('closes the open menu once a page has been navigated to', async () => {
+    store.setAuthenticated('user-1')
+    const { wrapper } = mountApp()
+    await wrapper.find('.navbar-burger').trigger('click')
+    expect(wrapper.find('#navbar').classes()).toContain('is-active')
+
+    // what the $route watcher calls
+    wrapper.vm.closeMenu()
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('#navbar').classes()).not.toContain('is-active')
+  })
+
   it('keeps the admin dropdown for admins only', async () => {
     store.setAuthenticated('user-1')
     const { wrapper } = mountApp()
