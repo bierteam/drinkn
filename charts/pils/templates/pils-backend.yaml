@@ -44,6 +44,11 @@ spec:
                 optional: false
           imagePullPolicy: Always
           name: pils-backend
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            periodSeconds: 5
           resources:
             requests:
               {{- toYaml .Values.resources.pilsBackend.requests | nindent 14 }}

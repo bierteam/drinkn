@@ -32,8 +32,24 @@ const writeLog = require('./services/writeLog')
 const sessionCookie = require('./services/sessionCookie')
 const csrf = require('./services/csrf')
 
-mongoose.connect(connectionString)
+const connectToDatabase = async () => {
+  for (;;) {
+    try {
+      await mongoose.connect(connectionString)
+      return mongoose.connection.getClient()
+    } catch (error) {
+      console.error('Database connection failed, retrying in 5 seconds:', error.message)
+      await new Promise(resolve => setTimeout(resolve, 5000))
+    }
+  }
+}
+
+const clientPromise = connectToDatabase()
 const db = mongoose.connection
+
+app.get('/healthz', function (req, res) {
+  res.sendStatus(db.readyState === 1 ? 200 : 503)
+})
 
 // https://github.com/bripkens/connect-history-api-fallback
 // https://router.vuejs.org/guide/essentials/history-mode.html
@@ -58,9 +74,7 @@ const options = {
   saveUninitialized: false,
   proxy: sessionCookie.production,
   cookie: sessionCookie.cookie,
-  store: MongoStore.create({
-    mongoUrl: connectionString
-  })
+  store: MongoStore.create({ clientPromise })
 }
 // ahead of the session middleware on purpose: static assets should not
 // allocate a session each, which would fill the store with empty records
@@ -73,35 +87,31 @@ app.use(session(options))
 // after the session, because the token lives in it
 app.use('/api', csrf.protect)
 
-db.on('error', console.error.bind(console, 'connection error:'))
-db.once('open', function () {
-  console.log('Succesfully connected to database')
-})
-
 // check for (and create) default account if enabled
-if (process.env.DEFAULT_USER && process.env.DEFAULT_PASS) {
+const createDefault = async () => {
   const defaultAccount = {
     username: process.env.DEFAULT_USER,
     password: process.env.DEFAULT_PASS,
     admin: true
   }
-  const username = defaultAccount.username
-  defaultAccount.admin = true
-  const createDefault = async () => {
-    try {
-      const result = await user.findOne({ username })
+  try {
+    const result = await user.findOne({ username: defaultAccount.username })
 
-      if (!result) {
-        await user.create(defaultAccount)
-        console.log('Default user account has been created')
-        writeLog('Default user account has been created', 'Info', 'Server')
-      }
-    } catch (err) {
-      console.error(err)
+    if (!result) {
+      await user.create(defaultAccount)
+      console.log('Default user account has been created')
+      writeLog('Default user account has been created', 'Info', 'Server')
     }
+  } catch (err) {
+    console.error(err)
   }
-  createDefault()
 }
+
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', function () {
+  console.log('Succesfully connected to database')
+  if (process.env.DEFAULT_USER && process.env.DEFAULT_PASS) createDefault()
+})
 
 const api = require('./api')
 app.use('/api', api)
