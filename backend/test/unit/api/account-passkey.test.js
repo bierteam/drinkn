@@ -56,7 +56,17 @@ describe('POST /account/passkey/options', () => {
     await request(app).post('/account/passkey/options').send({})
 
     expect(user.findOne).toHaveBeenCalledWith({ _id: 'user-1' })
-    expect(passkey.registrationOptions).toHaveBeenCalledWith(expect.anything(), storedAccount)
+    expect(passkey.registrationOptions).toHaveBeenCalledWith(expect.anything(), storedAccount, undefined)
+  })
+
+  it('passes on the kind of authenticator that was asked for', async () => {
+    passkey.registrationOptions.mockResolvedValue({ challenge: 'abc' })
+    const { app } = buildApp()
+
+    await request(app).post('/account/passkey/options').send({ attachment: 'cross-platform' })
+
+    // the service is what decides whether the value is one it accepts
+    expect(passkey.registrationOptions).toHaveBeenCalledWith(expect.anything(), storedAccount, 'cross-platform')
   })
 
   it('refuses when the session points at an account that is gone', async () => {

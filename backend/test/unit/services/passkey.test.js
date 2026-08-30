@@ -82,6 +82,32 @@ describe('registrationOptions', () => {
     expect(excludeCredentials[0].publicKey).toEqual(publicKeyBytes)
   })
 
+  it('asks for the kind of authenticator the caller named', async () => {
+    await passkey.registrationOptions(buildReq(), account, 'cross-platform')
+
+    expect(webauthn.generateRegistrationOptions).toHaveBeenCalledWith(
+      expect.objectContaining({
+        authenticatorSelection: expect.objectContaining({ authenticatorAttachment: 'cross-platform' })
+      })
+    )
+  })
+
+  it('leaves the kind out entirely when none was named', async () => {
+    await passkey.registrationOptions(buildReq(), account)
+
+    const { authenticatorSelection } = webauthn.generateRegistrationOptions.mock.calls[0][0]
+    // absent rather than undefined: an explicit undefined is still a key, and
+    // some authenticators read that as "no kind is acceptable"
+    expect('authenticatorAttachment' in authenticatorSelection).toBe(false)
+  })
+
+  it('ignores a kind it does not recognise rather than passing it on', async () => {
+    await passkey.registrationOptions(buildReq(), account, 'something-else')
+
+    const { authenticatorSelection } = webauthn.generateRegistrationOptions.mock.calls[0][0]
+    expect('authenticatorAttachment' in authenticatorSelection).toBe(false)
+  })
+
   it('falls back to the request host when nothing is configured', async () => {
     await passkey.registrationOptions(buildReq(), account)
 

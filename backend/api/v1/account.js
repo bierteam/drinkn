@@ -33,7 +33,7 @@ router.post('/passkey/options', rateLimit.auth, isAuthenticated, async function 
 
     if (!account) return res.status(401).send('Thou shall not pass!')
 
-    const options = await passkey.registrationOptions(req, account)
+    const options = await passkey.registrationOptions(req, account, req.body.attachment)
     writeLog(`${req.session.username}: ${req.session.userId} started passkey registration`, 'Info', context, req.realIp)
     res.json(options)
   } catch (err) {

@@ -34,7 +34,15 @@ const fromStored = stored => ({
   transports: stored.transports
 })
 
-const registrationOptions = async (req, account) => {
+// 'platform' is the fingerprint or face on this device, 'cross-platform' a
+// key you plug in. Naming one keeps the browser from offering the other, and
+// keeps a password manager from claiming a ceremony meant for a security key
+// -- which it answers with a bare NotAllowedError, telling you nothing.
+const ATTACHMENTS = ['platform', 'cross-platform']
+
+const attachmentOf = value => ATTACHMENTS.includes(value) ? value : undefined
+
+const registrationOptions = async (req, account, attachment) => {
   const options = await generateRegistrationOptions({
     rpName: RP_NAME,
     rpID: rpID(req),
@@ -46,7 +54,10 @@ const registrationOptions = async (req, account) => {
     authenticatorSelection: {
       // discoverable, so signing in needs no username first
       residentKey: 'required',
-      userVerification: 'preferred'
+      userVerification: 'preferred',
+      // left out entirely when unset: an explicit undefined is still a key,
+      // and some authenticators read it as "no kind is acceptable"
+      ...(attachmentOf(attachment) && { authenticatorAttachment: attachmentOf(attachment) })
     }
   })
 

@@ -68,17 +68,20 @@ export default {
           console.error(e)
         })
     },
-    async AddPasskey () {
+    // attachment picks which kind of authenticator the browser offers:
+    // 'platform' is this device, 'cross-platform' a key you plug in
+    async AddPasskey (attachment) {
       this.error = ''
       this.message = ''
       this.debug = null
       this.state.passkeyBusy = true
+      const isKey = attachment === 'cross-platform'
       try {
-        const options = await Api().post(`/api/v1/account/passkey/options`, {})
+        const options = await Api().post(`/api/v1/account/passkey/options`, { attachment })
         const response = await startRegistration({ optionsJSON: options.data })
         const saved = await Api().post(`/api/v1/account/passkey`, {
           response,
-          name: this.passkeyName || 'Passkey'
+          name: this.passkeyName || (isKey ? 'Security key' : 'Passkey')
         })
         this.user = saved.data
         this.passkeyName = ''
@@ -97,10 +100,11 @@ export default {
         if (detail.name === 'InvalidStateError') {
           this.error = 'That authenticator already holds a passkey for this account. Use a different key.'
         } else if (detail.name === 'NotAllowedError') {
-          // Not necessarily a refusal: the same error covers a timeout, and
-          // some managers raise it when they stop handling the ceremony rather
-          // than passing it to the browser.
-          this.error = `No passkey was created (${passkeyError.tag(detail)}). If you meant to use a security key, start again and pick it from the browser's own prompt rather than the password manager.`
+          // The browser will not say which of these it was, so name the ones
+          // worth checking rather than guessing at one.
+          this.error = isKey
+            ? `The security key was not accepted (${passkeyError.tag(detail)}). Signing in without a username needs a discoverable credential, so the key must have a FIDO2 PIN set and a free slot for one.`
+            : `No passkey was created (${passkeyError.tag(detail)}). The prompt may have timed out or been dismissed. To enrol a key you plug in, use "Add security key" instead.`
         } else {
           this.error = `${e.response?.data || detail.message || e} (${passkeyError.tag(detail)})`
         }
@@ -253,9 +257,16 @@ export default {
               <input id="account-passkey-name" class="input" v-model="passkeyName" type="text" name="passkey-name" placeholder="Name this device (optional)">
             </div>
             <div class="control">
-              <button class="button is-info" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click='AddPasskey'>Add passkey</button>
+              <button class="button is-info" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click="AddPasskey('platform')">Add passkey</button>
+            </div>
+            <div class="control">
+              <button class="button is-info is-light" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click="AddPasskey('cross-platform')">Add security key</button>
             </div>
           </div>
+          <p class="help has-text-grey">
+            &ldquo;Add passkey&rdquo; uses this device&rsquo;s fingerprint or face. &ldquo;Add security key&rdquo; goes
+            straight to a key you plug in, so a password manager cannot take the prompt over.
+          </p>
         </div>
       </div>
     </div>

@@ -158,7 +158,7 @@ describe('Passkeys', () => {
     wrapper.vm.passkeyName = 'Laptop'
     await wrapper.vm.AddPasskey()
 
-    expect(post).toHaveBeenNthCalledWith(1, '/api/v1/account/passkey/options', {})
+    expect(post).toHaveBeenNthCalledWith(1, '/api/v1/account/passkey/options', { attachment: undefined })
     expect(startRegistration).toHaveBeenCalledWith({ optionsJSON: { challenge: 'abc' } })
     expect(post).toHaveBeenNthCalledWith(2, '/api/v1/account/passkey', {
       response: { id: 'cred-1' },
@@ -192,6 +192,35 @@ describe('Passkeys', () => {
 
     expect(wrapper.vm.error).toContain('No passkey was created')
     expect(wrapper.vm.error).toContain('NotAllowedError')
+  })
+
+  it('asks the browser for a plug-in key when one was requested', async () => {
+    // without this the password manager claims the prompt, and answers a
+    // ceremony meant for a security key with a bare NotAllowedError
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    startRegistration.mockResolvedValue({ id: 'cred-1' })
+    post.mockResolvedValueOnce(account([]))
+    await wrapper.vm.AddPasskey('cross-platform')
+
+    expect(post).toHaveBeenNthCalledWith(1, '/api/v1/account/passkey/options', { attachment: 'cross-platform' })
+    expect(post).toHaveBeenLastCalledWith('/api/v1/account/passkey', expect.objectContaining({ name: 'Security key' }))
+  })
+
+  it('points at the pin rather than the password manager when a key is refused', async () => {
+    const wrapper = mountAccount()
+    await flushPromises()
+
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const refused = new Error('refused')
+    refused.name = 'NotAllowedError'
+    startRegistration.mockRejectedValue(refused)
+    await wrapper.vm.AddPasskey('cross-platform')
+
+    expect(wrapper.vm.error).toContain('security key was not accepted')
+    expect(wrapper.vm.error).toContain('FIDO2 PIN')
   })
 
   it('says nothing when a password manager hands the ceremony over', async () => {
