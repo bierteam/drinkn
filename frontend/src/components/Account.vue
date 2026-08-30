@@ -67,19 +67,18 @@ export default {
           console.error(e)
         })
     },
-    // attachment picks which kind of authenticator the browser offers:
-    // 'platform' is this device, 'cross-platform' a key you plug in
-    async AddPasskey (attachment) {
+    // asks for this device's own authenticator, so the browser offers the
+    // fingerprint or face rather than a key you plug in
+    async AddPasskey () {
       this.error = ''
       this.message = ''
       this.state.passkeyBusy = true
-      const isKey = attachment === 'cross-platform'
       try {
-        const options = await Api().post(`/api/v1/account/passkey/options`, { attachment })
+        const options = await Api().post(`/api/v1/account/passkey/options`, { attachment: 'platform' })
         const response = await startRegistration({ optionsJSON: options.data })
         const saved = await Api().post(`/api/v1/account/passkey`, {
           response,
-          name: this.passkeyName || (isKey ? 'Security key' : 'Passkey')
+          name: this.passkeyName || 'Passkey'
         })
         this.user = saved.data
         this.passkeyName = ''
@@ -98,9 +97,7 @@ export default {
           // that actually happens: Bitwarden replaces navigator.credentials
           // whatever the request asks for, cannot finish, and hands back this
           // error -- bitwarden/clients#18117.
-          this.error = isKey
-            ? 'The security key was not accepted. If a password manager extension handles passkeys for you, turn that off first -- Bitwarden does by default, under Settings, Notifications. Otherwise the key needs a PIN and a free slot.'
-            : 'No passkey was created. A password manager extension may have taken the prompt over; Bitwarden does by default, under Settings, Notifications.'
+          this.error = 'No passkey was created. A password manager extension may have taken the prompt over; Bitwarden does by default, under Settings, Notifications.'
         } else {
           this.error = e.response?.data || detail.message || e
         }
@@ -220,7 +217,6 @@ export default {
         </div>
         <div class="box">
           <h3 class="title has-text-grey">Passkeys</h3>
-          <p class="subtitle has-text-grey is-6">Sign in with your fingerprint, face or security key instead of a password.</p>
           <div v-if="!passkeySupported" class="notification is-warning">
             This browser does not support passkeys.
           </div>
@@ -251,12 +247,8 @@ export default {
               </div>
             </div>
             <div class="buttons">
-              <button class="button is-info" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click="AddPasskey('platform')">Add passkey</button>
-              <button class="button is-info is-light" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click="AddPasskey('cross-platform')">Add security key</button>
+              <button class="button is-info" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click="AddPasskey()">Add passkey</button>
             </div>
-            <p class="help has-text-grey">
-              A passkey is this device&rsquo;s fingerprint or face. A security key is one you plug in or tap.
-            </p>
           </div>
         </div>
       </div>
