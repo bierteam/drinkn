@@ -19,6 +19,10 @@ module.exports = {
   collectCoverageFrom: [
     '**/*.js',
     '!**/test/**',
-    '!**/node_modules/**'
+    '!**/node_modules/**',
+    // a local CLI entrypoint: DB, network and argv glue, like server.js. Its
+    // parsing logic lives in scripts/lidlVolume.js and is tested; the runner
+    // itself is exercised by hand against a real store dump.
+    '!scripts/lidl-selfscan.js'
   ]
 }

@@ -14,6 +14,9 @@ COPY setup.js ./
 COPY server.js ./
 
 FROM base AS test
+# scripts/ holds local utilities that are not part of the container job, so
+# they are copied into the test stage only -- for their tests -- never the image
+COPY scripts ./scripts
 COPY test ./test
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm run test
