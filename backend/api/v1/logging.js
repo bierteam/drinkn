@@ -22,7 +22,7 @@ router.get('/', isAdmin, async function (req, res) {
 
 router.delete('/', isAdmin, async function (req, res) {
   try {
-    await logging.remove({}).exec()
+    await logging.deleteMany({}).exec()
     res.status(200).send('Logs successfully deleted')
     writeLog(`${req.session.username}: ${req.session.userId} deleted the logs.`, 'Warning', context, req.realIp)
   } catch (err) {
