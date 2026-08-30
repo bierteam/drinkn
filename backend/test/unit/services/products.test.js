@@ -96,17 +96,39 @@ describe('products', () => {
     expect(filter.$or).toBeUndefined()
   })
 
-  it('escapes a search term so it cannot be injected as a regex', async () => {
+  it('rejects a search term carrying regex metacharacters outright', async () => {
     const { service, product } = load()
     stubFind(product)
 
     await service.products({ search: 'a.*(b' })
 
+    // no clause at all rather than a clause built from it
     const [filter] = product.find.mock.calls[0]
-    const pattern = filter.$and[0].$or[0].brand
-    expect(pattern.test('a.*(b')).toBe(true)
-    // an unescaped '.*' would match this too
-    expect(pattern.test('axxxb')).toBe(false)
+    expect(filter.$and).toBeUndefined()
+  })
+
+  it('escapes the punctuation a real beer name does contain', async () => {
+    const { service, product } = load()
+    stubFind(product)
+
+    // "Hertog Jan 0.0" is a real product, so dots have to survive validation --
+    // and then be matched literally rather than as "any character"
+    await service.products({ search: 'Hertog Jan 0.0' })
+
+    const [filter] = product.find.mock.calls[0]
+    const pattern = new RegExp(filter.$and[0].$or[0].brand.$regex, 'i')
+    expect(pattern.test('Hertog Jan 0.0')).toBe(true)
+    expect(pattern.test('Hertog Jan 000')).toBe(false)
+  })
+
+  it('bounds how long a search term can be', async () => {
+    const { service, product } = load()
+    stubFind(product)
+
+    await service.products({ search: 'a'.repeat(5000) })
+
+    const [filter] = product.find.mock.calls[0]
+    expect(filter.$and[0].$or[0].brand.$regex.length).toBeLessThanOrEqual(60)
   })
 
   it('only sorts on fields it knows about', async () => {

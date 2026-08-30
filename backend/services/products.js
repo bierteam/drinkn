@@ -25,7 +25,21 @@ const DEFAULT_LIMIT = 60
 // changed once between Express 4 and 5 though, and one `app.set('query parser',
 // 'extended')` anywhere would turn every one of these into a Mongo operator the
 // caller controls. Not worth leaving to a default.
-const asString = value => (typeof value === 'string' ? value : undefined)
+// Accepts a value only if it is a string of a plausible shape and length, and
+// returns a rebuilt copy rather than the caller's own value. Anything else --
+// an object, an array, something absurdly long -- becomes undefined and the
+// filter simply leaves that clause out.
+const MAX_TERM = 60
+const SAFE_TEXT = /^[\p{L}\p{N} '&.,()+/-]{1,60}$/u
+
+const asSafeText = value => {
+  if (typeof value !== 'string') return undefined
+  const trimmed = value.trim().slice(0, MAX_TERM)
+  if (!trimmed || !SAFE_TEXT.test(trimmed)) return undefined
+  // rebuilt character by character: the value that reaches the query is
+  // constructed here, not the one that arrived on the request
+  return Array.from(trimmed).join('')
+}
 
 const clampInt = (value, fallback, min, max) => {
   const number = Number.parseInt(value, 10)
@@ -36,8 +50,10 @@ const clampInt = (value, fallback, min, max) => {
 const buildFilter = ({ search, store, onlyDiscounted, alcoholic }) => {
   const filter = {}
 
-  const storeName = asString(store)
-  if (storeName) filter.store = storeName
+  const storeName = asSafeText(store)
+  // an explicit $eq, so a value is compared as a value even if one ever
+  // arrives shaped like an operator document
+  if (storeName) filter.store = { $eq: storeName }
 
   if (onlyDiscounted) {
     filter.isDiscounted = true
@@ -55,13 +71,18 @@ const buildFilter = ({ search, store, onlyDiscounted, alcoholic }) => {
   if (alcoholic === false) filter.alcoholPercentage = { $lt: 0.5 }
   if (alcoholic === true) filter.alcoholPercentage = { $gte: 0.5 }
 
-  const term = asString(search)
+  const term = asSafeText(search)
   if (term) {
     // escaped: the value comes straight off the query string, and an unescaped
     // regex there is both a correctness bug and a cheap way to pin the CPU
     const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const pattern = new RegExp(escaped, 'i')
-    filter.$and = [{ $or: [{ brand: pattern }, { title: pattern }, { volume: pattern }] }]
+    filter.$and = [{
+      $or: [
+        { brand: { $regex: escaped, $options: 'i' } },
+        { title: { $regex: escaped, $options: 'i' } },
+        { volume: { $regex: escaped, $options: 'i' } }
+      ]
+    }]
   }
 
   return filter
@@ -82,7 +103,7 @@ const products = async (query = {}) => {
   const page = clampInt(query.page, 0, 0, 10000)
   const limit = clampInt(query.limit, DEFAULT_LIMIT, 1, MAX_LIMIT)
   const direction = query.dir === 'desc' ? -1 : 1
-  const sortField = SORTABLE[asString(query.sort)] ?? SORTABLE.literPrice
+  const sortField = SORTABLE[asSafeText(query.sort)] ?? SORTABLE.literPrice
 
   // products with no published volume have no litre price, and null sorts
   // before every number in Mongo. They would otherwise fill the first page of
