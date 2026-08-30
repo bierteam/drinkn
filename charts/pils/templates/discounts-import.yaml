@@ -7,6 +7,10 @@ metadata:
 spec:
   jobTemplate:
     spec:
+      # A JobSpec field, not a CronJobSpec one. Has to clear the jitter window
+      # before the job has done any work at all, hence 90 minutes rather than
+      # something tighter.
+      activeDeadlineSeconds: 5400
       template:
         spec:
           restartPolicy: Never
@@ -30,7 +34,24 @@ spec:
                 capabilities:
                   drop:
                     - "ALL"
-  schedule: 0 9,22 * * *
+              # Without these the pod is BestEffort, and it spends the first
+              # part of its life asleep -- see the jitter in server.js. That is
+              # exactly when the kubelet reaches for BestEffort pods under node
+              # pressure, so an eviction lands before any work is done and the
+              # import silently does not happen. Requests only, no memory limit,
+              # for the same reason as the other pods here.
+              resources:
+                requests:
+                  {{- toYaml .Values.resources.discountsImport.requests | nindent 18 }}
+  # Once, in the evening. biernet aggregates weekly supermarket folders and AH's
+  # shelf prices move slowly, so a second daily run collected almost nothing.
+  # The run does not start on the hour: server.js sleeps a random 0-60 minutes
+  # first, so the actual request time moves every day.
+  schedule: 0 22 * * *
+  # Belt and braces: at this cadence a run cannot overlap the next slot, but a
+  # future schedule change should not be able to quietly produce two importers
+  # writing at once.
+  concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 3
 {{- end }}
