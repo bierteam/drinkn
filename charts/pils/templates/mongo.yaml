@@ -70,11 +70,16 @@ metadata:
 data:
   import.sh: |
     #!/bin/bash
-    mongoimport --host localhost --db $MONGODB_DATABASE --collection beers --file /docker-entrypoint-initdb.d/beers.json --jsonArray
-    mongoimport --host localhost --db $MONGODB_DATABASE --collection stores --file /docker-entrypoint-initdb.d/stores.json --jsonArray
-    # the new collection: 72 real Albert Heijn records and the 60 legacy
+    # --drop on each collection, so this is idempotent. The init script re-runs
+    # whenever a previous attempt failed to complete, and without it the second
+    # attempt buries the real error under sixty duplicate-key warnings for rows
+    # the first attempt already wrote.
+    set -e
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection beers --drop --file /docker-entrypoint-initdb.d/beers.json --jsonArray
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection stores --drop --file /docker-entrypoint-initdb.d/stores.json --jsonArray
+    # the new collection: 69 real Albert Heijn records and the 60 legacy
     # biernet rows put through migrations/001, so a preview shows both sources
-    mongoimport --host localhost --db $MONGODB_DATABASE --collection products --file /docker-entrypoint-initdb.d/products.json --jsonArray
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection products --drop --file /docker-entrypoint-initdb.d/products.json --jsonArray
   stores.json: |
     [{
       "_id": {
@@ -1855,19 +1860,6 @@ data:
       "liter": 1980,
       "__v": 0
     }]
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb
-spec:
-  selector:
-    app: mongodb
-  ports:
-    - protocol: TCP
-      port: 27017
-      targetPort: 27017
-{{- end }}
   products.json: |
     [
       {
@@ -6553,3 +6545,16 @@ spec:
         }
       }
     ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+{{- end }}
