@@ -140,10 +140,12 @@ const run = async () => {
     if (n) beers.push(n)
   }
 
+  // counts off the locally-built `beers` array only. The log deliberately does
+  // not reference `raw` (the fetched response) or any product name: those are
+  // remote data, and a log line is not where they belong.
+  const total = beers.length
   const withLitre = beers.filter(b => b.price.literPrice != null).length
-  // only counts go to the console -- no product name, which is fetched data and
-  // has no business in a log line
-  console.log(`Lidl ${storeId}: ${raw.length} master rows -> ${beers.length} beer products (${withLitre} with a litre price)`)
+  console.log(`Lidl ${storeId}: matched ${total} beer products (${withLitre} with a litre price)`)
 
   if (!write) {
     // the names and prices go to a file you can open, rather than a truncated
