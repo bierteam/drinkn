@@ -1,3 +1,8 @@
+// uuid v14 is esm-only, and jest can't require() it on the node the test image
+// runs. the model wants it for the _id default, which nothing here asserts on,
+// so a factory mock keeps the real module from ever loading.
+jest.mock('uuid', () => ({ v4: () => '00000000-0000-4000-8000-000000000000' }))
+
 // the api tests all jest.mock the user model, so the real schema — and its
 // middleware — was never loaded by the suite. these load it for real.
 const bcrypt = require('bcryptjs')
