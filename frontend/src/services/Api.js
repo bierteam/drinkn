@@ -6,7 +6,7 @@ import { Router } from '../router'
 // which left nowhere to hang shared behaviour like the handler below
 const client = axios.create({})
 
-const SAFE_METHODS = ['get', 'head', 'options']
+const SAFE_METHODS = new Set(['get', 'head', 'options'])
 
 // Fetched once and reused. The token is tied to the session rather than to a
 // single form, so it stays valid until the session ends.
@@ -26,7 +26,7 @@ const fetchToken = () => {
 }
 
 client.interceptors.request.use(async config => {
-  if (SAFE_METHODS.includes((config.method || 'get').toLowerCase())) return config
+  if (SAFE_METHODS.has((config.method || 'get').toLowerCase())) return config
 
   config.headers['X-CSRF-Token'] = csrfToken || await fetchToken()
   return config
@@ -54,7 +54,7 @@ client.interceptors.response.use(
         Router.push({ path: '/login', query: { redirect: current.fullPath } })
       }
     }
-    return Promise.reject(error)
+    throw error
   }
 )
 
