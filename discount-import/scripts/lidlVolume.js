@@ -6,7 +6,9 @@ const { parseVolume } = require('../services/units')
 // "0,5l"). Neither is reliable on its own, so this combines them.
 const packFromDeposit = depositName => {
   if (!depositName) return null
-  const pk = String(depositName).match(/(\d+)\s*-?\s*pk/i)
+  // [\s-]* rather than \s*-?\s*: the two adjacent optional-space groups around
+  // an optional dash are what makes the match backtrack
+  const pk = /(\d+)[\s-]*pk/i.exec(depositName)
   if (pk) return Number(pk[1])
   if (/\blos\b|losse/i.test(depositName)) return 1
   return null
@@ -19,8 +21,8 @@ const parseLidlVolume = (name, deposit) => {
 
   // otherwise take a single-unit size from the name and a pack count from the
   // deposit label
-  const pack = packFromDeposit(deposit && deposit.name)
-  const single = parseVolume(name.replace(/\d+\s*x/i, ''))
+  const pack = packFromDeposit(deposit?.name)
+  const single = parseVolume(name.replace(/\d+ ?x/i, ''))
   if (pack && single.unitMl) {
     return { packCount: pack, unitMl: single.unitMl, totalMl: pack * single.unitMl }
   }

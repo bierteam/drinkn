@@ -51,7 +51,7 @@ const write = has('--write')
 // with no category field.
 const BEER = /\b(pils|bier|radler|weizen|bok|ipa|tripel|blond|witbier|speciaal|lager|stout|ale|bock)\b|heineken|grolsch|hertog jan|amstel|bavaria|jupiler|desperados|corona|kordaat|perlenbacher|gerardus|leffe|paulaner|tsingtao|warsteiner|affligem|hoegaarden|duvel|brand /i
 
-const isBeer = p => Boolean(p.restrictions && p.restrictions.age === 18) && BEER.test(p.name || '')
+const isBeer = p => p.restrictions?.age === 18 && BEER.test(p.name || '')
 
 // One id appears as several rows -- one per barcode variant -- and the fields
 // are scattered across them: the real EAN is on one row, the deposit and age
@@ -78,7 +78,7 @@ const normalise = (raw, store) => {
 
   const current = Math.round(price * 100)
   const volume = parseLidlVolume(raw.name, raw.deposit)
-  const alc = String(raw.name).match(ALCOHOL)
+  const alc = ALCOHOL.exec(String(raw.name))
 
   return {
     source: 'lidl-selfscan',
@@ -132,7 +132,11 @@ const run = async () => {
   const withLitre = beers.filter(b => b.price.literPrice != null).length
   console.log(`Lidl ${store}: ${raw.length} master rows -> ${beers.length} beer products (${withLitre} with a litre price)`)
   for (const b of beers.slice(0, 12)) {
-    console.log(`  ${b.brand.slice(0, 30).padEnd(30)} EUR${(b.price.current / 100).toFixed(2).padStart(6)}  ${b.totalMl ? b.totalMl + 'ml' : ''}`)
+    // the name comes from the fetched master, so strip anything that is not a
+    // printable character before it reaches the console -- a crafted name could
+    // otherwise forge log lines with embedded newlines
+    const name = b.brand.replace(/[^\p{L}\p{N} .,%&/+-]/gu, '').slice(0, 30).padEnd(30)
+    console.log(`  ${name} EUR${(b.price.current / 100).toFixed(2).padStart(6)}  ${b.totalMl ? b.totalMl + 'ml' : ''}`)
   }
 
   if (!write) {
