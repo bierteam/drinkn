@@ -136,11 +136,12 @@ const run = async () => {
   const withLitre = beers.filter(b => b.price.literPrice != null).length
   console.log(`Lidl ${store}: ${raw.length} master rows -> ${beers.length} beer products (${withLitre} with a litre price)`)
   for (const b of beers.slice(0, 12)) {
-    // the name comes from the fetched master, so strip anything that is not a
-    // printable character before it reaches the console -- a crafted name could
-    // otherwise forge log lines with embedded newlines
-    const name = b.brand.replace(/[^\p{L}\p{N} .,%&/+-]/gu, '').slice(0, 30).padEnd(30)
-    console.log(`  ${name} EUR${(b.price.current / 100).toFixed(2).padStart(6)}  ${b.totalMl ? b.totalMl + 'ml' : ''}`)
+    // the name comes from the fetched master, so it is JSON-encoded before it
+    // reaches the console: that escapes any embedded newline or control
+    // character into a literal, so a crafted name cannot forge log lines
+    const name = JSON.stringify(b.brand.slice(0, 30)).padEnd(32)
+    const litre = b.totalMl ? `${b.totalMl}ml` : ''
+    console.log(`  ${name} EUR${(b.price.current / 100).toFixed(2).padStart(6)}  ${litre}`)
   }
 
   if (!write) {
