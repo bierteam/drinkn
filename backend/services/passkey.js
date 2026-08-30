@@ -38,9 +38,9 @@ const fromStored = stored => ({
 // key you plug in. Naming one keeps the browser from offering the other, and
 // keeps a password manager from claiming a ceremony meant for a security key
 // -- which it answers with a bare NotAllowedError, telling you nothing.
-const ATTACHMENTS = ['platform', 'cross-platform']
+const ATTACHMENTS = new Set(['platform', 'cross-platform'])
 
-const attachmentOf = value => ATTACHMENTS.includes(value) ? value : undefined
+const attachmentOf = value => ATTACHMENTS.has(value) ? value : undefined
 
 const registrationOptions = async (req, account, attachment) => {
   const options = await generateRegistrationOptions({
