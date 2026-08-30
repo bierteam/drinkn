@@ -4,20 +4,12 @@ const processData = require('./processData')
 const beer = require('../models/beer')
 const writeLog = require('./writeLog')
 const context = 'Import'
-const mongoose = require('mongoose')
 
-const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
-
+// The startup jitter and the connection close moved to server.js: two
+// pipelines now share one process, so neither can own the delay before all work
+// starts or the teardown after all work ends.
 const dbImport = async () => {
   try {
-    if (process.env.SKIP_DELAY) {
-      writeLog('Skipping delay as SKIP_DELAY is set.', 'Info', context)
-    } else {
-      const ms = Math.round(Math.random() * 60) * 1000 * 60
-      writeLog(`Cron: running import in: ${ms / 60000} minutes.`, 'Info', context)
-      await timeout(ms)
-    }
-
     let stores
     const data = await getData()
     const result = await store.findOne({}, { _id: false }).exec()
@@ -37,9 +29,6 @@ const dbImport = async () => {
         await beer.create(obj)
       }
     }
-
-    await timeout(10000)
-    mongoose.connection.close()
   } catch (err) {
     writeLog(err, 'Error', context)
   }
