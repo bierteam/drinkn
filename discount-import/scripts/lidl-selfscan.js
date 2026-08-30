@@ -134,18 +134,18 @@ const run = async () => {
   }
 
   const withLitre = beers.filter(b => b.price.literPrice != null).length
-  console.log(`Lidl ${store}: ${raw.length} master rows -> ${beers.length} beer products (${withLitre} with a litre price)`)
-  for (const b of beers.slice(0, 12)) {
-    // the name comes from the fetched master, so it is JSON-encoded before it
-    // reaches the console: that escapes any embedded newline or control
-    // character into a literal, so a crafted name cannot forge log lines
-    const name = JSON.stringify(b.brand.slice(0, 30)).padEnd(32)
-    const litre = b.totalMl ? `${b.totalMl}ml` : ''
-    console.log(`  ${name} EUR${(b.price.current / 100).toFixed(2).padStart(6)}  ${litre}`)
-  }
+  // only counts go to the console -- no product name, which is fetched data and
+  // has no business in a log line
+  console.log(`Lidl ${storeId}: ${raw.length} master rows -> ${beers.length} beer products (${withLitre} with a litre price)`)
 
   if (!write) {
-    console.log('\nDry run. Re-run with --write to upsert into the products collection.')
+    // the names and prices go to a file you can open, rather than a truncated
+    // console preview: a dry run should let you inspect everything it would
+    // write, and a file is not a log-injection sink the way a console line is
+    const out = 'lidl-selfscan-preview.json'
+    fs.writeFileSync(out, JSON.stringify(beers, null, 2))
+    console.log(`\nDry run. Wrote ${beers.length} products to ${out} for inspection.`)
+    console.log('Re-run with --write to upsert them into the products collection.')
     return
   }
 
