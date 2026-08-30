@@ -3,6 +3,7 @@ require('./setup')
 const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`
 
 const mongoose = require('mongoose')
+const { randomInt } = require('node:crypto')
 
 mongoose.connect(connectionString)
 const db = mongoose.connection
@@ -22,7 +23,10 @@ const run = async () => {
   if (process.env.SKIP_DELAY) {
     writeLog('Skipping delay as SKIP_DELAY is set.', 'Info', context)
   } else {
-    const ms = Math.round(Math.random() * 60) * 1000 * 60
+    // randomInt rather than Math.random: nothing here is security-sensitive,
+    // it is only scheduling jitter, but a CSPRNG costs nothing once a run and
+    // saves the reader deciding whether it mattered
+    const ms = randomInt(0, 61) * 1000 * 60
     writeLog(`Cron: running import in: ${ms / 60000} minutes.`, 'Info', context)
     await timeout(ms)
   }

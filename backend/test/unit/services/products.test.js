@@ -139,6 +139,36 @@ describe('products', () => {
     expect(result.total).toBe(2)
     expect(result.totalPages).toBe(2)
   })
+  it('ignores a store filter that is not a plain string', async () => {
+    const { service, product } = load()
+    stubFind(product)
+
+    // `?store[$ne]=x` under an extended query parser arrives as an object, and
+    // assigning it straight onto the filter hands the caller a Mongo operator
+    await service.products({ store: { $ne: 'nothing' } })
+
+    const [filter] = product.find.mock.calls[0]
+    expect(filter.store).toBeUndefined()
+  })
+
+  it('ignores a search term that is not a plain string', async () => {
+    const { service, product } = load()
+    stubFind(product)
+
+    await service.products({ search: { $gt: '' } })
+
+    const [filter] = product.find.mock.calls[0]
+    expect(filter.$and).toBeUndefined()
+  })
+
+  it('ignores a sort field that is not a plain string', async () => {
+    const { service, product } = load()
+    const query = stubFind(product)
+
+    await service.products({ sort: { $where: '1' } })
+
+    expect(query.sort).toHaveBeenCalledWith({ 'price.literPrice': 1, _id: 1 })
+  })
 })
 
 describe('facets', () => {

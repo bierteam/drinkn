@@ -16,6 +16,17 @@ const SORTABLE = {
 const MAX_LIMIT = 200
 const DEFAULT_LIMIT = 60
 
+// Everything below arrives from the query string, so it is coerced to a
+// primitive before it goes anywhere near a filter.
+//
+// Express 5 defaults its query parser to 'simple', which returns undefined for
+// `?store[$ne]=x` rather than a nested object -- so operator injection is not
+// possible as the app stands today. That is a framework default that already
+// changed once between Express 4 and 5 though, and one `app.set('query parser',
+// 'extended')` anywhere would turn every one of these into a Mongo operator the
+// caller controls. Not worth leaving to a default.
+const asString = value => (typeof value === 'string' ? value : undefined)
+
 const clampInt = (value, fallback, min, max) => {
   const number = Number.parseInt(value, 10)
   if (!Number.isFinite(number)) return fallback
@@ -25,7 +36,8 @@ const clampInt = (value, fallback, min, max) => {
 const buildFilter = ({ search, store, onlyDiscounted, alcoholic }) => {
   const filter = {}
 
-  if (store) filter.store = store
+  const storeName = asString(store)
+  if (storeName) filter.store = storeName
 
   if (onlyDiscounted) {
     filter.isDiscounted = true
@@ -43,10 +55,11 @@ const buildFilter = ({ search, store, onlyDiscounted, alcoholic }) => {
   if (alcoholic === false) filter.alcoholPercentage = { $lt: 0.5 }
   if (alcoholic === true) filter.alcoholPercentage = { $gte: 0.5 }
 
-  if (search) {
+  const term = asString(search)
+  if (term) {
     // escaped: the value comes straight off the query string, and an unescaped
     // regex there is both a correctness bug and a cheap way to pin the CPU
-    const escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     const pattern = new RegExp(escaped, 'i')
     filter.$and = [{ $or: [{ brand: pattern }, { title: pattern }, { volume: pattern }] }]
   }
@@ -61,13 +74,15 @@ const buildFilter = ({ search, store, onlyDiscounted, alcoholic }) => {
 const products = async (query = {}) => {
   const onlyDiscounted = query.onlyDiscounted === 'true'
   const alcoholic = query.alcoholic === undefined ? undefined : query.alcoholic === 'true'
+  // a sort field is only ever one of the keys of SORTABLE, never the caller's
+  // string, so the sort document cannot be shaped from the query either
 
   const filter = buildFilter({ search: query.search, store: query.store, onlyDiscounted, alcoholic })
 
   const page = clampInt(query.page, 0, 0, 10000)
   const limit = clampInt(query.limit, DEFAULT_LIMIT, 1, MAX_LIMIT)
   const direction = query.dir === 'desc' ? -1 : 1
-  const sortField = SORTABLE[query.sort] ?? SORTABLE.literPrice
+  const sortField = SORTABLE[asString(query.sort)] ?? SORTABLE.literPrice
 
   // products with no published volume have no litre price, and null sorts
   // before every number in Mongo. They would otherwise fill the first page of
