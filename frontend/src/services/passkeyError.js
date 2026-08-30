@@ -10,13 +10,8 @@ export const describe = error => ({
   causeMessage: error?.cause?.message
 })
 
-// Short enough to put in front of someone, specific enough to act on. Password
-// managers differ in which of these they raise when handing a ceremony over,
-// so the tag is what tells one case from another without a devtools session.
-export const tag = detail => [detail.code, detail.name, detail.causeName]
-  .filter(Boolean)
-  .join(' / ') || 'no error name'
-
+// The console keeps the whole shape; what reaches the screen is prose, since
+// none of these names mean anything to the person reading them.
 export const log = (stage, error) => {
   const detail = describe(error)
   console.error(`[passkey] ${stage}`, detail, error)

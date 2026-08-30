@@ -191,7 +191,7 @@ describe('Passkeys', () => {
     await wrapper.vm.AddPasskey()
 
     expect(wrapper.vm.error).toContain('No passkey was created')
-    expect(wrapper.vm.error).toContain('NotAllowedError')
+    expect(wrapper.vm.error).toContain('password manager extension')
   })
 
   it('asks the browser for a plug-in key when one was requested', async () => {
@@ -220,9 +220,9 @@ describe('Passkeys', () => {
     await wrapper.vm.AddPasskey('cross-platform')
 
     expect(wrapper.vm.error).toContain('security key was not accepted')
-    // the extension is the cause that actually happens; the pin is the fallback
+    // the extension is the cause that actually happens; the key is the fallback
     expect(wrapper.vm.error).toContain('password manager extension')
-    expect(wrapper.vm.error).toContain('FIDO2 PIN')
+    expect(wrapper.vm.error).toContain('PIN and a free slot')
   })
 
   it('says nothing when a password manager hands the ceremony over', async () => {

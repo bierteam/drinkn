@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { describe as shape, tag, log } from '../passkeyError'
+import { describe as shape, log } from '../passkeyError'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -32,21 +32,6 @@ describe('shape', () => {
       causeName: undefined,
       causeMessage: undefined
     })
-  })
-})
-
-describe('tag', () => {
-  it('joins what it has, most specific first', () => {
-    expect(tag({ code: 'ERROR_CEREMONY_ABORTED', name: 'AbortError', causeName: 'AbortError' }))
-      .toBe('ERROR_CEREMONY_ABORTED / AbortError / AbortError')
-  })
-
-  it('skips the parts that are missing', () => {
-    expect(tag({ name: 'NotAllowedError' })).toBe('NotAllowedError')
-  })
-
-  it('says so rather than rendering an empty string', () => {
-    expect(tag({})).toBe('no error name')
   })
 })
 

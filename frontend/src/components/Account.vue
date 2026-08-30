@@ -13,7 +13,6 @@ export default {
       verifyPassword: undefined,
       passkeyName: '',
       passkeySupported: browserSupportsWebAuthn(),
-      debug: null,
       error: '',
       message: '',
       state: {
@@ -73,7 +72,6 @@ export default {
     async AddPasskey (attachment) {
       this.error = ''
       this.message = ''
-      this.debug = null
       this.state.passkeyBusy = true
       const isKey = attachment === 'cross-platform'
       try {
@@ -87,30 +85,24 @@ export default {
         this.passkeyName = ''
         this.message = 'Passkey added.'
       } catch (e) {
-        // the full shape goes to the console; the short tag goes on screen, so
-        // a failure can be reported without opening devtools
         const detail = passkeyError.log('registration', e)
-        this.debug = detail
 
-        // A password manager that hands the ceremony over -- Bitwarden's "use
-        // hardware key", for one -- ends its own attempt to do it, which
-        // surfaces here as an abort.
+        // A password manager handing the ceremony over ends its own attempt at
+        // it, which arrives here as an abort. Nothing went wrong.
         if (detail.name === 'AbortError') return
 
         if (detail.name === 'InvalidStateError') {
-          this.error = 'That authenticator already holds a passkey for this account. Use a different key.'
+          this.error = 'That authenticator already holds a passkey for this account. Use a different one.'
         } else if (detail.name === 'NotAllowedError') {
           // The browser will not say which case this was, so lead with the one
           // that actually happens: Bitwarden replaces navigator.credentials
-          // whatever the request asks for, cannot finish the ceremony, and
-          // hands back this error. Naming the attachment does not stop it --
-          // see bitwarden/clients#18117.
-          const manager = 'A password manager extension probably took the prompt over. Bitwarden does this by default: turn off its Settings \u2192 Notifications \u2192 "Ask to save and use passkeys", then try again.'
+          // whatever the request asks for, cannot finish, and hands back this
+          // error -- bitwarden/clients#18117.
           this.error = isKey
-            ? `The security key was not accepted (${passkeyError.tag(detail)}). ${manager} If it still fails, the key needs a FIDO2 PIN and a free slot, because signing in without a username needs a discoverable credential.`
-            : `No passkey was created (${passkeyError.tag(detail)}). ${manager}`
+            ? 'The security key was not accepted. If a password manager extension handles passkeys for you, turn that off first -- Bitwarden does by default, under Settings, Notifications. Otherwise the key needs a PIN and a free slot.'
+            : 'No passkey was created. A password manager extension may have taken the prompt over; Bitwarden does by default, under Settings, Notifications.'
         } else {
-          this.error = `${e.response?.data || detail.message || e} (${passkeyError.tag(detail)})`
+          this.error = e.response?.data || detail.message || e
         }
       } finally {
         this.state.passkeyBusy = false
@@ -251,26 +243,21 @@ export default {
             </tbody>
           </table>
           <p v-else class="has-text-grey">No passkeys yet.</p>
-          <details v-if="debug" class="mb-3">
-            <summary class="has-text-grey is-size-7">Last passkey error</summary>
-            <pre class="is-size-7">{{JSON.stringify(debug, null, 2)}}</pre>
-          </details>
-          <div v-if="passkeySupported" class="field has-addons">
-            <div class="control is-expanded">
-              <label class="is-sr-only" for="account-passkey-name">Passkey name</label>
-              <input id="account-passkey-name" class="input" v-model="passkeyName" type="text" name="passkey-name" placeholder="Name this device (optional)">
+          <div v-if="passkeySupported">
+            <div class="field">
+              <div class="control">
+                <label class="is-sr-only" for="account-passkey-name">Passkey name</label>
+                <input id="account-passkey-name" class="input" v-model="passkeyName" type="text" name="passkey-name" placeholder="Name this device (optional)">
+              </div>
             </div>
-            <div class="control">
+            <div class="buttons">
               <button class="button is-info" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click="AddPasskey('platform')">Add passkey</button>
-            </div>
-            <div class="control">
               <button class="button is-info is-light" type="button" :class="{ 'is-loading': state.passkeyBusy }" @click="AddPasskey('cross-platform')">Add security key</button>
             </div>
+            <p class="help has-text-grey">
+              A passkey is this device&rsquo;s fingerprint or face. A security key is one you plug in or tap.
+            </p>
           </div>
-          <p class="help has-text-grey">
-            &ldquo;Add passkey&rdquo; uses this device&rsquo;s fingerprint or face. &ldquo;Add security key&rdquo; goes
-            straight to a key you plug in, so a password manager cannot take the prompt over.
-          </p>
         </div>
       </div>
     </div>

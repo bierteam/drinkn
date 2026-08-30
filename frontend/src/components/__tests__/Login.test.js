@@ -183,28 +183,31 @@ describe('Passkey', () => {
     await wrapper.vm.Passkey()
 
     expect(wrapper.vm.error).toContain('No passkey was offered')
-    // the tag is what makes a report actionable without a devtools session
-    expect(wrapper.vm.error).toContain('NotAllowedError')
+    expect(wrapper.vm.error).toContain('password manager')
     expect(push).not.toHaveBeenCalled()
   })
 
-  it('keeps the whole error shape for the details block', async () => {
+  it('writes the whole error shape to the console', async () => {
     post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
     const wrapped = new Error('the manager gave up')
     wrapped.name = 'NotAllowedError'
     wrapped.code = 'ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY'
     wrapped.cause = Object.assign(new Error('underlying'), { name: 'NotAllowedError' })
     startAuthentication.mockRejectedValue(wrapped)
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const { wrapper } = mountLogin()
     await wrapper.vm.Passkey()
 
-    expect(wrapper.vm.debug).toEqual({
+    // nothing of this reaches the screen any more, so the console is the only
+    // place a failure can still be taken apart
+    expect(spy).toHaveBeenCalledWith('[passkey] authentication', {
       name: 'NotAllowedError',
       code: 'ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY',
       message: 'the manager gave up',
       causeName: 'NotAllowedError',
       causeMessage: 'underlying'
-    })
+    }, wrapped)
+    spy.mockRestore()
   })
 
   it('surfaces a server refusal', async () => {
@@ -290,14 +293,17 @@ describe('a password manager handing the ceremony over', () => {
     expect(wrapper.vm.passkeyBusy).toBe(false)
   })
 
-  it('still records the abort, so it is visible if it was not a handoff', async () => {
+  it('still logs the abort, so it is visible if it was not a handoff', async () => {
     post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
     const handoff = new Error('aborted')
     handoff.name = 'AbortError'
     startAuthentication.mockRejectedValue(handoff)
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const { wrapper } = mountLogin()
     await wrapper.vm.Passkey()
 
-    expect(wrapper.vm.debug.name).toBe('AbortError')
+    expect(spy).toHaveBeenCalledWith('[passkey] authentication',
+      expect.objectContaining({ name: 'AbortError' }), handoff)
+    spy.mockRestore()
   })
 })
