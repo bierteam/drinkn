@@ -35,6 +35,13 @@ describe('user model middleware', () => {
     expect(await bcrypt.compare('hunter2', doc.password)).toBe(true)
   })
 
+  it('leaves a federated account alone, having no password to hash', async () => {
+    const doc = new user({ username: 'oscar', oidc: { issuer: 'https://auth.test', subject: 'sub' } })
+
+    await expect(appHooks('save')[0].call(doc)).resolves.toBeUndefined()
+    expect(doc.password).toBeUndefined()
+  })
+
   it('hashes the password on update', async () => {
     const context = { _update: { $set: { password: 'hunter2' } } }
 
@@ -51,5 +58,32 @@ describe('user model middleware', () => {
     await appHooks('updateOne')[0].call(context)
 
     expect(context._update.$set).toEqual({ admin: true })
+  })
+})
+
+describe('federated accounts', () => {
+  it('needs no password once a subject is linked', async () => {
+    const doc = new user({ username: 'oscar', oidc: { issuer: 'https://auth.test', subject: 'sub' } })
+
+    await expect(doc.validate()).resolves.toBeUndefined()
+  })
+
+  it('still needs one otherwise', async () => {
+    const doc = new user({ username: 'oscar' })
+
+    await expect(doc.validate()).rejects.toMatchObject({ errors: { password: expect.anything() } })
+  })
+
+  it('refuses to authenticate an account that holds no password', async () => {
+    jest.spyOn(user, 'findOne').mockReturnValue({
+      exec: () => Promise.resolve({ username: 'oscar', oidc: { subject: 'sub' } })
+    })
+    const compare = jest.spyOn(bcrypt, 'compare')
+
+    const result = await new Promise(resolve => user.authenticate('oscar', 'hunter2', (err, found) => resolve(found)))
+
+    expect(result).toBeUndefined()
+    expect(compare).not.toHaveBeenCalled()
+    jest.restoreAllMocks()
   })
 })

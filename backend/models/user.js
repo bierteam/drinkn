@@ -33,6 +33,24 @@ const CredentialSchema = new mongoose.Schema({
   }
 }, { _id: false })
 
+// the issuer's own handle on the account. The subject is the stable half:
+// a username can be renamed upstream, a subject cannot
+const FederatedSchema = new mongoose.Schema({
+  issuer: {
+    type: String,
+    required: true
+  },
+  subject: {
+    type: String,
+    required: true,
+    index: true
+  },
+  linkedAt: {
+    type: Date,
+    default: Date.now
+  }
+}, { _id: false })
+
 const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
@@ -47,7 +65,10 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    // a federated account signs in at the issuer, so it holds no password
+    required: function () {
+      return !this.oidc?.subject
+    }
   },
   admin: {
     type: Boolean,
@@ -77,6 +98,10 @@ const UserSchema = new mongoose.Schema({
   credentials: {
     type: [CredentialSchema],
     default: []
+  },
+  oidc: {
+    type: FederatedSchema,
+    required: false
   }
 })
 
@@ -89,6 +114,10 @@ UserSchema.statics.authenticate = async function (username, password, callback) 
       err.status = 401
       throw err
     }
+
+    // a federated account has no password to compare against, and must not
+    // fall through to bcrypt with an undefined hash
+    if (!user.password) return callback()
 
     const result = await bcrypt.compare(password, user.password)
     if (result === true) {
@@ -106,6 +135,8 @@ UserSchema.statics.authenticate = async function (username, password, callback) 
 // is the signal, so taking a `next` argument here would blow up with
 // "next is not a function"
 UserSchema.pre('save', async function () {
+  // a federated account is created without one
+  if (!this.password) return
   this.password = await bcrypt.hash(this.password, SALT_ROUNDS)
 })
 

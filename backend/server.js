@@ -53,7 +53,14 @@ app.get('/healthz', function (req, res) {
 
 // https://github.com/bripkens/connect-history-api-fallback
 // https://router.vuejs.org/guide/essentials/history-mode.html
-app.use(history())
+// skipped for /api: the single sign-on callback is a browser navigation, so it
+// arrives asking for html, and the fallback would rewrite it to index.html
+// before the router ever saw it. The api answers for itself.
+const spaFallback = history()
+app.use(function (req, res, next) {
+  if (req.path.startsWith('/api')) return next()
+  return spaFallback(req, res, next)
+})
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())

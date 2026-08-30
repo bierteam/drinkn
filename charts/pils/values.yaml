@@ -6,6 +6,25 @@ replicas: "2"
 
 fqdn: pils.oscarr.nl
 
+# single sign-on through dex, as a public client with PKCE: no secret, so
+# nothing here has to be sealed. Dex matches redirect uris exactly and has no
+# wildcards, so only this fqdn is registered -- preview namespaces below get
+# the password login and their throwaway account instead.
+oidc:
+  issuer: https://auth.oscarr.nl
+  clientId: pils
+  # what the login button offers to sign in with
+  name: auth.oscarr.nl
+  # a value from the groups claim whose members are admins here. Empty leaves
+  # admin to whatever the account already holds
+  adminGroup: ""
+  # false lets only subjects that already have an account here sign in
+  allowSignup: true
+  # a first federated sign-in never claims the local account that happens to
+  # share its username: dex usernames come from the connector and are not this
+  # site's to vouch for, so a match is a refusal rather than a handover
+  linkByUsername: false
+
 pr:
   enabled: false
   number: 9999

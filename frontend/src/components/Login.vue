@@ -14,11 +14,18 @@ export default {
       message: '',
       passkeySupported: browserSupportsWebAuthn(),
       passkeyBusy: false,
-      preview: { enabled: false }
+      preview: { enabled: false },
+      sso: { enabled: false, name: '' }
     }
   },
   created () {
     this.Preview()
+    this.Sso()
+
+    // the callback redirects back here rather than to the target, because the
+    // router guard reads the store and a redirect leaves no body to fill it
+    if (this.$route.query.error) this.error = this.$route.query.error
+    if (this.$route.query.oidc) this.Complete()
   },
   computed: {
     isDisabled: function () {
@@ -68,6 +75,34 @@ export default {
         }
       } finally {
         this.passkeyBusy = false
+      }
+    },
+    // unconfigured deployments answer with enabled false, and a failure here
+    // must never block the password form
+    async Sso () {
+      try {
+        const response = await Api().get(`/api/v1/users/login/oidc/enabled`)
+        this.sso = response.data
+      } catch {
+        this.sso = { enabled: false }
+      }
+    },
+    // a full navigation, not an xhr: the browser has to follow the issuer
+    SsoLogin () {
+      const parameters = new URLSearchParams({ remember: String(this.remember) })
+      if (this.$route.query.redirect) parameters.set('redirect', this.$route.query.redirect)
+      window.location.assign(`/api/v1/users/login/oidc?${parameters}`)
+    },
+    // back from the issuer: the cookie is already set, the store is not
+    async Complete () {
+      try {
+        const response = await Api().get(`/api/v1/users/session`)
+        this.Succeed(response.data)
+      } catch {
+        // the only body this endpoint refuses with is the guard's own
+        // "Thou shall not pass!", which says nothing to whoever just came
+        // back from the issuer
+        this.error = 'That sign-in did not complete, try again'
       }
     },
     // only a preview namespace answers, and a failure must never block login
@@ -140,6 +175,7 @@ export default {
             </div>
             <button type="submit" class="button is-block is-primary is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Login</button>
             <button v-if="passkeySupported" type="button" class="button is-block is-light is-large is-fullwidth mt-3" :class="{ 'is-loading': passkeyBusy }" @click.prevent='Passkey'>Use a passkey</button>
+            <button v-if="sso.enabled" type="button" class="button is-block is-link is-large is-fullwidth mt-3" @click.prevent='SsoLogin'>Sign in with {{sso.name}}</button>
           </form>
         </div>
         <p class="has-text-grey">

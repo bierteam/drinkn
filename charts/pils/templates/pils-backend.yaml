@@ -38,6 +38,24 @@ spec:
               value: {{ .Values.fqdn | quote }}
             - name: RP_ORIGIN
               value: https://{{ .Values.fqdn }}
+            {{- if and .Values.oidc.issuer (not .Values.pr.enabled) }}
+            # single sign-on. A preview namespace has an fqdn dex was never
+            # told about and would have its callback refused, so it gets none
+            - name: OIDC_ISSUER
+              value: {{ .Values.oidc.issuer | quote }}
+            - name: OIDC_CLIENT_ID
+              value: {{ .Values.oidc.clientId | quote }}
+            - name: OIDC_NAME
+              value: {{ .Values.oidc.name | quote }}
+            {{- if .Values.oidc.adminGroup }}
+            - name: OIDC_ADMIN_GROUP
+              value: {{ .Values.oidc.adminGroup | quote }}
+            {{- end }}
+            - name: OIDC_ALLOW_SIGNUP
+              value: {{ .Values.oidc.allowSignup | quote }}
+            - name: OIDC_LINK_BY_USERNAME
+              value: {{ .Values.oidc.linkByUsername | quote }}
+            {{- end }}
           envFrom:
             - secretRef:
                 name: drinkn-env

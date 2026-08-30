@@ -48,6 +48,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 describe('isDisabled', () => {
@@ -301,5 +302,119 @@ describe('a password manager handing the ceremony over', () => {
     expect(spy).toHaveBeenCalledWith('[passkey] authentication',
       expect.objectContaining({ name: 'AbortError' }), handoff)
     spy.mockRestore()
+  })
+})
+
+describe('single sign-on', () => {
+  // one mock serves several endpoints in this flow, so answer by url
+  const answering = (routes = {}) => get.mockImplementation(url => {
+    const answer = routes[url]
+    if (answer instanceof Error) return Promise.reject(answer)
+    if (answer) return Promise.resolve({ status: 200, data: answer })
+    return Promise.resolve({ status: 200, data: { enabled: false } })
+  })
+
+  const button = wrapper => wrapper.findAll('button').find(node => node.text().startsWith('Sign in with'))
+
+  it('offers the issuer once the backend says it is configured', async () => {
+    answering({ '/api/v1/users/login/oidc/enabled': { enabled: true, name: 'auth.oscarr.nl' } })
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    expect(button(wrapper).text()).toBe('Sign in with auth.oscarr.nl')
+  })
+
+  it('offers nothing when it is not configured', async () => {
+    answering()
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    expect(button(wrapper)).toBeUndefined()
+  })
+
+  it('does not let a failed lookup take the password form with it', async () => {
+    answering({ '/api/v1/users/login/oidc/enabled': new Error('Network Error') })
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    expect(wrapper.vm.sso.enabled).toBe(false)
+    expect(wrapper.find('#login-password').exists()).toBe(true)
+  })
+
+  it('leaves the page for the backend, carrying the remember flag', async () => {
+    answering({ '/api/v1/users/login/oidc/enabled': { enabled: true, name: 'auth.oscarr.nl' } })
+    const assign = vi.fn()
+    // jsdom refuses to let assign be redefined, so stand in the whole location
+    vi.stubGlobal('location', { assign })
+    const { wrapper } = mountLogin()
+    await flushPromises()
+
+    wrapper.vm.remember = false
+    await button(wrapper).trigger('click')
+
+    expect(assign).toHaveBeenCalledWith('/api/v1/users/login/oidc?remember=false')
+  })
+
+  it('passes the redirect the guard left behind', async () => {
+    answering({ '/api/v1/users/login/oidc/enabled': { enabled: true, name: 'auth.oscarr.nl' } })
+    const assign = vi.fn()
+    // jsdom refuses to let assign be redefined, so stand in the whole location
+    vi.stubGlobal('location', { assign })
+    const { wrapper } = mountLogin({ redirect: '/users' })
+    await flushPromises()
+
+    wrapper.vm.SsoLogin()
+
+    expect(assign).toHaveBeenCalledWith('/api/v1/users/login/oidc?remember=true&redirect=%2Fusers')
+  })
+
+  it('fills the store from the session on the way back', async () => {
+    answering({ '/api/v1/users/session': { _id: 'user-1', username: 'oscar', admin: true } })
+    const { push } = mountLogin({ oidc: '1' })
+    await flushPromises()
+
+    expect(store.isAuthenticated).toBe(true)
+    expect(store.userId).toBe('user-1')
+    expect(store.isAdmin).toBe(true)
+    expect(push).toHaveBeenCalledWith('/discounts')
+  })
+
+  it('lands on the page the guard had wanted', async () => {
+    answering({ '/api/v1/users/session': { _id: 'user-1' } })
+    const { push } = mountLogin({ oidc: '1', redirect: '/users' })
+    await flushPromises()
+
+    expect(push).toHaveBeenCalledWith('/users')
+  })
+
+  it('shows the message the callback redirected back with', async () => {
+    answering()
+    const { wrapper } = mountLogin({ error: 'That sign-in was not accepted' })
+    await flushPromises()
+
+    expect(wrapper.vm.error).toBe('That sign-in was not accepted')
+    expect(wrapper.find('.notification.is-danger').text()).toContain('That sign-in was not accepted')
+  })
+
+  it('says so when the session turns out not to be there', async () => {
+    // the shape axios really throws: a 401 here carries the guard's own body,
+    // which says nothing to whoever just came back from the issuer
+    const refused = Object.assign(new Error('Request failed with status code 401'), {
+      response: { status: 401, data: 'Thou shall not pass!' }
+    })
+    answering({ '/api/v1/users/session': refused })
+    const { wrapper } = mountLogin({ oidc: '1' })
+    await flushPromises()
+
+    expect(wrapper.vm.error).toBe('That sign-in did not complete, try again')
+    expect(store.isAuthenticated).toBe(false)
+  })
+
+  it('asks for nothing on a plain visit to the login page', async () => {
+    answering()
+    mountLogin()
+    await flushPromises()
+
+    expect(get).not.toHaveBeenCalledWith('/api/v1/users/session')
   })
 })

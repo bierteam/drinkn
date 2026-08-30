@@ -8,6 +8,7 @@ try {
   if (!process.env.DB_PASSWORD) throw new Error('Please enter your database password in DB_PASSWORD')
   if (!process.env.DB_NAME) throw new Error('Please enter your database name in DB_NAME')
   if (!process.env.RP_ID || !process.env.RP_ORIGIN) console.log('RP_ID/RP_ORIGIN are unset, deriving the passkey origin from each request')
+  if (!process.env.OIDC_ISSUER || !process.env.OIDC_CLIENT_ID) console.log('OIDC_ISSUER/OIDC_CLIENT_ID are unset, single sign-on stays off')
 } catch (error) {
   console.error(error)
   console.error('Committing suicide..')
