@@ -180,7 +180,7 @@ describe('Passkeys', () => {
     expect(post).toHaveBeenLastCalledWith('/api/v1/account/passkey', expect.objectContaining({ name: 'Passkey' }))
   })
 
-  it('treats a dismissed browser prompt as a message, not an error', async () => {
+  it('explains a refused prompt and names the error', async () => {
     const wrapper = mountAccount()
     await flushPromises()
 
@@ -190,8 +190,8 @@ describe('Passkeys', () => {
     startRegistration.mockRejectedValue(cancelled)
     await wrapper.vm.AddPasskey()
 
-    expect(wrapper.vm.message).toBe('Passkey setup was cancelled.')
-    expect(wrapper.vm.error).toBe('')
+    expect(wrapper.vm.error).toContain('No passkey was created')
+    expect(wrapper.vm.error).toContain('NotAllowedError')
   })
 
   it('says nothing when a password manager hands the ceremony over', async () => {
@@ -221,7 +221,7 @@ describe('Passkeys', () => {
     startRegistration.mockRejectedValue(duplicate)
     await wrapper.vm.AddPasskey()
 
-    expect(wrapper.vm.error).toBe('That passkey is already registered on this account.')
+    expect(wrapper.vm.error).toContain('already holds a passkey')
   })
 
   it('clears the busy flag whichever way it ends', async () => {

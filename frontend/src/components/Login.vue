@@ -2,6 +2,7 @@
 import Api from '../services/Api'
 import { store } from '../store.js'
 import { startAuthentication, browserSupportsWebAuthn } from '@simplewebauthn/browser'
+import * as passkeyError from '../services/passkeyError'
 
 export default {
   data () {
@@ -13,6 +14,7 @@ export default {
       message: '',
       passkeySupported: browserSupportsWebAuthn(),
       passkeyBusy: false,
+      debug: null,
       preview: { enabled: false }
     }
   },
@@ -44,6 +46,7 @@ export default {
     },
     async Passkey () {
       this.error = ''
+      this.debug = null
       this.passkeyBusy = true
       try {
         // the options carry the challenge, which the server also keeps in the
@@ -56,14 +59,17 @@ export default {
         })
         this.Succeed(login.data)
       } catch (e) {
+        const detail = passkeyError.log('authentication', e)
+        this.debug = detail
+
         // an abort is a password manager handing the ceremony over, not a
         // refusal -- see the same branch in Account.vue
-        if (e.name === 'AbortError') return
-        if (e.name === 'NotAllowedError') {
-          this.message = 'Passkey sign in was cancelled.'
+        if (detail.name === 'AbortError') return
+
+        if (detail.name === 'NotAllowedError') {
+          this.error = `No passkey was offered (${passkeyError.tag(detail)}). If you meant to use a security key, start again and pick it from the browser's own prompt rather than the password manager.`
         } else {
-          this.error = e.response?.data || e.message || e
-          console.error(e)
+          this.error = `${e.response?.data || detail.message || e} (${passkeyError.tag(detail)})`
         }
       } finally {
         this.passkeyBusy = false
@@ -140,6 +146,10 @@ export default {
             </div>
             <button type="submit" class="button is-block is-primary is-large is-fullwidth" @click.prevent='Post' :disabled="isDisabled">Login</button>
             <button v-if="passkeySupported" type="button" class="button is-block is-light is-large is-fullwidth mt-3" :class="{ 'is-loading': passkeyBusy }" @click.prevent='Passkey'>Use a passkey</button>
+            <details v-if="debug" class="mt-3 has-text-left">
+              <summary class="has-text-grey is-size-7">Last passkey error</summary>
+              <pre class="is-size-7">{{JSON.stringify(debug, null, 2)}}</pre>
+            </details>
           </form>
         </div>
         <p class="has-text-grey">

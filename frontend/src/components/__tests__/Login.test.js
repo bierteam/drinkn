@@ -174,7 +174,7 @@ describe('Passkey', () => {
     expect(push).toHaveBeenCalledWith('/users')
   })
 
-  it('treats a dismissed browser prompt as a message, not an error', async () => {
+  it('explains a refused prompt and names the error, without signing in', async () => {
     post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
     const cancelled = new Error('The operation either timed out or was not allowed')
     cancelled.name = 'NotAllowedError'
@@ -182,9 +182,29 @@ describe('Passkey', () => {
     const { wrapper, push } = mountLogin()
     await wrapper.vm.Passkey()
 
-    expect(wrapper.vm.message).toBe('Passkey sign in was cancelled.')
-    expect(wrapper.vm.error).toBe('')
+    expect(wrapper.vm.error).toContain('No passkey was offered')
+    // the tag is what makes a report actionable without a devtools session
+    expect(wrapper.vm.error).toContain('NotAllowedError')
     expect(push).not.toHaveBeenCalled()
+  })
+
+  it('keeps the whole error shape for the details block', async () => {
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const wrapped = new Error('the manager gave up')
+    wrapped.name = 'NotAllowedError'
+    wrapped.code = 'ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY'
+    wrapped.cause = Object.assign(new Error('underlying'), { name: 'NotAllowedError' })
+    startAuthentication.mockRejectedValue(wrapped)
+    const { wrapper } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(wrapper.vm.debug).toEqual({
+      name: 'NotAllowedError',
+      code: 'ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY',
+      message: 'the manager gave up',
+      causeName: 'NotAllowedError',
+      causeMessage: 'underlying'
+    })
   })
 
   it('surfaces a server refusal', async () => {
@@ -194,7 +214,7 @@ describe('Passkey', () => {
     const { wrapper } = mountLogin()
     await wrapper.vm.Passkey()
 
-    expect(wrapper.vm.error).toBe('That passkey was not accepted')
+    expect(wrapper.vm.error).toContain('That passkey was not accepted')
     expect(store.isAuthenticated).toBe(false)
   })
 
@@ -268,5 +288,16 @@ describe('a password manager handing the ceremony over', () => {
     expect(wrapper.vm.message).toBe('')
     expect(wrapper.vm.error).toBe('')
     expect(wrapper.vm.passkeyBusy).toBe(false)
+  })
+
+  it('still records the abort, so it is visible if it was not a handoff', async () => {
+    post.mockResolvedValueOnce({ status: 200, data: { challenge: 'abc' } })
+    const handoff = new Error('aborted')
+    handoff.name = 'AbortError'
+    startAuthentication.mockRejectedValue(handoff)
+    const { wrapper } = mountLogin()
+    await wrapper.vm.Passkey()
+
+    expect(wrapper.vm.debug.name).toBe('AbortError')
   })
 })

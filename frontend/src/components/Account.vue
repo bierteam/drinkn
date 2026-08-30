@@ -3,6 +3,7 @@ import Api from '../services/Api'
 import pwned from '../services/pwned'
 import { store } from '../store.js'
 import { startRegistration, browserSupportsWebAuthn } from '@simplewebauthn/browser'
+import * as passkeyError from '../services/passkeyError'
 
 export default {
   data () {
@@ -12,6 +13,7 @@ export default {
       verifyPassword: undefined,
       passkeyName: '',
       passkeySupported: browserSupportsWebAuthn(),
+      debug: null,
       error: '',
       message: '',
       state: {
@@ -69,6 +71,7 @@ export default {
     async AddPasskey () {
       this.error = ''
       this.message = ''
+      this.debug = null
       this.state.passkeyBusy = true
       try {
         const options = await Api().post(`/api/v1/account/passkey/options`, {})
@@ -81,18 +84,25 @@ export default {
         this.passkeyName = ''
         this.message = 'Passkey added.'
       } catch (e) {
+        // the full shape goes to the console; the short tag goes on screen, so
+        // a failure can be reported without opening devtools
+        const detail = passkeyError.log('registration', e)
+        this.debug = detail
+
         // A password manager that hands the ceremony over -- Bitwarden's "use
-        // hardware key", for one -- aborts its own overlay to do it. That is a
-        // handoff rather than a refusal, so say nothing and let them try the
-        // key. Only NotAllowedError means the person actually declined.
-        if (e.name === 'AbortError') return
-        if (e.name === 'NotAllowedError') {
-          this.message = 'Passkey setup was cancelled.'
-        } else if (e.name === 'InvalidStateError') {
-          this.error = 'That passkey is already registered on this account.'
+        // hardware key", for one -- ends its own attempt to do it, which
+        // surfaces here as an abort.
+        if (detail.name === 'AbortError') return
+
+        if (detail.name === 'InvalidStateError') {
+          this.error = 'That authenticator already holds a passkey for this account. Use a different key.'
+        } else if (detail.name === 'NotAllowedError') {
+          // Not necessarily a refusal: the same error covers a timeout, and
+          // some managers raise it when they stop handling the ceremony rather
+          // than passing it to the browser.
+          this.error = `No passkey was created (${passkeyError.tag(detail)}). If you meant to use a security key, start again and pick it from the browser's own prompt rather than the password manager.`
         } else {
-          this.error = e.response?.data || e.message || e
-          console.error(e)
+          this.error = `${e.response?.data || detail.message || e} (${passkeyError.tag(detail)})`
         }
       } finally {
         this.state.passkeyBusy = false
@@ -233,6 +243,10 @@ export default {
             </tbody>
           </table>
           <p v-else class="has-text-grey">No passkeys yet.</p>
+          <details v-if="debug" class="mb-3">
+            <summary class="has-text-grey is-size-7">Last passkey error</summary>
+            <pre class="is-size-7">{{JSON.stringify(debug, null, 2)}}</pre>
+          </details>
           <div v-if="passkeySupported" class="field has-addons">
             <div class="control is-expanded">
               <label class="is-sr-only" for="account-passkey-name">Passkey name</label>

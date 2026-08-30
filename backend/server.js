@@ -30,6 +30,7 @@ const { MongoStore } = require('connect-mongo')
 const user = require('./models/user')
 const writeLog = require('./services/writeLog')
 const sessionCookie = require('./services/sessionCookie')
+const csrf = require('./services/csrf')
 
 mongoose.connect(connectionString)
 const db = mongoose.connection
@@ -71,6 +72,10 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use(session(options))
+
+// after the session, because the token lives in it. Only guards the api: the
+// static handler above serves the dev build and changes nothing.
+app.use('/api', csrf.protect)
 
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {

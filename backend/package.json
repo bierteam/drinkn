@@ -13,6 +13,7 @@
     "connect-history-api-fallback": "^2.0.0",
     "connect-mongo": "^6.0.0",
     "cors": "^2.8.5",
+    "csrf-sync": "^4.2.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.6.2",
     "express-session": "^1.17.3",
