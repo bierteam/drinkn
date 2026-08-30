@@ -15,7 +15,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-jobs:     
+jobs:
   # test-go:
   #   runs-on: ubuntu-latest
   #   strategy:
@@ -41,11 +41,7 @@ jobs:
   #       with:
   #         directory: ${{ matrix.folder }}
 
-  docker:
-    # needs:
-    #   - test-go
-    permissions:
-      packages: write
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -66,31 +62,9 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - 
-        name: Generate Docker metadata
-        id: meta
-        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
-        env:
-          DOCKER_METADATA_PR_HEAD_SHA: ${{ github.event_name == 'pull_request' }}
-        with:
-          images: |
-            ghcr.io/${{ github.repository }}/${{ matrix.image }}
-          tags: |
-            type=ref,event=branch
-            type=sha
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
-      -
-        name: Login to GitHub Package Registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and test
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
@@ -138,18 +112,143 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           # reporting only: a Codecov hiccup should not fail the build
           fail_ci_if_error: false
+
+  # Each architecture is built on a runner of that architecture. Emulating
+  # arm64 with QEMU made node crash with an illegal instruction, and the builds
+  # that survived took long enough to be worthless.
+  build:
+    needs:
+      - test
+    permissions:
+      packages: write
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        folder:
+          - discount-import
+          - frontend
+          - backend
+        platform:
+          - linux/amd64
+          - linux/arm64
+        include:
+          - folder: discount-import
+            image: discounts-import
+          - folder: frontend
+            image: pils-frontend
+          - folder: backend
+            image: pils-backend
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+
+    steps:
       -
-        name: Build and push
+        name: Name this platform
+        # linux/amd64 -> linux-amd64, so it can be part of an artifact name
+        run: echo "PLATFORM=${platform//\//-}" >> "$GITHUB_ENV"
+        env:
+          platform: ${{ matrix.platform }}
+      -
+        name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      -
+        name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}/${{ matrix.image }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      -
+        name: Login to GitHub Package Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        # pushed without a tag; the manifest job below is what names it
+        name: Build and push by digest
+        id: build
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           context: ${{ matrix.folder }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha
-          # https://docs.docker.com/build/building/cache/backends/#cache-mode
+          outputs: type=image,name=ghcr.io/${{ github.repository }}/${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ matrix.image }}-${{ env.PLATFORM }}
+          cache-to: type=gha,scope=${{ matrix.image }}-${{ env.PLATFORM }}
+      -
+        name: Export the digest
+        run: |
+          mkdir -p "${{ runner.temp }}/digests"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+        env:
+          digest: ${{ steps.build.outputs.digest }}
+      -
+        name: Upload the digest
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: digests-${{ matrix.image }}-${{ env.PLATFORM }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # Ties one digest per architecture together under the tags the chart pulls.
+  docker:
+    needs:
+      - build
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: discounts-import
+          - image: pils-frontend
+          - image: pils-backend
+
+    steps:
+      -
+        name: Download the digests
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-${{ matrix.image }}-*
+          merge-multiple: true
+      -
+        name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        env:
+          DOCKER_METADATA_PR_HEAD_SHA: ${{ github.event_name == 'pull_request' }}
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}/${{ matrix.image }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      -
+        name: Login to GitHub Package Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Create the manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf 'ghcr.io/${{ github.repository }}/${{ matrix.image }}@sha256:%s ' *)
 
   deploy:
     needs:
@@ -166,16 +265,16 @@ jobs:
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        
+
       - name: Deploy using Argo CD
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           # Access the commit SHA from GitHub context
           COMMIT_SHA="${{ github.sha }}"
-          
+
           # Trim the first few characters to match the desired format (e.g., sha-c27d339)
           SHORT_SHA="sha-${COMMIT_SHA:0:7}"
-          
+
           # Change image.tag in charts/pils/values.yaml
           sed -i "s|tag:.*|tag: \"$SHORT_SHA\"|" charts/pils/values.yaml
 
