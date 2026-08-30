@@ -18,8 +18,13 @@ db.on('error', console.error.bind(console, 'connection error:'))
 const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const run = async () => {
-  // Spread the load on the sources we read: the CronJob fires on the hour, and
-  // arriving exactly on it is both rude and conspicuous.
+  // The CronJob fires on the hour; this moves the actual request time somewhere
+  // inside the following hour and puts it somewhere different every day. Two
+  // reasons, and the second is the load-bearing one: arriving exactly on the
+  // hour concentrates load on the sources, and arriving at the *same* time
+  // every day is a pattern in someone else's access log. Keep the randomness
+  // even if the schedule changes -- a fixed minute is a better fingerprint than
+  // a round one.
   if (process.env.SKIP_DELAY) {
     writeLog('Skipping delay as SKIP_DELAY is set.', 'Info', context)
   } else {
