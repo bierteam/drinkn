@@ -42,7 +42,11 @@ const opt = name => {
 const has = name => args.includes(name)
 
 const filePath = opt('--file')
-const storeId = opt('--store') || process.env.LIDL_STORE
+// a Lidl store id is an alphanumeric code like "NL0405". Constrain it to that at
+// the source: it is both logged and interpolated into the request path, and
+// leaving it as free argv/env text invites log forging and path traversal
+const rawStoreId = opt('--store') || process.env.LIDL_STORE
+const storeId = rawStoreId ? rawStoreId.replace(/[^A-Za-z0-9]/g, '') : undefined
 const write = has('--write')
 
 // A row is beer if it is age-18 restricted *and* its name reads like beer. The
