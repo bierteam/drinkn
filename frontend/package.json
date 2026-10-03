@@ -6,7 +6,7 @@
   "description": "Pils frontend",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/browser": "^14.0.0",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/coverage-v8": "4.1.11",
