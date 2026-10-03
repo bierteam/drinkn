@@ -70,8 +70,16 @@ metadata:
 data:
   import.sh: |
     #!/bin/bash
-    mongoimport --host localhost --db $MONGODB_DATABASE --collection beers --file /docker-entrypoint-initdb.d/beers.json --jsonArray
-    mongoimport --host localhost --db $MONGODB_DATABASE --collection stores --file /docker-entrypoint-initdb.d/stores.json --jsonArray
+    # --drop on each collection, so this is idempotent. The init script re-runs
+    # whenever a previous attempt failed to complete, and without it the second
+    # attempt buries the real error under sixty duplicate-key warnings for rows
+    # the first attempt already wrote.
+    set -e
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection beers --drop --file /docker-entrypoint-initdb.d/beers.json --jsonArray
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection stores --drop --file /docker-entrypoint-initdb.d/stores.json --jsonArray
+    # the new collection: 69 real Albert Heijn records and the 60 legacy
+    # biernet rows put through migrations/001, so a preview shows both sources
+    mongoimport --host localhost --db $MONGODB_DATABASE --collection products --drop --file /docker-entrypoint-initdb.d/products.json --jsonArray
   stores.json: |
     [{
       "_id": {
@@ -1852,6 +1860,4691 @@ data:
       "liter": 1980,
       "__v": 0
     }]
+  products.json: |
+    [
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4000"
+        },
+        "source": "ah",
+        "sourceId": "222563",
+        "productKey": "amstelradlercitroen|1980",
+        "brand": "Amstel",
+        "title": "Amstel Radler citroen 0.0 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi222563",
+        "price": {
+          "current": 649,
+          "base": null,
+          "literPrice": 328
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4001"
+        },
+        "source": "ah",
+        "sourceId": "600733",
+        "productKey": "amstelamstelradlercitroen",
+        "brand": "Amstel",
+        "title": "Amstel Amstel Radler citroen 0.0 6-pack 8-pack",
+        "rawStore": "albert heijn",
+        "volume": "8 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi600733",
+        "price": {
+          "current": 4932,
+          "base": 5192,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "5% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4002"
+        },
+        "source": "ah",
+        "sourceId": "238802",
+        "productKey": "grolschradlercitroenalcoholvrij|1800",
+        "brand": "Grolsch",
+        "title": "Grolsch Radler citroen alcoholvrij 0.0 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi238802",
+        "price": {
+          "current": 529,
+          "base": null,
+          "literPrice": 294
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4003"
+        },
+        "source": "ah",
+        "sourceId": "611328",
+        "productKey": "grolschradlercitroenalcoholvrij",
+        "brand": "Grolsch",
+        "title": "Grolsch Radler citroen alcoholvrij 0.0 18-pack",
+        "rawStore": "albert heijn",
+        "volume": "3 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611328",
+        "price": {
+          "current": 1428,
+          "base": 1587,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "10% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4004"
+        },
+        "source": "ah",
+        "sourceId": "611329",
+        "productKey": "grolschradlercitroenalcoholvrij",
+        "brand": "Grolsch",
+        "title": "Grolsch Radler citroen alcoholvrij 0.0 30-pack",
+        "rawStore": "albert heijn",
+        "volume": "5 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611329",
+        "price": {
+          "current": 2248,
+          "base": 2645,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "15% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4005"
+        },
+        "source": "ah",
+        "sourceId": "222510",
+        "productKey": "amstelradlercitroen|1800",
+        "brand": "Amstel",
+        "title": "Amstel Radler citroen 0.0% 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi222510",
+        "price": {
+          "current": 589,
+          "base": null,
+          "literPrice": 327
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4006"
+        },
+        "source": "ah",
+        "sourceId": "606634",
+        "productKey": "amstelradlercitroen",
+        "brand": "Amstel",
+        "title": "Amstel Radler citroen 0.0%12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi606634",
+        "price": {
+          "current": 1119,
+          "base": 1178,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "5% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4007"
+        },
+        "source": "ah",
+        "sourceId": "566588",
+        "productKey": "vandestreekplaygroundnonalcoholicipa|330",
+        "brand": "Vandestreek",
+        "title": "Vandestreek Playground non alcoholic IPA",
+        "rawStore": "albert heijn",
+        "volume": "330 ml",
+        "packCount": 1,
+        "unitMl": 330,
+        "totalMl": 330,
+        "uri": "https://www.ah.nl/producten/product/wi566588",
+        "price": {
+          "current": 219,
+          "base": null,
+          "literPrice": 664
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4008"
+        },
+        "source": "ah",
+        "sourceId": "516627",
+        "productKey": "coronaceroalcoholvrij|1980",
+        "brand": "Corona",
+        "title": "Corona Cero 0.0 alcoholvrij bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi516627",
+        "price": {
+          "current": 712,
+          "base": 949,
+          "literPrice": 360
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4009"
+        },
+        "source": "ah",
+        "sourceId": "610142",
+        "productKey": "coronaceroalcoholvrij",
+        "brand": "Corona",
+        "title": "Corona Cero 0.0 alcoholvrij bier 18-pack",
+        "rawStore": "albert heijn",
+        "volume": "3 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi610142",
+        "price": {
+          "current": 2135,
+          "base": 2847,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a400a"
+        },
+        "source": "ah",
+        "sourceId": "611748",
+        "productKey": "coronaceroalcoholvrij",
+        "brand": "Corona",
+        "title": "Corona Cero 0.0 alcoholvrij bier 30-pack",
+        "rawStore": "albert heijn",
+        "volume": "5 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611748",
+        "price": {
+          "current": 3558,
+          "base": 4745,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a400b"
+        },
+        "source": "ah",
+        "sourceId": "460649",
+        "productKey": "leffeblond|1800",
+        "brand": "Leffe",
+        "title": "Leffe Blond 0.0% 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0.30 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi460649",
+        "price": {
+          "current": 665,
+          "base": null,
+          "literPrice": 369
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a400c"
+        },
+        "source": "ah",
+        "sourceId": "610152",
+        "productKey": "leffeblond",
+        "brand": "Leffe",
+        "title": "Leffe Blond 0.0% 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi610152",
+        "price": {
+          "current": 1064,
+          "base": 1330,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "20% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a400d"
+        },
+        "source": "ah",
+        "sourceId": "610153",
+        "productKey": "leffeblond",
+        "brand": "Leffe",
+        "title": "Leffe Blond 0.0% 24-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi610153",
+        "price": {
+          "current": 1862,
+          "base": 2660,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "30% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a400e"
+        },
+        "source": "ah",
+        "sourceId": "471354",
+        "productKey": "hertogjanalcoholvrij|1800",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan 0.0 Alcoholvrij bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi471354",
+        "price": {
+          "current": 374,
+          "base": 499,
+          "literPrice": 208
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a400f"
+        },
+        "source": "ah",
+        "sourceId": "571813",
+        "productKey": "texelsskuumkoppe|1800",
+        "brand": "Texels",
+        "title": "Texels Skuumkoppe 0.0 speciaalbier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi571813",
+        "price": {
+          "current": 704,
+          "base": 939,
+          "literPrice": 391
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4010"
+        },
+        "source": "ah",
+        "sourceId": "615768",
+        "productKey": "texelsskuumkoppe",
+        "brand": "Texels",
+        "title": "Texels Skuumkoppe 0.0 speciaalbier 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi615768",
+        "price": {
+          "current": 1408,
+          "base": 1878,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4011"
+        },
+        "source": "ah",
+        "sourceId": "594988",
+        "productKey": "texelsskuumkoppe",
+        "brand": "Texels",
+        "title": "Texels Skuumkoppe 0.0 speciaalbier 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi594988",
+        "price": {
+          "current": 1408,
+          "base": 1878,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4012"
+        },
+        "source": "ah",
+        "sourceId": "170811",
+        "productKey": "coronaextra|1980",
+        "brand": "Corona",
+        "title": "Corona Extra bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi170811",
+        "price": {
+          "current": 749,
+          "base": 999,
+          "literPrice": 378
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4013"
+        },
+        "source": "ah",
+        "sourceId": "623966",
+        "productKey": "coronaextra",
+        "brand": "Corona",
+        "title": "Corona Extra bier 24-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi623966",
+        "price": {
+          "current": 2997,
+          "base": 3996,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4014"
+        },
+        "source": "ah",
+        "sourceId": "623965",
+        "productKey": "coronaextra",
+        "brand": "Corona",
+        "title": "Corona Extra bier 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi623965",
+        "price": {
+          "current": 1498,
+          "base": 1998,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4015"
+        },
+        "source": "ah",
+        "sourceId": "386562",
+        "productKey": "desperadosoriginalbeer|1980",
+        "brand": "Desperados",
+        "title": "Desperados Original beer 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi386562",
+        "price": {
+          "current": 749,
+          "base": 999,
+          "literPrice": 378
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4016"
+        },
+        "source": "ah",
+        "sourceId": "591858",
+        "productKey": "desperadosoriginal",
+        "brand": "Desperados",
+        "title": "Desperados Original bier 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi591858",
+        "price": {
+          "current": 1498,
+          "base": 1998,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4017"
+        },
+        "source": "ah",
+        "sourceId": "173604",
+        "productKey": "liefmansontherocks|1000",
+        "brand": "Liefmans",
+        "title": "Liefmans On the rocks 4-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 x 0,25 l",
+        "packCount": 4,
+        "unitMl": 250,
+        "totalMl": 1000,
+        "uri": "https://www.ah.nl/producten/product/wi173604",
+        "price": {
+          "current": 689,
+          "base": null,
+          "literPrice": 689
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4018"
+        },
+        "source": "ah",
+        "sourceId": "623892",
+        "productKey": "liefmansliefmansontherocks",
+        "brand": "Liefmans",
+        "title": "Liefmans Liefmans On the rocks 8-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi623892",
+        "price": {
+          "current": 1309,
+          "base": 1378,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "5% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4019"
+        },
+        "source": "ah",
+        "sourceId": "623947",
+        "productKey": "liefmansliefmansontherocks",
+        "brand": "Liefmans",
+        "title": "Liefmans Liefmans On the rocks 16-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi623947",
+        "price": {
+          "current": 2480,
+          "base": 2756,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "10% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a401a"
+        },
+        "source": "ah",
+        "sourceId": "608269",
+        "productKey": "coronaextra|5000",
+        "brand": "Corona",
+        "title": "Corona Extra 20-pack",
+        "rawStore": "albert heijn",
+        "volume": "5 l",
+        "packCount": 1,
+        "unitMl": 5000,
+        "totalMl": 5000,
+        "uri": "https://www.ah.nl/producten/product/wi608269",
+        "price": {
+          "current": 1499,
+          "base": 1999,
+          "literPrice": 300
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a401b"
+        },
+        "source": "ah",
+        "sourceId": "612858",
+        "productKey": "coronaextra",
+        "brand": "Corona",
+        "title": "Corona Extra 80-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi612858",
+        "price": {
+          "current": 5997,
+          "base": 7996,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a401c"
+        },
+        "source": "ah",
+        "sourceId": "612857",
+        "productKey": "coronaextra",
+        "brand": "Corona",
+        "title": "Corona Extra 40-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi612857",
+        "price": {
+          "current": 2998,
+          "base": 3998,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a401d"
+        },
+        "source": "ah",
+        "sourceId": "232950",
+        "productKey": "grolschradlercitroen|1800",
+        "brand": "Grolsch",
+        "title": "Grolsch Radler citroen 2.0 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi232950",
+        "price": {
+          "current": 442,
+          "base": 589,
+          "literPrice": 246
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a401e"
+        },
+        "source": "ah",
+        "sourceId": "589406",
+        "productKey": "amstelrose|1800",
+        "brand": "Amstel",
+        "title": "Amstel Rosé 0.0% 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "1,8 l",
+        "packCount": 1,
+        "unitMl": 1800,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi589406",
+        "price": {
+          "current": 759,
+          "base": null,
+          "literPrice": 422
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a401f"
+        },
+        "source": "ah",
+        "sourceId": "606637",
+        "productKey": "amstelrose",
+        "brand": "Amstel",
+        "title": "Amstel rosé 0.0% 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi606637",
+        "price": {
+          "current": 1442,
+          "base": 1518,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "5% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4020"
+        },
+        "source": "ah",
+        "sourceId": "210141",
+        "productKey": "amstelradlercitroen|1800",
+        "brand": "Amstel",
+        "title": "Amstel Radler citroen bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi210141",
+        "price": {
+          "current": 449,
+          "base": 599,
+          "literPrice": 249
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-31T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-09-06T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4021"
+        },
+        "source": "ah",
+        "sourceId": "606635",
+        "productKey": "amstelradlercitroen",
+        "brand": "Amstel",
+        "title": "Amstel Radler citroen bier 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi606635",
+        "price": {
+          "current": 1138,
+          "base": 1198,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "5% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4022"
+        },
+        "source": "ah",
+        "sourceId": "611324",
+        "productKey": "grolschradlercitroen",
+        "brand": "Grolsch",
+        "title": "Grolsch Radler citroen 2.0 18-pack",
+        "rawStore": "albert heijn",
+        "volume": "3 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611324",
+        "price": {
+          "current": 1325,
+          "base": 1767,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4023"
+        },
+        "source": "ah",
+        "sourceId": "611326",
+        "productKey": "grolschradlercitroen",
+        "brand": "Grolsch",
+        "title": "Grolsch Radler citroen 2.0 30-pack",
+        "rawStore": "albert heijn",
+        "volume": "5 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611326",
+        "price": {
+          "current": 2208,
+          "base": 2945,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4024"
+        },
+        "source": "ah",
+        "sourceId": "96577",
+        "productKey": "hertogjan|1980",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan Pilsener bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 33 cl",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi96577",
+        "price": {
+          "current": 549,
+          "base": 732,
+          "literPrice": 277
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4025"
+        },
+        "source": "ah",
+        "sourceId": "409165",
+        "productKey": "heineken|1980",
+        "brand": "Heineken",
+        "title": "Heineken Premium pilsener 0.0 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi409165",
+        "price": {
+          "current": 499,
+          "base": 665,
+          "literPrice": 252
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-31T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-09-06T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4026"
+        },
+        "source": "ah",
+        "sourceId": "606649",
+        "productKey": "heineken",
+        "brand": "Heineken",
+        "title": "Heineken Premium pilsener 0.0 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi606649",
+        "price": {
+          "current": 1263,
+          "base": 1330,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "5% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4027"
+        },
+        "source": "ah",
+        "sourceId": "80101",
+        "productKey": "heineken|1980",
+        "brand": "Heineken",
+        "title": "Heineken Premium pilsener 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi80101",
+        "price": {
+          "current": 499,
+          "base": 665,
+          "literPrice": 252
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4028"
+        },
+        "source": "ah",
+        "sourceId": "606648",
+        "productKey": "heineken",
+        "brand": "Heineken",
+        "title": "Heineken Pilsener 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi606648",
+        "price": {
+          "current": 997,
+          "base": 1330,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4029"
+        },
+        "source": "ah",
+        "sourceId": "489167",
+        "productKey": "brouwers|1980",
+        "brand": "Brouwers",
+        "title": "Brouwers Premium bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi489167",
+        "price": {
+          "current": 319,
+          "base": null,
+          "literPrice": 161
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a402a"
+        },
+        "source": "ah",
+        "sourceId": "571805",
+        "productKey": "peroninastroazzurroalcoholvrij|1980",
+        "brand": "Peroni",
+        "title": "Peroni Nastro azzurro alcoholvrij bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi571805",
+        "price": {
+          "current": 679,
+          "base": null,
+          "literPrice": 343
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a402b"
+        },
+        "source": "ah",
+        "sourceId": "194903",
+        "productKey": "gulpenergladiatorrobuust|500",
+        "brand": "Gulpener",
+        "title": "Gulpener Gladiator robuust bier",
+        "rawStore": "albert heijn",
+        "volume": "0,5 l",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "uri": "https://www.ah.nl/producten/product/wi194903",
+        "price": {
+          "current": 169,
+          "base": null,
+          "literPrice": 338
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a402c"
+        },
+        "source": "ah",
+        "sourceId": "600761",
+        "productKey": "peroniazzurroalcoholvrij",
+        "brand": "Peroni",
+        "title": "Peroni azzurro alcoholvrij bier 24-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi600761",
+        "price": {
+          "current": 2037,
+          "base": 2716,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a402d"
+        },
+        "source": "ah",
+        "sourceId": "540081",
+        "productKey": "hertogjan|1800",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan Pilsener bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi540081",
+        "price": {
+          "current": 464,
+          "base": 619,
+          "literPrice": 258
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a402e"
+        },
+        "source": "ah",
+        "sourceId": "611343",
+        "productKey": "peroninastroazzurroalcoholvrij",
+        "brand": "Peroni",
+        "title": "Peroni Nastro azzurro alcoholvrij bier 18-pack",
+        "rawStore": "albert heijn",
+        "volume": "3 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611343",
+        "price": {
+          "current": 1833,
+          "base": 2037,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "10% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a402f"
+        },
+        "source": "ah",
+        "sourceId": "611344",
+        "productKey": "peroninastroazzurroalcoholvrij",
+        "brand": "Peroni",
+        "title": "Peroni Nastro azzurro alcoholvrij bier 30-pack",
+        "rawStore": "albert heijn",
+        "volume": "5 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611344",
+        "price": {
+          "current": 2546,
+          "base": 3395,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4030"
+        },
+        "source": "ah",
+        "sourceId": "471356",
+        "productKey": "hertogjanalcoholvrij|1980",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan 0.0 Alcoholvrij bier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,33 l",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "uri": "https://www.ah.nl/producten/product/wi471356",
+        "price": {
+          "current": 464,
+          "base": 619,
+          "literPrice": 234
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4031"
+        },
+        "source": "ah",
+        "sourceId": "605017",
+        "productKey": "hertogjanalcoholvrij",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan 0.0 Alcoholvrij bier 24-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi605017",
+        "price": {
+          "current": 1857,
+          "base": 2476,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4032"
+        },
+        "source": "ah",
+        "sourceId": "623967",
+        "productKey": "hertogjanalcoholvrij",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan 0.0 Alcoholvrij bier 24-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi623967",
+        "price": {
+          "current": 1857,
+          "base": 2476,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4033"
+        },
+        "source": "ah",
+        "sourceId": "611339",
+        "productKey": "gulpenergladiatorrobuust",
+        "brand": "Gulpener",
+        "title": "Gulpener Gladiator robuust bier 24-pack",
+        "rawStore": "albert heijn",
+        "volume": "24 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi611339",
+        "price": {
+          "current": 3042,
+          "base": 4056,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4034"
+        },
+        "source": "ah",
+        "sourceId": "409164",
+        "productKey": "heinekendraaidop|1500",
+        "brand": "Heineken",
+        "title": "Heineken Premium pilsener 0.0 draaidop 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,25 l",
+        "packCount": 6,
+        "unitMl": 250,
+        "totalMl": 1500,
+        "uri": "https://www.ah.nl/producten/product/wi409164",
+        "price": {
+          "current": 524,
+          "base": 699,
+          "literPrice": 349
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-31T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-09-06T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4035"
+        },
+        "source": "ah",
+        "sourceId": "56312",
+        "productKey": "leffeblondabdijbier|1800",
+        "brand": "Leffe",
+        "title": "Leffe Blond abdijbier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi56312",
+        "price": {
+          "current": 879,
+          "base": null,
+          "literPrice": 488
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4036"
+        },
+        "source": "ah",
+        "sourceId": "548572",
+        "productKey": "texelsskuumkoppe|1800",
+        "brand": "Texels",
+        "title": "Texels Skuumkoppe speciaalbier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi548572",
+        "price": {
+          "current": 749,
+          "base": 999,
+          "literPrice": 416
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4037"
+        },
+        "source": "ah",
+        "sourceId": "574108",
+        "productKey": "texelsskuumkoppe",
+        "brand": "Texels",
+        "title": "Texels Skuumkoppe speciaalbier 12-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi574108",
+        "price": {
+          "current": 1498,
+          "base": 1998,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4038"
+        },
+        "source": "ah",
+        "sourceId": "483496",
+        "productKey": "affligemblondabdijbier|1800",
+        "brand": "Affligem",
+        "title": "Affligem Blond abdijbier 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,30 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi483496",
+        "price": {
+          "current": 649,
+          "base": 865,
+          "literPrice": 361
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4039"
+        },
+        "source": "ah",
+        "sourceId": "591859",
+        "productKey": "affligemblond",
+        "brand": "Affligem",
+        "title": "Affligem Blond speciaalbier 2-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi591859",
+        "price": {
+          "current": 1297,
+          "base": 1730,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a403a"
+        },
+        "source": "ah",
+        "sourceId": "238777",
+        "productKey": "paulanerhefewei|500",
+        "brand": "Paulaner",
+        "title": "Paulaner Hefe-weißbier",
+        "rawStore": "albert heijn",
+        "volume": "0,50 l",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "uri": "https://www.ah.nl/producten/product/wi238777",
+        "price": {
+          "current": 199,
+          "base": null,
+          "literPrice": 398
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a403b"
+        },
+        "source": "ah",
+        "sourceId": "179089",
+        "productKey": "weihenstephanerhefeweissbier|500",
+        "brand": "Weihenstephaner",
+        "title": "Weihenstephaner Hefeweissbier",
+        "rawStore": "albert heijn",
+        "volume": "0,5 l",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "uri": "https://www.ah.nl/producten/product/wi179089",
+        "price": {
+          "current": 199,
+          "base": null,
+          "literPrice": 398
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a403c"
+        },
+        "source": "ah",
+        "sourceId": "569780",
+        "productKey": "brandnewenglandipa|330",
+        "brand": "Brand",
+        "title": "Brand New England IPA",
+        "rawStore": "albert heijn",
+        "volume": "330 ml",
+        "packCount": 1,
+        "unitMl": 330,
+        "totalMl": 330,
+        "uri": "https://www.ah.nl/producten/product/wi569780",
+        "price": {
+          "current": 134,
+          "base": 179,
+          "literPrice": 406
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a403d"
+        },
+        "source": "ah",
+        "sourceId": "210499",
+        "productKey": "erdingerweissbier|500",
+        "brand": "Erdinger",
+        "title": "Erdinger Weissbier",
+        "rawStore": "albert heijn",
+        "volume": "0,5 l",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "uri": "https://www.ah.nl/producten/product/wi210499",
+        "price": {
+          "current": 199,
+          "base": null,
+          "literPrice": 398
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a403e"
+        },
+        "source": "ah",
+        "sourceId": "438908",
+        "productKey": "tripelkarmeliet|1320",
+        "brand": "Tripel Karmeliet",
+        "title": "Tripel Karmeliet Speciaalbier 4-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 x 0,33 l",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "uri": "https://www.ah.nl/producten/product/wi438908",
+        "price": {
+          "current": 949,
+          "base": null,
+          "literPrice": 719
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a403f"
+        },
+        "source": "ah",
+        "sourceId": "602623",
+        "productKey": "tripelkarmeliet",
+        "brand": "Tripel Karmeliet",
+        "title": "Tripel Karmeliet Speciaalbier 4-pack 2-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi602623",
+        "price": {
+          "current": 1708,
+          "base": 1898,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "10% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4040"
+        },
+        "source": "ah",
+        "sourceId": "445543",
+        "productKey": "duvelblond|1320",
+        "brand": "Duvel",
+        "title": "Duvel Blond 4-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 x 0,33 l",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "uri": "https://www.ah.nl/producten/product/wi445543",
+        "price": {
+          "current": 889,
+          "base": null,
+          "literPrice": 673
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4041"
+        },
+        "source": "ah",
+        "sourceId": "623919",
+        "productKey": "duvelduvelblond",
+        "brand": "Duvel",
+        "title": "Duvel Duvel Blond 16-pack",
+        "rawStore": "albert heijn",
+        "volume": "4 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi623919",
+        "price": {
+          "current": 3200,
+          "base": 3556,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "10% volume voordeel",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2999-12-31T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4042"
+        },
+        "source": "ah",
+        "sourceId": "158733",
+        "productKey": "hertogjanweizener|1800",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan Weizener 6-pack",
+        "rawStore": "albert heijn",
+        "volume": "6 x 0,3 l",
+        "packCount": 6,
+        "unitMl": 300,
+        "totalMl": 1800,
+        "uri": "https://www.ah.nl/producten/product/wi158733",
+        "price": {
+          "current": 599,
+          "base": 799,
+          "literPrice": 333
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "25% korting",
+          "startsAt": {
+            "$date": "2026-08-24T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4043"
+        },
+        "source": "ah",
+        "sourceId": "602596",
+        "productKey": "hertogjanweizener",
+        "brand": "Hertog Jan",
+        "title": "Hertog Jan Weizener 6-pack 2-pack",
+        "rawStore": "albert heijn",
+        "volume": "2 stuks",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": null,
+        "uri": "https://www.ah.nl/producten/product/wi602596",
+        "price": {
+          "current": 1198,
+          "base": 1598,
+          "literPrice": null
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "",
+          "startsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          },
+          "endsAt": {
+            "$date": "2026-08-30T00:00:00.000Z"
+          }
+        },
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4044"
+        },
+        "source": "ah",
+        "sourceId": "385744",
+        "productKey": "landerbrauweissbeer|500",
+        "brand": "Lander bräu",
+        "title": "Lander bräu Weiss beer",
+        "rawStore": "albert heijn",
+        "volume": "0,5 l",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "uri": "https://www.ah.nl/producten/product/wi385744",
+        "price": {
+          "current": 115,
+          "base": null,
+          "literPrice": 230
+        },
+        "isDiscounted": false,
+        "discount": {},
+        "store": "Albert Heijn",
+        "firstSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        },
+        "lastSeenAt": {
+          "$date": "2026-08-30T09:00:00.000Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4045"
+        },
+        "source": "biernet",
+        "sourceId": "74cc090046",
+        "productKey": "weihenstephanerhefeweisse|4000",
+        "brand": "Weihenstephaner Hefe Weisse",
+        "title": "Weihenstephaner Hefe Weisse",
+        "store": "Makro",
+        "rawStore": "Makro",
+        "volume": "set 8x0,50",
+        "packCount": 8,
+        "unitMl": 500,
+        "totalMl": 4000,
+        "alcoholPercentage": 5.4,
+        "color": "Licht Amber",
+        "price": {
+          "current": 1088,
+          "base": 1511,
+          "literPrice": 272
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-15T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.025Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.025Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4046"
+        },
+        "source": "biernet",
+        "sourceId": "e25e779507",
+        "productKey": "grolsch|1800",
+        "brand": "Grolsch Premium Pilsner",
+        "title": "Grolsch Premium Pilsner",
+        "store": "JUMBO",
+        "rawStore": "JUMBO",
+        "volume": "set 4x0,45",
+        "packCount": 4,
+        "unitMl": 450,
+        "totalMl": 1800,
+        "alcoholPercentage": 5,
+        "color": "Goudgeel",
+        "uri": "https://jumbo.com/producten/grolsch-pils-beugels-fles-4-x-450ml-168537DS",
+        "price": {
+          "current": 698,
+          "base": 928,
+          "literPrice": 388
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-22T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.024Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.024Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4047"
+        },
+        "source": "biernet",
+        "sourceId": "823c53c00a",
+        "productKey": "grolschfrisbittereipa|1200",
+        "brand": "Grolsch Frisbittere IPA",
+        "title": "Grolsch Frisbittere IPA",
+        "store": "JUMBO",
+        "rawStore": "JUMBO",
+        "volume": "set 4x0,30",
+        "packCount": 4,
+        "unitMl": 300,
+        "totalMl": 1200,
+        "alcoholPercentage": 5.5,
+        "color": "Goudgeel",
+        "uri": "https://jumbo.com/producten/grolsch-frisbittere-ipa-4-pack-fles-300ml-420822PAK",
+        "price": {
+          "current": 839,
+          "base": 1118,
+          "literPrice": 699
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-22T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.024Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.024Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4048"
+        },
+        "source": "biernet",
+        "sourceId": "09a46d6bbd",
+        "productKey": "grolschfrisbittereipa|1200",
+        "brand": "Grolsch Frisbittere IPA",
+        "title": "Grolsch Frisbittere IPA",
+        "store": "Plus",
+        "rawStore": "Plus",
+        "volume": "set 4x0,30",
+        "packCount": 4,
+        "unitMl": 300,
+        "totalMl": 1200,
+        "alcoholPercentage": 5.5,
+        "color": "Goudgeel",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-ipa-set-120-cl-289086",
+        "price": {
+          "current": 419,
+          "base": 559,
+          "literPrice": 349
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.023Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.023Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4049"
+        },
+        "source": "biernet",
+        "sourceId": "8eb435128f",
+        "productKey": "corona|7920",
+        "brand": "Corona",
+        "title": "Corona",
+        "store": "Sligro",
+        "rawStore": "Sligro",
+        "volume": "doos 24x0,33",
+        "packCount": 24,
+        "unitMl": 330,
+        "totalMl": 7920,
+        "alcoholPercentage": 4.6,
+        "color": "Blond",
+        "price": {
+          "current": 2903,
+          "base": 3871,
+          "literPrice": 367
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-21T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.021Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.021Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a404a"
+        },
+        "source": "biernet",
+        "sourceId": "d5df43412f",
+        "productKey": "grolschkruidigetripel|450",
+        "brand": "Grolsch Kruidige Tripel",
+        "title": "Grolsch Kruidige Tripel",
+        "store": "Plus",
+        "rawStore": "Plus",
+        "volume": "beugelfles",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": 450,
+        "alcoholPercentage": 8.3,
+        "color": "Goudgeel",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-tripel-beugelfles-fles-45-cl-316087",
+        "price": {
+          "current": 206,
+          "base": 275,
+          "literPrice": 458
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a404b"
+        },
+        "source": "biernet",
+        "sourceId": "b0ca76e774",
+        "productKey": "grolschklassiekeblond|450",
+        "brand": "Grolsch Klassieke Blond",
+        "title": "Grolsch Klassieke Blond",
+        "store": "Plus",
+        "rawStore": "Plus",
+        "volume": "beugelfles",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": 450,
+        "alcoholPercentage": 6.7,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-blond-beugelfles-fles-45-cl-338887",
+        "price": {
+          "current": 195,
+          "base": 260,
+          "literPrice": 433
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a404c"
+        },
+        "source": "biernet",
+        "sourceId": "bbcdcc2f50",
+        "productKey": "grolschpuurweizen|450",
+        "brand": "Grolsch Puur Weizen",
+        "title": "Grolsch Puur Weizen",
+        "store": "Plus",
+        "rawStore": "Plus",
+        "volume": "beugelfles",
+        "packCount": null,
+        "unitMl": null,
+        "totalMl": 450,
+        "alcoholPercentage": 5.1,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-weizen-beugel-fles-fles-45-cl-657943",
+        "price": {
+          "current": 150,
+          "base": 200,
+          "literPrice": 333
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a404d"
+        },
+        "source": "biernet",
+        "sourceId": "2950e297a3",
+        "productKey": "erdingerdunkel|500",
+        "brand": "Erdinger Dunkel",
+        "title": "Erdinger Dunkel",
+        "store": "Dirck III",
+        "rawStore": "Dirck III",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.3,
+        "color": "donker",
+        "price": {
+          "current": 250,
+          "base": 298,
+          "literPrice": 500
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a404e"
+        },
+        "source": "biernet",
+        "sourceId": "a46d63bc5b",
+        "productKey": "konigludwigweissbier|500",
+        "brand": "König Ludwig Weissbier",
+        "title": "König Ludwig Weissbier",
+        "store": "Makro",
+        "rawStore": "Makro",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.5,
+        "color": "Blond",
+        "price": {
+          "current": 1088,
+          "base": 1330,
+          "literPrice": 2176
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-15T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a404f"
+        },
+        "source": "biernet",
+        "sourceId": "217c9a278f",
+        "productKey": "erdingeralkoholfrei|500",
+        "brand": "Erdinger Alkoholfrei",
+        "title": "Erdinger Alkoholfrei",
+        "store": "Jan Linders",
+        "rawStore": "Jan Linders",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 0.5,
+        "color": "Goudgeel",
+        "price": {
+          "current": 300,
+          "base": 338,
+          "literPrice": 600
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4050"
+        },
+        "source": "biernet",
+        "sourceId": "4a58743d40",
+        "productKey": "erdingeralkoholfrei|500",
+        "brand": "Erdinger Alkoholfrei",
+        "title": "Erdinger Alkoholfrei",
+        "store": "Dirck III",
+        "rawStore": "Dirck III",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 0.5,
+        "color": "Goudgeel",
+        "price": {
+          "current": 250,
+          "base": 278,
+          "literPrice": 500
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4051"
+        },
+        "source": "biernet",
+        "sourceId": "5139788052",
+        "productKey": "paulanerhefeweisse|500",
+        "brand": "Paulaner Hefe Weisse",
+        "title": "Paulaner Hefe Weisse",
+        "store": "Coop",
+        "rawStore": "Coop",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.5,
+        "color": "Geelbruin",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4066600641964/Paulaner-Hefe-weissbier",
+        "price": {
+          "current": 172,
+          "base": 229,
+          "literPrice": 344
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.019Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4052"
+        },
+        "source": "biernet",
+        "sourceId": "ce3f646744",
+        "productKey": "paulanerhefeweisse|500",
+        "brand": "Paulaner Hefe Weisse",
+        "title": "Paulaner Hefe Weisse",
+        "store": "Makro",
+        "rawStore": "Makro",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.5,
+        "color": "Geelbruin",
+        "price": {
+          "current": 1088,
+          "base": 1705,
+          "literPrice": 2176
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-15T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4053"
+        },
+        "source": "biernet",
+        "sourceId": "af762480f9",
+        "productKey": "hertogjangrandprestige|500",
+        "brand": "Hertog Jan Grand Prestige",
+        "title": "Hertog Jan Grand Prestige",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 10,
+        "color": "Donkerbruin",
+        "uri": "https://www.ah.nl/producten/product/wi234170/hertog-jan-grand-prestige-bier",
+        "price": {
+          "current": 539,
+          "base": 719,
+          "literPrice": 1078
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4054"
+        },
+        "source": "biernet",
+        "sourceId": "eb7b7416d9",
+        "productKey": "franziskanerweissbierdunkel|500",
+        "brand": "Franziskaner Weissbier Dunkel",
+        "title": "Franziskaner Weissbier Dunkel",
+        "store": "Makro",
+        "rawStore": "Makro",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5,
+        "color": "donker",
+        "price": {
+          "current": 1088,
+          "base": 1354,
+          "literPrice": 2176
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-15T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4055"
+        },
+        "source": "biernet",
+        "sourceId": "157439bdaa",
+        "productKey": "benediktinerweissbieralkoholfrei|500",
+        "brand": "Benediktiner Weissbier Alkoholfrei",
+        "title": "Benediktiner Weissbier Alkoholfrei",
+        "store": "Hoogvliet",
+        "rawStore": "Hoogvliet",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 0,
+        "color": "Goudgeel",
+        "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/benediktiner-weissbier-alcoholvrij",
+        "price": {
+          "current": 275,
+          "base": 366,
+          "literPrice": 550
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4056"
+        },
+        "source": "biernet",
+        "sourceId": "4c8cedbcf9",
+        "productKey": "benediktinerweissbierdunkel|500",
+        "brand": "Benediktiner Weissbier Dunkel",
+        "title": "Benediktiner Weissbier Dunkel",
+        "store": "Coop",
+        "rawStore": "Coop",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.4,
+        "color": "Donker",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4052197001236/Benediktiner-Weissbier-Dunkel",
+        "price": {
+          "current": 127,
+          "base": 169,
+          "literPrice": 254
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4057"
+        },
+        "source": "biernet",
+        "sourceId": "fa84317ba0",
+        "productKey": "benediktinerweissbier|500",
+        "brand": "Benediktiner Weissbier",
+        "title": "Benediktiner Weissbier",
+        "store": "Coop",
+        "rawStore": "Coop",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.4,
+        "color": "geel-goud",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4052197000291/Benediktiner-Weissbier-fles",
+        "price": {
+          "current": 134,
+          "base": 179,
+          "literPrice": 268
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.018Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4058"
+        },
+        "source": "biernet",
+        "sourceId": "aad44e0568",
+        "productKey": "benediktinerweissbier|500",
+        "brand": "Benediktiner Weissbier",
+        "title": "Benediktiner Weissbier",
+        "store": "Hoogvliet",
+        "rawStore": "Hoogvliet",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.4,
+        "color": "geel-goud",
+        "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/benediktiner-weissbier1",
+        "price": {
+          "current": 262,
+          "base": 350,
+          "literPrice": 524
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4059"
+        },
+        "source": "biernet",
+        "sourceId": "0db24a5588",
+        "productKey": "erdingerhefeweisse|500",
+        "brand": "Erdinger Hefe Weisse",
+        "title": "Erdinger Hefe Weisse",
+        "store": "Jan Linders",
+        "rawStore": "Jan Linders",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.3,
+        "color": "Blond",
+        "price": {
+          "current": 300,
+          "base": 358,
+          "literPrice": 600
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a405a"
+        },
+        "source": "biernet",
+        "sourceId": "b3b1496cbf",
+        "productKey": "erdingerhefeweisse|500",
+        "brand": "Erdinger Hefe Weisse",
+        "title": "Erdinger Hefe Weisse",
+        "store": "Coop",
+        "rawStore": "Coop",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.3,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4002103000013/Erdinger-Weissbier",
+        "price": {
+          "current": 141,
+          "base": 188,
+          "literPrice": 282
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a405b"
+        },
+        "source": "biernet",
+        "sourceId": "f29cfcc87c",
+        "productKey": "erdingerhefeweisse|500",
+        "brand": "Erdinger Hefe Weisse",
+        "title": "Erdinger Hefe Weisse",
+        "store": "Dirck III",
+        "rawStore": "Dirck III",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.3,
+        "color": "Blond",
+        "price": {
+          "current": 250,
+          "base": 298,
+          "literPrice": 500
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a405c"
+        },
+        "source": "biernet",
+        "sourceId": "53c41c34de",
+        "productKey": "erdingerhefeweisse|500",
+        "brand": "Erdinger Hefe Weisse",
+        "title": "Erdinger Hefe Weisse",
+        "store": "Makro",
+        "rawStore": "Makro",
+        "volume": "fles 50cl",
+        "packCount": 1,
+        "unitMl": 500,
+        "totalMl": 500,
+        "alcoholPercentage": 5.3,
+        "color": "Blond",
+        "price": {
+          "current": 1088,
+          "base": 1439,
+          "literPrice": 2176
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-15T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a405d"
+        },
+        "source": "biernet",
+        "sourceId": "f71a783d4e",
+        "productKey": "tripelkarmeliet|750",
+        "brand": "Tripel Karmeliet",
+        "title": "Tripel Karmeliet",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "fles 75cl",
+        "packCount": 1,
+        "unitMl": 750,
+        "totalMl": 750,
+        "alcoholPercentage": 8.4,
+        "color": "Blond",
+        "uri": "https://www.ah.nl/producten/product/wi222828/tripel-karmeliet-bier",
+        "price": {
+          "current": 404,
+          "base": 539,
+          "literPrice": 539
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.017Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a405e"
+        },
+        "source": "biernet",
+        "sourceId": "29e5c709f5",
+        "productKey": "duvel|750",
+        "brand": "Duvel",
+        "title": "Duvel",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "fles 75cl",
+        "packCount": 1,
+        "unitMl": 750,
+        "totalMl": 750,
+        "alcoholPercentage": 8.5,
+        "color": "Blond",
+        "uri": "https://www.ah.nl/producten/product/wi215088/duvel-blond",
+        "price": {
+          "current": 424,
+          "base": 565,
+          "literPrice": 565
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a405f"
+        },
+        "source": "biernet",
+        "sourceId": "8c42ec78f3",
+        "productKey": "jupiler|250",
+        "brand": "Jupiler Pils",
+        "title": "Jupiler Pils",
+        "store": "Jan Linders",
+        "rawStore": "Jan Linders",
+        "volume": "flesje 25cl",
+        "packCount": 1,
+        "unitMl": 250,
+        "totalMl": 250,
+        "alcoholPercentage": 5.2,
+        "color": "Blond",
+        "price": {
+          "current": 1299,
+          "base": 1680,
+          "literPrice": 5196
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4060"
+        },
+        "source": "biernet",
+        "sourceId": "d6c3646473",
+        "productKey": "cuveedestrolls|250",
+        "brand": "Cuvée des Trolls",
+        "title": "Cuvée des Trolls",
+        "store": "Dirck III",
+        "rawStore": "Dirck III",
+        "volume": "flesje 25cl",
+        "packCount": 1,
+        "unitMl": 250,
+        "totalMl": 250,
+        "alcoholPercentage": 7,
+        "color": "Blond",
+        "price": {
+          "current": 100,
+          "base": 133,
+          "literPrice": 400
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4061"
+        },
+        "source": "biernet",
+        "sourceId": "1d43651d7e",
+        "productKey": "grisetteblond|250",
+        "brand": "Grisette Blond",
+        "title": "Grisette Blond",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "flesje 25cl",
+        "packCount": 1,
+        "unitMl": 250,
+        "totalMl": 250,
+        "alcoholPercentage": 5.5,
+        "color": "Goudgeel",
+        "uri": "https://www.ah.nl/producten/product/wi494083/grisette-bio-blond",
+        "price": {
+          "current": 314,
+          "base": 418,
+          "literPrice": 1256
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4062"
+        },
+        "source": "biernet",
+        "sourceId": "f13463a82e",
+        "productKey": "jupiler|6000",
+        "brand": "Jupiler Pils",
+        "title": "Jupiler Pils",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "krat 24x0,25",
+        "packCount": 24,
+        "unitMl": 250,
+        "totalMl": 6000,
+        "alcoholPercentage": 5.2,
+        "color": "Blond",
+        "uri": "https://www.ah.nl/producten/product/wi113050/jupiler-belgisch-pils-krat",
+        "price": {
+          "current": 1369,
+          "base": 1825,
+          "literPrice": 228
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4063"
+        },
+        "source": "biernet",
+        "sourceId": "e1d08683cc",
+        "productKey": "jupiler|6000",
+        "brand": "Jupiler Pils",
+        "title": "Jupiler Pils",
+        "store": "Jan Linders",
+        "rawStore": "Jan Linders",
+        "volume": "krat 24x0,25",
+        "packCount": 24,
+        "unitMl": 250,
+        "totalMl": 6000,
+        "alcoholPercentage": 5.2,
+        "color": "Blond",
+        "price": {
+          "current": 1299,
+          "base": 1732,
+          "literPrice": 217
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4064"
+        },
+        "source": "biernet",
+        "sourceId": "ee4ba1a1de",
+        "productKey": "jupiler|6000",
+        "brand": "Jupiler Pils",
+        "title": "Jupiler Pils",
+        "store": "Dirck III",
+        "rawStore": "Dirck III",
+        "volume": "krat 24x0,25",
+        "packCount": 24,
+        "unitMl": 250,
+        "totalMl": 6000,
+        "alcoholPercentage": 5.2,
+        "color": "Blond",
+        "price": {
+          "current": 2715,
+          "base": 3430,
+          "literPrice": 453
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.016Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4065"
+        },
+        "source": "biernet",
+        "sourceId": "322133675c",
+        "productKey": "jupiler|6000",
+        "brand": "Jupiler Pils",
+        "title": "Jupiler Pils",
+        "store": "Hoogvliet",
+        "rawStore": "Hoogvliet",
+        "volume": "krat 24x0,25",
+        "packCount": 24,
+        "unitMl": 250,
+        "totalMl": 6000,
+        "alcoholPercentage": 5.2,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/jupiler-bier-fles-krat",
+        "price": {
+          "current": 1286,
+          "base": 1715,
+          "literPrice": 214
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4066"
+        },
+        "source": "biernet",
+        "sourceId": "2b9e7716d9",
+        "productKey": "jupiler|6000",
+        "brand": "Jupiler Pils",
+        "title": "Jupiler Pils",
+        "store": "Makro",
+        "rawStore": "Makro",
+        "volume": "krat 24x0,25",
+        "packCount": 24,
+        "unitMl": 250,
+        "totalMl": 6000,
+        "alcoholPercentage": 5.2,
+        "color": "Blond",
+        "price": {
+          "current": 1330,
+          "base": 1814,
+          "literPrice": 222
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-15T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4067"
+        },
+        "source": "biernet",
+        "sourceId": "328c2ab83a",
+        "productKey": "leffeblond|6000",
+        "brand": "Leffe Blond",
+        "title": "Leffe Blond",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "krat 24x0,25",
+        "packCount": 24,
+        "unitMl": 250,
+        "totalMl": 6000,
+        "alcoholPercentage": 6.6,
+        "color": "Goudblond",
+        "uri": "https://www.ah.nl/producten/product/wi492095/leffe-blond-abdijbier-krat",
+        "price": {
+          "current": 1599,
+          "base": 2132,
+          "literPrice": 267
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4068"
+        },
+        "source": "biernet",
+        "sourceId": "7375935365",
+        "productKey": "leffeblond|6000",
+        "brand": "Leffe Blond",
+        "title": "Leffe Blond",
+        "store": "Makro",
+        "rawStore": "Makro",
+        "volume": "krat 24x0,25",
+        "packCount": 24,
+        "unitMl": 250,
+        "totalMl": 6000,
+        "alcoholPercentage": 6.6,
+        "color": "Goudblond",
+        "price": {
+          "current": 1814,
+          "base": 2140,
+          "literPrice": 302
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-15T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4069"
+        },
+        "source": "biernet",
+        "sourceId": "92d36ccef8",
+        "productKey": "grolschkruidigetripel|900",
+        "brand": "Grolsch Kruidige Tripel",
+        "title": "Grolsch Kruidige Tripel",
+        "store": "JUMBO",
+        "rawStore": "JUMBO",
+        "volume": "Duopack (2x0,45)",
+        "packCount": 2,
+        "unitMl": 450,
+        "totalMl": 900,
+        "alcoholPercentage": 8.3,
+        "color": "Goudgeel",
+        "uri": "https://jumbo.com/producten/grolsch-kruidige-tripel-2-x-450ml-bruine-beugel-348742PAK",
+        "price": {
+          "current": 816,
+          "base": 1088,
+          "literPrice": 907
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-22T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.015Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a406a"
+        },
+        "source": "biernet",
+        "sourceId": "4c90c718a5",
+        "productKey": "grolschkruidigetripel|900",
+        "brand": "Grolsch Kruidige Tripel",
+        "title": "Grolsch Kruidige Tripel",
+        "store": "Plus",
+        "rawStore": "Plus",
+        "volume": "Duopack (2x0,45)",
+        "packCount": 2,
+        "unitMl": 450,
+        "totalMl": 900,
+        "alcoholPercentage": 8.3,
+        "color": "Goudgeel",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-tripel-beugelfles-set-90-cl-289092",
+        "price": {
+          "current": 412,
+          "base": 549,
+          "literPrice": 458
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.014Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.014Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a406b"
+        },
+        "source": "biernet",
+        "sourceId": "22c3ee34b7",
+        "productKey": "grolschklassiekeblond|900",
+        "brand": "Grolsch Klassieke Blond",
+        "title": "Grolsch Klassieke Blond",
+        "store": "JUMBO",
+        "rawStore": "JUMBO",
+        "volume": "Duopack (2x0,45)",
+        "packCount": 2,
+        "unitMl": 450,
+        "totalMl": 900,
+        "alcoholPercentage": 6.7,
+        "color": "Blond",
+        "uri": "https://jumbo.com/producten/grolsch-klassieke-blond-2-x-450ml-bruine-beugel-348740DS",
+        "price": {
+          "current": 771,
+          "base": 1026,
+          "literPrice": 857
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-22T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.014Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.014Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a406c"
+        },
+        "source": "biernet",
+        "sourceId": "b9b17c6abc",
+        "productKey": "grolschklassiekeblond|900",
+        "brand": "Grolsch Klassieke Blond",
+        "title": "Grolsch Klassieke Blond",
+        "store": "Plus",
+        "rawStore": "Plus",
+        "volume": "Duopack (2x0,45)",
+        "packCount": 2,
+        "unitMl": 450,
+        "totalMl": 900,
+        "alcoholPercentage": 6.7,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-blond-beugelfles-set-90-cl-289087",
+        "price": {
+          "current": 389,
+          "base": 519,
+          "literPrice": 432
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.014Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.014Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a406d"
+        },
+        "source": "biernet",
+        "sourceId": "504998eb57",
+        "productKey": "grolschzomerbok|900",
+        "brand": "Grolsch Zomerbok",
+        "title": "Grolsch Zomerbok",
+        "store": "Plus",
+        "rawStore": "Plus",
+        "volume": "set 3x0,30",
+        "packCount": 3,
+        "unitMl": 300,
+        "totalMl": 900,
+        "alcoholPercentage": 6.4,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12479&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.plus.nl/product/grolsch-zomerbok-fles-90-cl-933698",
+        "price": {
+          "current": 276,
+          "base": 368,
+          "literPrice": 307
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a406e"
+        },
+        "source": "biernet",
+        "sourceId": "2ec2bafbd8",
+        "productKey": "liefmansfruitesse|1000",
+        "brand": "Liefmans fruitesse",
+        "title": "Liefmans fruitesse",
+        "store": "DekaMarkt",
+        "rawStore": "DekaMarkt",
+        "volume": "set fles 4x0,25",
+        "packCount": 4,
+        "unitMl": 250,
+        "totalMl": 1000,
+        "alcoholPercentage": 3.8,
+        "color": "Rood",
+        "price": {
+          "current": 449,
+          "base": 599,
+          "literPrice": 449
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a406f"
+        },
+        "source": "biernet",
+        "sourceId": "6d097b93cc",
+        "productKey": "liefmansfruitessealcoholvrij|1000",
+        "brand": "Liefmans Fruitesse Alcoholvrij",
+        "title": "Liefmans Fruitesse Alcoholvrij",
+        "store": "DekaMarkt",
+        "rawStore": "DekaMarkt",
+        "volume": "set fles 4x0,25",
+        "packCount": 4,
+        "unitMl": 250,
+        "totalMl": 1000,
+        "alcoholPercentage": 0.5,
+        "color": "Rood",
+        "price": {
+          "current": 374,
+          "base": 499,
+          "literPrice": 374
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4070"
+        },
+        "source": "biernet",
+        "sourceId": "f363ae36b6",
+        "productKey": "cornetoaked|1320",
+        "brand": "Cornet Oaked",
+        "title": "Cornet Oaked",
+        "store": "JUMBO",
+        "rawStore": "JUMBO",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 8.5,
+        "color": "goudblond",
+        "uri": "https://jumbo.com/producten/cornet-oaked-sterk-blond-speciaal-bier-fles-174917DS",
+        "price": {
+          "current": 1113,
+          "base": 1484,
+          "literPrice": 843
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.013Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4071"
+        },
+        "source": "biernet",
+        "sourceId": "11a854ec83",
+        "productKey": "duvel|1320",
+        "brand": "Duvel",
+        "title": "Duvel",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 8.5,
+        "color": "Blond",
+        "uri": "https://www.ah.nl/producten/product/wi445543/duvel-blond-4-pack",
+        "price": {
+          "current": 554,
+          "base": 739,
+          "literPrice": 420
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4072"
+        },
+        "source": "biernet",
+        "sourceId": "f60a1687c8",
+        "productKey": "duvel|1320",
+        "brand": "Duvel",
+        "title": "Duvel",
+        "store": "DekaMarkt",
+        "rawStore": "DekaMarkt",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 8.5,
+        "color": "Blond",
+        "price": {
+          "current": 539,
+          "base": 719,
+          "literPrice": 408
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4073"
+        },
+        "source": "biernet",
+        "sourceId": "60c14f4dc6",
+        "productKey": "tripelkarmeliet|1320",
+        "brand": "Tripel Karmeliet",
+        "title": "Tripel Karmeliet",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 8.4,
+        "color": "Blond",
+        "uri": "https://www.ah.nl/producten/product/wi438908/tripel-karmeliet-speciaalbier-4-pack",
+        "price": {
+          "current": 599,
+          "base": 799,
+          "literPrice": 454
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4074"
+        },
+        "source": "biernet",
+        "sourceId": "e17bba6a54",
+        "productKey": "tripelkarmeliet|1320",
+        "brand": "Tripel Karmeliet",
+        "title": "Tripel Karmeliet",
+        "store": "Spar Buurt",
+        "rawStore": "Spar Buurt",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 8.4,
+        "color": "Blond",
+        "price": {
+          "current": 1244,
+          "base": 1658,
+          "literPrice": 942
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-16T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4075"
+        },
+        "source": "biernet",
+        "sourceId": "3b6e95bc75",
+        "productKey": "duveltripelhopcitra|1320",
+        "brand": "Duvel Tripel Hop Citra",
+        "title": "Duvel Tripel Hop Citra",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 9.5,
+        "color": "Goud Helder",
+        "uri": "https://www.ah.nl/producten/product/wi346185/duvel-tripel-hop-citra-4-pack",
+        "price": {
+          "current": 674,
+          "base": 899,
+          "literPrice": 511
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4076"
+        },
+        "source": "biernet",
+        "sourceId": "ce960db222",
+        "productKey": "jopenmooienel|1320",
+        "brand": "Jopen Mooie Nel",
+        "title": "Jopen Mooie Nel",
+        "store": "Hoogvliet",
+        "rawStore": "Hoogvliet",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 6.5,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/jopen-mooie-nel1",
+        "price": {
+          "current": 1380,
+          "base": 1840,
+          "literPrice": 1045
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4077"
+        },
+        "source": "biernet",
+        "sourceId": "b1252486f1",
+        "productKey": "lowlandertropicalale|1320",
+        "brand": "Lowlander Tropical Ale",
+        "title": "Lowlander Tropical Ale",
+        "store": "Hoogvliet",
+        "rawStore": "Hoogvliet",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 3.8,
+        "color": "Goudgeel",
+        "uri": "https://www.awin1.com/cread.php?awinmid=21926&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.hoogvliet.com/product/lowlander-tropical-ale1",
+        "price": {
+          "current": 672,
+          "base": 896,
+          "literPrice": 509
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4078"
+        },
+        "source": "biernet",
+        "sourceId": "765a2ad6b1",
+        "productKey": "cornetalcoholfree|1320",
+        "brand": "Cornet Alcohol-free",
+        "title": "Cornet Alcohol-free",
+        "store": "JUMBO",
+        "rawStore": "JUMBO",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 0.3,
+        "color": "Goudgeel",
+        "uri": "https://jumbo.com/producten/cornet-belgisch-blond-alcoholvrij-0%2C3-fles-4-x-330ml-441260PAK",
+        "price": {
+          "current": 890,
+          "base": 1186,
+          "literPrice": 674
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-08T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.012Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4079"
+        },
+        "source": "biernet",
+        "sourceId": "1e7fdd8f4c",
+        "productKey": "duvel|1320",
+        "brand": "Duvel 666",
+        "title": "Duvel 666",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 6.66,
+        "color": "Goudblond",
+        "uri": "https://www.ah.nl/producten/product/wi500334/duvel-666-4-pack",
+        "price": {
+          "current": 577,
+          "base": 769,
+          "literPrice": 437
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.011Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.011Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a407a"
+        },
+        "source": "biernet",
+        "sourceId": "ce9ab846f5",
+        "productKey": "duvel|1320",
+        "brand": "Duvel 666",
+        "title": "Duvel 666",
+        "store": "DekaMarkt",
+        "rawStore": "DekaMarkt",
+        "volume": "4pack fles 4x0,33",
+        "packCount": 4,
+        "unitMl": 330,
+        "totalMl": 1320,
+        "alcoholPercentage": 6.66,
+        "color": "Goudblond",
+        "price": {
+          "current": 569,
+          "base": 759,
+          "literPrice": 431
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-12T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.011Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.011Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a407b"
+        },
+        "source": "biernet",
+        "sourceId": "a918f1f4e1",
+        "productKey": "lagunitasipa|1420",
+        "brand": "Lagunitas IPA",
+        "title": "Lagunitas IPA",
+        "store": "Albert Heijn",
+        "rawStore": "Albert Heijn",
+        "volume": "set fles (4 x 35,5cl)",
+        "packCount": 4,
+        "unitMl": 355,
+        "totalMl": 1420,
+        "alcoholPercentage": 6.2,
+        "color": "Geel, bruin",
+        "uri": "https://www.ah.nl/producten/product/wi460891/lagunitas-ipa-4-pack",
+        "price": {
+          "current": 4495,
+          "base": 5394,
+          "literPrice": 3165
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a407c"
+        },
+        "source": "biernet",
+        "sourceId": "a469c58c9f",
+        "productKey": "lagunitasipa|1420",
+        "brand": "Lagunitas IPA",
+        "title": "Lagunitas IPA",
+        "store": "JUMBO",
+        "rawStore": "JUMBO",
+        "volume": "set fles (4 x 35,5cl)",
+        "packCount": 4,
+        "unitMl": 355,
+        "totalMl": 1420,
+        "alcoholPercentage": 6.2,
+        "color": "Geel, bruin",
+        "uri": "https://jumbo.com/producten/lagunitas-ipa-bier-fles-4-x-35-5cl-345079PAK",
+        "price": {
+          "current": 1335,
+          "base": 1780,
+          "literPrice": 940
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-22T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a407d"
+        },
+        "source": "biernet",
+        "sourceId": "989911f4f1",
+        "productKey": "tsingtao|1980",
+        "brand": "Tsingtao",
+        "title": "Tsingtao",
+        "store": "Lidl",
+        "rawStore": "Lidl",
+        "volume": "sixpack fles 6x0,33",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "alcoholPercentage": 4.7,
+        "color": "Blond",
+        "price": {
+          "current": 499,
+          "base": 659,
+          "literPrice": 252
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a407e"
+        },
+        "source": "biernet",
+        "sourceId": "bbc3a02658",
+        "productKey": "warsteinerradler|1980",
+        "brand": "Warsteiner Radler",
+        "title": "Warsteiner Radler",
+        "store": "Poiesz",
+        "rawStore": "Poiesz",
+        "volume": "sixpack fles 6x0,33",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "alcoholPercentage": 2.5,
+        "color": "Blond",
+        "price": {
+          "current": 399,
+          "base": 499,
+          "literPrice": 202
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a407f"
+        },
+        "source": "biernet",
+        "sourceId": "3bd774708b",
+        "productKey": "warsteinerradler|1980",
+        "brand": "Warsteiner Radler",
+        "title": "Warsteiner Radler",
+        "store": "Coop",
+        "rawStore": "Coop",
+        "volume": "sixpack fles 6x0,33",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "alcoholPercentage": 2.5,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4000856107133/Warsteiner-Radler-00-citroen-bier-fles-6-x-33-cl",
+        "price": {
+          "current": 524,
+          "base": 1048,
+          "literPrice": 265
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.010Z"
+        }
+      },
+      {
+        "_id": {
+          "$oid": "0000000000005af3107a4080"
+        },
+        "source": "biernet",
+        "sourceId": "df4331cb07",
+        "productKey": "warsteineralkoholfrei|1980",
+        "brand": "Warsteiner Premium Alkoholfrei",
+        "title": "Warsteiner Premium Alkoholfrei",
+        "store": "Coop",
+        "rawStore": "Coop",
+        "volume": "sixpack fles 6x0,33",
+        "packCount": 6,
+        "unitMl": 330,
+        "totalMl": 1980,
+        "alcoholPercentage": 0.5,
+        "color": "Blond",
+        "uri": "https://www.awin1.com/cread.php?awinmid=12871&awinaffid=371119&clickref=REFERENTIEHIER&ued=https://www.coop.nl/product/4000856154991/Warsteiner-Alkoholfrei-pils-fles-6-x-33-cl",
+        "price": {
+          "current": 473,
+          "base": 946,
+          "literPrice": 239
+        },
+        "isDiscounted": true,
+        "discount": {
+          "mechanism": "korting",
+          "endsAt": {
+            "$date": "2023-08-06T22:00:00.000Z"
+          }
+        },
+        "firstSeenAt": {
+          "$date": "2023-08-06T20:26:25.009Z"
+        },
+        "lastSeenAt": {
+          "$date": "2023-08-06T20:26:25.009Z"
+        }
+      }
+    ]
 ---
 apiVersion: v1
 kind: Service

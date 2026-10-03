@@ -4,6 +4,9 @@ const router = express.Router()
 const discounts = require('./discounts')
 router.use(discounts)
 
+const products = require('./products')
+router.use(products)
+
 const store = require('./stores')
 router.use(store)
 

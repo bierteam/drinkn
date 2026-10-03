@@ -66,3 +66,15 @@ resources:
       cpu: 10m
       memory: 32Mi
       ephemeral-storage: 64Mi
+  # Unlike the numbers above, this one is not sized from observed usage -- the
+  # job had no requests at all before, so there is nothing to have observed. It
+  # holds a whole biernet join and the ~900-product AH assortment in memory at
+  # once, so it starts level with pilsBackend rather than lower. Worth replacing
+  # with a real figure from `kubectl top pod` after a few live runs: too low is
+  # not an OOM here (there is no limit) but it does make the pod a candidate for
+  # eviction, which is the thing these requests exist to avoid.
+  discountsImport:
+    requests:
+      cpu: 25m
+      memory: 128Mi
+      ephemeral-storage: 128Mi
