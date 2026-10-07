@@ -22,7 +22,7 @@ importers:
         version: 2.0.0
       connect-mongo:
         specifier: ^6.0.0
-        version: 6.0.0(express-session@1.19.0(supports-color@5.5.0))(mongodb@7.5.0)(supports-color@5.5.0)
+        version: 6.0.0(express-session@1.19.0(supports-color@5.5.0))(mongodb@7.7.0)(supports-color@5.5.0)
       cors:
         specifier: ^2.8.5
         version: 2.8.6
@@ -46,7 +46,7 @@ importers:
         version: 2.31.0
       mongoose:
         specifier: ^9.0.0
-        version: 9.9.4
+        version: 9.11.1
       openid-client:
         specifier: ^6.8.7
         version: 6.8.8
@@ -1687,8 +1687,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  kareem@3.3.0:
-    resolution: {integrity: sha512-kpSuLD3/7RenBnjnJdOHXCKC8dTd1JzeOiJhN0necWWci6cC+qX+VuwPnMVgb+a4+KNJSfgqahpnfWaeDXCimw==}
+  kareem@3.4.0:
+    resolution: {integrity: sha512-JAKhnR4S027v/8949QXNInRskgETCg9rFUMi1VjhGbjX+XltCAAEFcXykkSocNkom1kc66EMJfjWvhj87BDQKg==}
     engines: {node: '>=18.0.0'}
 
   keyv@5.6.0:
@@ -1800,8 +1800,8 @@ packages:
     resolution: {integrity: sha512-ZoS07RoFqpKYQwAk59qmrx8+jJHNHU30UjlU96QktiGn1ltvDr+vCznLX5DiUBLEpMAHatHNWV1nM/74ul66kA==}
     engines: {node: '>=20.19.0'}
 
-  mongodb@7.5.0:
-    resolution: {integrity: sha512-5FnrEDLnvp6ycUOGLNLLU33BfCx2qmp2mJjGPDwKLruYsVzXVSK5fsGpoDXvsXJwBfBsD7ebMRdawbDxC2814g==}
+  mongodb@7.7.0:
+    resolution: {integrity: sha512-XG1xXEqyouAV8GCb3PuRaujofeXKpAJAPvXYWZgHl6Dz4QHSJ1nRLl0+GpqaLTwKvC0RFE9truOur34RNFY1nw==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.806.0
@@ -1827,8 +1827,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@9.9.4:
-    resolution: {integrity: sha512-Gc7buf0ExrOZ3t8MD8tVzTek7Qr5d+tEwj4GRFmHCtTZvpaDb38EVsXgCkYacPL9ICAftgS+FGe+dQHLRLHhcw==}
+  mongoose@9.11.1:
+    resolution: {integrity: sha512-fVtjTVACOtAb0PjDDF+O5NebcEJy5JpAH+AXk16/5i36w38YkW6MZ+KWV54bdIOJFymDz1VjjA5Xg6L2QfjQjQ==}
     engines: {node: '>=20.19.0'}
 
   mpath@0.9.0:
@@ -3425,12 +3425,12 @@ snapshots:
 
   connect-history-api-fallback@2.0.0: {}
 
-  connect-mongo@6.0.0(express-session@1.19.0(supports-color@5.5.0))(mongodb@7.5.0)(supports-color@5.5.0):
+  connect-mongo@6.0.0(express-session@1.19.0(supports-color@5.5.0))(mongodb@7.7.0)(supports-color@5.5.0):
     dependencies:
       debug: 4.4.3(supports-color@5.5.0)
       express-session: 1.19.0(supports-color@5.5.0)
       kruptein: 3.0.8
-      mongodb: 7.5.0
+      mongodb: 7.7.0
     transitivePeerDependencies:
       - supports-color
 
@@ -4281,7 +4281,7 @@ snapshots:
 
   json5@2.2.3: {}
 
-  kareem@3.3.0: {}
+  kareem@3.4.0: {}
 
   keyv@5.6.0:
     dependencies:
@@ -4367,17 +4367,17 @@ snapshots:
       '@types/whatwg-url': 13.0.0
       whatwg-url: 14.2.0
 
-  mongodb@7.5.0:
+  mongodb@7.7.0:
     dependencies:
       '@mongodb-js/saslprep': 1.5.0
       bson: 7.3.2
       mongodb-connection-string-url: 7.0.2
 
-  mongoose@9.9.4:
+  mongoose@9.11.1:
     dependencies:
       '@standard-schema/spec': 1.1.0
-      kareem: 3.3.0
-      mongodb: 7.5.0
+      kareem: 3.4.0
+      mongodb: 7.7.0
       mpath: 0.9.0
       mquery: 6.0.0
       ms: 2.1.3
