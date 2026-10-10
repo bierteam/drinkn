@@ -19,7 +19,7 @@
     "eslint": "^10.9.1",
     "globals": "^17.11.0",
     "jest": "^30.5.0",
-    "pnpm": "^11.24.0"
+    "pnpm": "^12.0.0"
   },
   "homepage": "https://github.com/bierteam/import-bier/docs/README.md",
   "license": "MIT",
