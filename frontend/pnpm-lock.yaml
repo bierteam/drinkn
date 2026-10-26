@@ -19,7 +19,7 @@ importers:
         version: 5.10.0(eslint@10.11.0(supports-color@7.2.0))
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
-        version: 6.0.9(vite@8.2.2)(vue@3.5.43)
+        version: 6.0.9(vite@8.2.4)(vue@3.5.43)
       '@vitest/coverage-v8':
         specifier: 4.1.11
         version: 4.1.11(vitest@4.1.11)
@@ -61,10 +61,10 @@ importers:
         version: 6.1.3
       vite:
         specifier: ^8.0.0
-        version: 8.2.2
+        version: 8.2.4
       vitest:
         specifier: ^4.0.0
-        version: 4.1.11(@vitest/coverage-v8@4.1.11)(jsdom@30.1.1)(vite@8.2.2)
+        version: 4.1.11(@vitest/coverage-v8@4.1.11)(jsdom@30.1.1)(vite@8.2.4)
       vue:
         specifier: ^3.5.42
         version: 3.5.43
@@ -73,7 +73,7 @@ importers:
         version: 10.4.1(eslint@10.11.0(supports-color@7.2.0))(supports-color@7.2.0)
       vue-router:
         specifier: ^5.0.0
-        version: 5.3.1(@vue/compiler-sfc@3.5.42)(rolldown@1.2.6)(vite@8.2.2)(vue@3.5.43)
+        version: 5.3.1(@vue/compiler-sfc@3.5.42)(rolldown@1.2.6)(vite@8.2.4)(vue@3.5.43)
 
 packages:
 
@@ -1166,10 +1166,6 @@ packages:
     resolution: {integrity: sha512-KvvtD7SrlBP7dlgkBghEE3r84CABm5SmV2aNcG4oCA+qDnJ/tvKonFVvwWAyyWUEwxuNawdfEAZKP9zM3oZ2Uw==}
     engines: {node: '>=4'}
 
-  postcss@8.5.26:
-    resolution: {integrity: sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==}
-    engines: {node: ^10 || ^12 || >=14}
-
   postcss@8.5.28:
     resolution: {integrity: sha512-RRuzqDtt5Y9h3quz5hWhK+TPnsmVs6WwSU6LkJMeY4HstUEDuYTG8UJSdawMRzmzAtV+KEoG8N3Qg2qLy5vM/A==}
     engines: {node: ^10 || ^12 || >=14}
@@ -1335,8 +1331,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  vite@8.2.2:
-    resolution: {integrity: sha512-cFKLV/PRgAUlIRm5WjMjJ86jrftzpqcgH+Us+DS8mI3CDNiH30Whrz8uHL3+MOLPAgqbMBAqWdAHAphOAM+z/Q==}
+  vite@8.2.4:
+    resolution: {integrity: sha512-lfauXnrf2x0p+UoA+wXh0dgFWnUjCyG6Js95KBkgaCwUU9k0DAHI4W6Q0WCx+h+5g+Alce1y4Zi2QjjK0UvGBw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -1733,10 +1729,10 @@ snapshots:
 
   '@typescript-eslint/types@8.68.0': {}
 
-  '@vitejs/plugin-vue@6.0.9(vite@8.2.2)(vue@3.5.43)':
+  '@vitejs/plugin-vue@6.0.9(vite@8.2.4)(vue@3.5.43)':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.2.2
+      vite: 8.2.4
       vue: 3.5.43
 
   '@vitest/coverage-v8@4.1.11(vitest@4.1.11)':
@@ -1751,7 +1747,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@vitest/coverage-v8@4.1.11)(jsdom@30.1.1)(vite@8.2.2)
+      vitest: 4.1.11(@vitest/coverage-v8@4.1.11)(jsdom@30.1.1)(vite@8.2.4)
 
   '@vitest/expect@4.1.11':
     dependencies:
@@ -1762,13 +1758,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.11(vite@8.2.2)':
+  '@vitest/mocker@4.1.11(vite@8.2.4)':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.2
+      vite: 8.2.4
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -2564,12 +2560,6 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss@8.5.26:
-    dependencies:
-      nanoid: 3.3.18
-      picocolors: 1.1.1
-      source-map-js: 1.2.1
-
   postcss@8.5.28:
     dependencies:
       nanoid: 3.3.18
@@ -2684,14 +2674,14 @@ snapshots:
       pathe: 2.0.3
       picomatch: 4.0.7
 
-  unplugin@3.3.0(rolldown@1.2.6)(vite@8.2.2):
+  unplugin@3.3.0(rolldown@1.2.6)(vite@8.2.4):
     dependencies:
       '@jridgewell/remapping': 2.3.5
       picomatch: 4.0.7
       webpack-virtual-modules: 0.6.2
     optionalDependencies:
       rolldown: 1.2.6
-      vite: 8.2.2
+      vite: 8.2.4
 
   uri-js@4.4.1:
     dependencies:
@@ -2699,20 +2689,20 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite@8.2.2:
+  vite@8.2.4:
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
-      postcss: 8.5.26
+      postcss: 8.5.28
       rolldown: 1.2.6
       tinyglobby: 0.2.17
     optionalDependencies:
       fsevents: 2.3.3
 
-  vitest@4.1.11(@vitest/coverage-v8@4.1.11)(jsdom@30.1.1)(vite@8.2.2):
+  vitest@4.1.11(@vitest/coverage-v8@4.1.11)(jsdom@30.1.1)(vite@8.2.4):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.2.2)
+      '@vitest/mocker': 4.1.11(vite@8.2.4)
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -2729,7 +2719,7 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.2
+      vite: 8.2.4
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@vitest/coverage-v8': 4.1.11(vitest@4.1.11)
@@ -2751,7 +2741,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vue-router@5.3.1(@vue/compiler-sfc@3.5.42)(rolldown@1.2.6)(vite@8.2.2)(vue@3.5.43):
+  vue-router@5.3.1(@vue/compiler-sfc@3.5.42)(rolldown@1.2.6)(vite@8.2.4)(vue@3.5.43):
     dependencies:
       '@vue-macros/common': 3.1.4(vue@3.5.43)
       '@vue/devtools-api': 8.2.1
@@ -2767,12 +2757,12 @@ snapshots:
       picomatch: 4.0.7
       scule: 1.3.0
       tinyglobby: 0.2.17
-      unplugin: 3.3.0(rolldown@1.2.6)(vite@8.2.2)
+      unplugin: 3.3.0(rolldown@1.2.6)(vite@8.2.4)
       unplugin-utils: 0.3.2
       vue: 3.5.43
     optionalDependencies:
       '@vue/compiler-sfc': 3.5.42
-      vite: 8.2.2
+      vite: 8.2.4
     transitivePeerDependencies:
       - '@farmfe/core'
       - '@rspack/core'
