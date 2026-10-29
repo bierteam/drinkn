@@ -29,6 +29,12 @@ spec:
       containers:
         - name: curl
           image: curlimages/curl:8.21.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
           resources:
             requests:
               {{- toYaml $.Values.resources.githubWebhooks.requests | nindent 14 }}
