@@ -49,7 +49,7 @@ importers:
         version: 9.11.4
       openid-client:
         specifier: ^6.8.7
-        version: 6.8.8
+        version: 6.8.9
       uuid:
         specifier: ^14.0.0
         version: 14.0.2
@@ -1658,8 +1658,8 @@ packages:
       node-notifier:
         optional: true
 
-  jose@6.2.12:
-    resolution: {integrity: sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw==}
+  jose@6.2.17:
+    resolution: {integrity: sha512-wOuK9V1yujQFH5S0ZWmLcDZN7+IKh9bUCC2ZPCf2HDlol3WWHy+PPyNjEI75FXRLMp3vDKQcupP59xhVU95hcg==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -1906,8 +1906,8 @@ packages:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
 
-  openid-client@6.8.8:
-    resolution: {integrity: sha512-ZsucJA5Ad04Uv7YN4ql+s4GXNmb9uAYQwyJTsJx7CH/MX3JZioLE2pVKi1SC+YrbSLA4Px3Gi30dMjgOZtb6pA==}
+  openid-client@6.8.9:
+    resolution: {integrity: sha512-6mXMRNJxDOf6BflEWLXul1UwzLFz++9Ofz1PYwPwwsJsyXBsbfkO+Jo255SW1qnFNLYz4EJWHz42X4OJJrya/g==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -4266,7 +4266,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jose@6.2.12: {}
+  jose@6.2.17: {}
 
   js-tokens@4.0.0: {}
 
@@ -4456,9 +4456,9 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openid-client@6.8.8:
+  openid-client@6.8.9:
     dependencies:
-      jose: 6.2.12
+      jose: 6.2.17
       oauth4webapi: 3.8.8
 
   optionator@0.9.4:
