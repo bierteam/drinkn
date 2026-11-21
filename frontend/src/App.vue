@@ -67,6 +67,7 @@ export default {
       <div class="navbar-start">
         <router-link class="navbar-item" to="/home">Home</router-link>
         <router-link class="navbar-item" to="/discounts">Discounts</router-link>
+        <router-link class="navbar-item" to="/products">All beers</router-link>
         <div class="navbar-item has-dropdown is-hoverable" v-if="store.isAdmin">
           <a class="navbar-link">Admin</a>
           <div class="navbar-dropdown">

@@ -7,6 +7,7 @@ export const Router = createRouter({
     { path: '/', redirect: '/discounts' },
     { path: '/home', component: () => import('./components/Home.vue') },
     { path: '/discounts', component: () => import('./components/Discounts.vue') },
+    { path: '/products', component: () => import('./components/Products.vue') },
     // { path: '/discounts/:id', component: () => import('./components/Discount.vue') },
     { path: '/register', component: () => import('./components/Register.vue') },
     { path: '/login', component: () => import('./components/Login.vue') },
