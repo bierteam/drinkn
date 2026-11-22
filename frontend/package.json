@@ -9,7 +9,7 @@
     "@simplewebauthn/browser": "^13.3.0",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@vitejs/plugin-vue": "^6.0.8",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/coverage-v8": "4.1.12",
     "@vue/test-utils": "^2.5.0",
     "axios": "^1.4.0",
     "browser-update": "^3.3.44",
