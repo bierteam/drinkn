@@ -40,7 +40,7 @@ importers:
         version: 10.15.0(supports-color@7.2.0)
       eslint-plugin-vue:
         specifier: ^10.10.0
-        version: 10.11.1(@stylistic/eslint-plugin@5.10.0(eslint@10.15.0(supports-color@7.2.0)))(eslint@10.15.0(supports-color@7.2.0))(vue-eslint-parser@10.4.2(eslint@10.15.0(supports-color@7.2.0))(supports-color@7.2.0))
+        version: 10.12.1(@stylistic/eslint-plugin@5.10.0(eslint@10.15.0(supports-color@7.2.0)))(eslint@10.15.0(supports-color@7.2.0))(vue-eslint-parser@10.4.2(eslint@10.15.0(supports-color@7.2.0))(supports-color@7.2.0))
       fake-indexeddb:
         specifier: ^6.2.5
         version: 6.2.8
@@ -624,11 +624,6 @@ packages:
     resolution: {integrity: sha512-X7sjQzceUhu1u7Y/ylrRZFU2FS6LRiFVp6rKLPg23y3x3c3DOKAwuXGDp+PAGjh6CSnCjYeAul8pcT8bAl+lSA==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0}
 
-  cssesc@3.0.0:
-    resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
-    engines: {node: '>=4'}
-    hasBin: true
-
   csstype@3.2.4:
     resolution: {integrity: sha512-PoKaoPzQapnEoqUSnHx1u6W6ku8CVEgKsnpmmzU3m1nwkidpPBQ8V/Zq2+bWNrsOKoKLwTGdbx6xF7BXP1zLVQ==}
 
@@ -699,8 +694,8 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
-  eslint-plugin-vue@10.11.1:
-    resolution: {integrity: sha512-pasVXhl7wUmIvhujoqs/m0mJ9r59QW1IR9XXYKGR0FETzSM+Hhlf4qKIYgWiDDP+9YKv4YfbwskD7LqIdVcgQw==}
+  eslint-plugin-vue@10.12.1:
+    resolution: {integrity: sha512-Z5hmchVWq4EEOCn131J2p/uS4hjkrC+goPV5c/YApTY68xTqV3K5IYqD0mYGupDvZ6iYoTSuhSZUoWN+gZIqZQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       '@stylistic/eslint-plugin': ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
@@ -1195,8 +1190,8 @@ packages:
     engines: {node: '>=22.13'}
     hasBin: true
 
-  postcss-selector-parser@7.1.5:
-    resolution: {integrity: sha512-KvvtD7SrlBP7dlgkBghEE3r84CABm5SmV2aNcG4oCA+qDnJ/tvKonFVvwWAyyWUEwxuNawdfEAZKP9zM3oZ2Uw==}
+  postcss-selector-parser@7.2.1:
+    resolution: {integrity: sha512-GwxlMgTTXwIom+ebC7an3k6RaJDwklRQQnfiXsLPGicu8FYV/k/+1/9YY2OU2+r938H2t4X0TDxoif+HP2rjzQ==}
     engines: {node: '>=4'}
 
   postcss@8.5.28:
@@ -2079,8 +2074,6 @@ snapshots:
       mdn-data: 2.27.1
       source-map-js: 1.2.1
 
-  cssesc@3.0.0: {}
-
   csstype@3.2.4: {}
 
   data-urls@8.0.0:
@@ -2140,13 +2133,13 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-plugin-vue@10.11.1(@stylistic/eslint-plugin@5.10.0(eslint@10.15.0(supports-color@7.2.0)))(eslint@10.15.0(supports-color@7.2.0))(vue-eslint-parser@10.4.2(eslint@10.15.0(supports-color@7.2.0))(supports-color@7.2.0)):
+  eslint-plugin-vue@10.12.1(@stylistic/eslint-plugin@5.10.0(eslint@10.15.0(supports-color@7.2.0)))(eslint@10.15.0(supports-color@7.2.0))(vue-eslint-parser@10.4.2(eslint@10.15.0(supports-color@7.2.0))(supports-color@7.2.0)):
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1(eslint@10.15.0(supports-color@7.2.0))
       eslint: 10.15.0(supports-color@7.2.0)
       natural-compare: 1.4.0
       nth-check: 2.1.1
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.2.1
       semver: 7.8.5
       vue-eslint-parser: 10.4.2(eslint@10.15.0(supports-color@7.2.0))(supports-color@7.2.0)
       xml-name-validator: 5.0.0
@@ -2625,9 +2618,8 @@ snapshots:
 
   pnpm@11.28.13: {}
 
-  postcss-selector-parser@7.1.5:
+  postcss-selector-parser@7.2.1:
     dependencies:
-      cssesc: 3.0.0
       util-deprecate: 1.0.2
 
   postcss@8.5.28:
